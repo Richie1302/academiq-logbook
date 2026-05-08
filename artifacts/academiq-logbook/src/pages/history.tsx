@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useListEntries, useDeleteEntry, useUpdateEntry, getListEntriesQueryKey, getGetRecentEntriesQueryKey, getGetEntryStatsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
@@ -13,7 +13,17 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-type Entry = NonNullable<ReturnType<typeof useListEntries>['data']>[0];
+interface Entry {
+  id: number;
+  userId: string;
+  date: string;
+  rawActivity: string;
+  rewrittenEntry: string | null;
+  week: number | null;
+  dayOfWeek: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function History() {
   const [searchTerm, setSearchTerm] = useState("");
