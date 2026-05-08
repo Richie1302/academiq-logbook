@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AcademiQ Logbook API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: entries
+    description: Logbook entry operations
+  - name: ai
+    description: AI rewrite operations
 paths:
   /healthz:
     get:
@@ -24,6 +28,160 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /entries:
+    get:
+      operationId: listEntries
+      tags: [entries]
+      summary: List all entries for the current user
+      parameters:
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Filter by date (YYYY-MM-DD)
+      responses:
+        "200":
+          description: List of entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+    post:
+      operationId: createEntry
+      tags: [entries]
+      summary: Create a new logbook entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEntryBody"
+      responses:
+        "201":
+          description: Created entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+        "400":
+          description: Invalid request
+
+  /entries/stats:
+    get:
+      operationId: getEntryStats
+      tags: [entries]
+      summary: Get entry statistics for the current user
+      responses:
+        "200":
+          description: Entry stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntryStats"
+
+  /entries/recent:
+    get:
+      operationId: getRecentEntries
+      tags: [entries]
+      summary: Get the most recent entries (last 7 days)
+      responses:
+        "200":
+          description: Recent entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+
+  /entries/{id}:
+    get:
+      operationId: getEntry
+      tags: [entries]
+      summary: Get a single entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateEntry
+      tags: [entries]
+      summary: Update an entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEntryBody"
+      responses:
+        "200":
+          description: Updated entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+        "400":
+          description: Invalid request
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteEntry
+      tags: [entries]
+      summary: Delete an entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /entries/rewrite:
+    post:
+      operationId: rewriteEntry
+      tags: [ai]
+      summary: AI rewrite raw activity into professional SIWES logbook entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RewriteEntryBody"
+      responses:
+        "200":
+          description: Rewritten entry text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RewriteEntryResponse"
+        "400":
+          description: Invalid request
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +192,119 @@ components:
       required:
         - status
 
+    Entry:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        date:
+          type: string
+          description: ISO date string (YYYY-MM-DD)
+        rawActivity:
+          type: string
+          description: Raw activity text entered by the student
+        rewrittenEntry:
+          type: ["string", "null"]
+          description: AI-rewritten professional logbook entry
+        week:
+          type: ["integer", "null"]
+          description: SIWES week number
+        dayOfWeek:
+          type: ["string", "null"]
+          description: Day of the week (Monday, Tuesday, etc.)
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - userId
+        - date
+        - rawActivity
+        - rewrittenEntry
+        - week
+        - dayOfWeek
+        - createdAt
+        - updatedAt
+
+    CreateEntryBody:
+      type: object
+      properties:
+        date:
+          type: string
+          description: ISO date string (YYYY-MM-DD)
+        rawActivity:
+          type: string
+          description: Raw activity text
+        rewrittenEntry:
+          type: ["string", "null"]
+          description: AI-rewritten logbook entry
+        week:
+          type: ["integer", "null"]
+          description: SIWES week number
+        dayOfWeek:
+          type: ["string", "null"]
+          description: Day of the week
+      required:
+        - date
+        - rawActivity
+
+    UpdateEntryBody:
+      type: object
+      properties:
+        date:
+          type: string
+        rawActivity:
+          type: string
+        rewrittenEntry:
+          type: ["string", "null"]
+        week:
+          type: ["integer", "null"]
+        dayOfWeek:
+          type: ["string", "null"]
+
+    EntryStats:
+      type: object
+      properties:
+        totalEntries:
+          type: integer
+        currentStreak:
+          type: integer
+        longestStreak:
+          type: integer
+        totalWeeks:
+          type: integer
+        entriesThisWeek:
+          type: integer
+      required:
+        - totalEntries
+        - currentStreak
+        - longestStreak
+        - totalWeeks
+        - entriesThisWeek
+
+    RewriteEntryBody:
+      type: object
+      properties:
+        rawActivity:
+          type: string
+          description: Raw activity description to rewrite
+        date:
+          type: string
+          description: Date of the activity
+        week:
+          type: ["integer", "null"]
+          description: SIWES week number for context
+      required:
+        - rawActivity
+
+    RewriteEntryResponse:
+      type: object
+      properties:
+        rewrittenEntry:
+          type: string
+          description: Professionally rewritten logbook entry
+      required:
+        - rewrittenEntry
