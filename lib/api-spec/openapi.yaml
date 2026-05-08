@@ -14,6 +14,8 @@ tags:
     description: Logbook entry operations
   - name: ai
     description: AI rewrite operations
+  - name: profile
+    description: User profile operations
 paths:
   /healthz:
     get:
@@ -41,6 +43,18 @@ paths:
           schema:
             type: string
             description: Filter by date (YYYY-MM-DD)
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Filter by SIWES week number
+        - name: month
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Filter by month (YYYY-MM)
       responses:
         "200":
           description: List of entries
@@ -182,6 +196,40 @@ paths:
         "400":
           description: Invalid request
 
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get the current user's profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "404":
+          description: Profile not found
+    put:
+      operationId: upsertProfile
+      tags: [profile]
+      summary: Create or update the current user's profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertProfileBody"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          description: Invalid request
+
 components:
   schemas:
     HealthStatus:
@@ -308,3 +356,56 @@ components:
           description: Professionally rewritten logbook entry
       required:
         - rewrittenEntry
+
+    UserProfile:
+      type: object
+      properties:
+        userId:
+          type: string
+        fullName:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        school:
+          type: ["string", "null"]
+        course:
+          type: ["string", "null"]
+        siwesCompany:
+          type: ["string", "null"]
+        department:
+          type: ["string", "null"]
+        siwesDuration:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - userId
+        - fullName
+        - email
+        - school
+        - course
+        - siwesCompany
+        - department
+        - siwesDuration
+        - createdAt
+        - updatedAt
+
+    UpsertProfileBody:
+      type: object
+      properties:
+        fullName:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        school:
+          type: ["string", "null"]
+        course:
+          type: ["string", "null"]
+        siwesCompany:
+          type: ["string", "null"]
+        department:
+          type: ["string", "null"]
+        siwesDuration:
+          type: ["string", "null"]

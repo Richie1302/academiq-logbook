@@ -21,6 +21,12 @@ import OpenAI from "openai";
 
 const router: IRouter = Router();
 
+function serializeRow<T extends Record<string, unknown>>(row: T): T {
+  return Object.fromEntries(
+    Object.entries(row).map(([k, v]) => [k, v instanceof Date ? v.toISOString() : v]),
+  ) as T;
+}
+
 const requireAuth = (req: Request, res: Response, next: any) => {
   const auth = getAuth(req);
   const userId = auth?.sessionClaims?.userId || auth?.userId;
@@ -52,7 +58,19 @@ router.get("/entries", requireAuth, async (req: Request, res: Response): Promise
       .orderBy(desc(entriesTable.createdAt));
   }
 
-  res.json(ListEntriesResponse.parse(rows));
+  let filtered = rows;
+
+  // Filter by week if provided
+  if (parsed.success && parsed.data.week != null) {
+    filtered = filtered.filter((r) => r.week === parsed.data.week);
+  }
+
+  // Filter by month (YYYY-MM) if provided
+  if (parsed.success && parsed.data.month) {
+    filtered = filtered.filter((r) => r.date.startsWith(parsed.data.month!));
+  }
+
+  res.json(ListEntriesResponse.parse(filtered.map(serializeRow)));
 });
 
 // POST /entries
@@ -69,7 +87,7 @@ router.post("/entries", requireAuth, async (req: Request, res: Response): Promis
     .values({ ...parsed.data, userId })
     .returning();
 
-  res.status(201).json(GetEntryResponse.parse(entry));
+  res.status(201).json(GetEntryResponse.parse(serializeRow(entry)));
 });
 
 // GET /entries/stats
@@ -83,7 +101,6 @@ router.get("/entries/stats", requireAuth, async (req: Request, res: Response): P
 
   const totalEntries = rows.length;
 
-  // Calculate current streak (consecutive days)
   let currentStreak = 0;
   let longestStreak = 0;
   let tempStreak = 0;
@@ -97,7 +114,6 @@ router.get("/entries/stats", requireAuth, async (req: Request, res: Response): P
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
-  // Calculate longest streak
   const sortedDates = Array.from(dateSet).sort();
   for (let i = 0; i < sortedDates.length; i++) {
     if (i === 0) {
@@ -146,14 +162,14 @@ router.get("/entries/recent", requireAuth, async (req: Request, res: Response): 
   const rows = await db
     .select()
     .from(entriesTable)
-    .where(and(eq(entriesTable.userId, userId)))
+    .where(eq(entriesTable.userId, userId))
     .orderBy(desc(entriesTable.date));
 
   const filtered = rows.filter((r) => r.date >= cutoff);
-  res.json(GetRecentEntriesResponse.parse(filtered));
+  res.json(GetRecentEntriesResponse.parse(filtered.map(serializeRow)));
 });
 
-// GET /entries/rewrite (must come before /entries/:id)
+// POST /entries/rewrite (must come before /entries/:id)
 router.post("/entries/rewrite", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const parsed = RewriteEntryBody.safeParse(req.body);
   if (!parsed.success) {
@@ -173,13 +189,13 @@ router.post("/entries/rewrite", requireAuth, async (req: Request, res: Response)
 
   const prompt = `You are an expert at writing professional SIWES (Student Industrial Work Experience Scheme) logbook entries for Nigerian university students.
 
-Convert the following raw activity description into a formal, detailed, and professional SIWES logbook entry. The entry should:
-- Be written in first person, past tense
-- Use formal, professional language appropriate for an academic logbook
-- Expand on the activity with relevant technical details and context
-- Be structured clearly with what was done, how it was done, and what was learned
-- Be 2-4 sentences long, concise but detailed
-- NOT use bullet points — write in flowing paragraphs
+Convert the following raw activity description into a formal, professional SIWES logbook entry. Rules:
+- First person, past tense
+- Professional, academic language
+- Expand with relevant technical context and what was learned
+- 2-4 concise, flowing sentences (no bullet points)
+- Avoid repetition and exaggeration
+- Realistic and technical but understandable
 
 Context: ${weekInfo}. ${dateInfo}
 
@@ -217,7 +233,7 @@ router.get("/entries/:id", requireAuth, async (req: Request, res: Response): Pro
     return;
   }
 
-  res.json(GetEntryResponse.parse(entry));
+  res.json(GetEntryResponse.parse(serializeRow(entry)));
 });
 
 // PATCH /entries/:id
@@ -246,7 +262,7 @@ router.patch("/entries/:id", requireAuth, async (req: Request, res: Response): P
     return;
   }
 
-  res.json(UpdateEntryResponse.parse(entry));
+  res.json(UpdateEntryResponse.parse(serializeRow(entry)));
 });
 
 // DELETE /entries/:id

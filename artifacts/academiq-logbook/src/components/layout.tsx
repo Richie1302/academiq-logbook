@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, PlusCircle, History, BookOpen } from "lucide-react";
+import { LogOut, Home, PlusCircle, History, BookOpen, User, Settings } from "lucide-react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
@@ -16,6 +16,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     { href: "/dashboard", label: "Dashboard", icon: Home },
     { href: "/entry/new", label: "New Entry", icon: PlusCircle },
     { href: "/history", label: "History", icon: History },
+    { href: "/profile", label: "Profile", icon: User },
   ];
 
   return (
@@ -56,15 +57,17 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="hidden md:block p-4 border-t">
-          <div className="flex items-center gap-3 mb-4 px-2">
-            <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm">
-              {user?.firstName?.[0] || "U"}
+          <Link href="/settings">
+            <div className="flex items-center gap-3 mb-4 px-2 hover:bg-secondary/50 p-2 rounded-lg cursor-pointer transition-colors">
+              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm">
+                {user?.firstName?.[0] || "U"}
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="text-sm font-medium truncate">{user?.firstName || "Student"}</span>
+                <span className="text-xs text-muted-foreground truncate">{user?.primaryEmailAddress?.emailAddress}</span>
+              </div>
             </div>
-            <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-medium truncate">{user?.firstName || "Student"}</span>
-              <span className="text-xs text-muted-foreground truncate">{user?.primaryEmailAddress?.emailAddress}</span>
-            </div>
-          </div>
+          </Link>
           <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={handleSignOut}>
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out

@@ -93,9 +93,54 @@ export interface RewriteEntryResponse {
   rewrittenEntry: string;
 }
 
+export interface UserProfile {
+  userId: string;
+  /** @nullable */
+  fullName: string | null;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  school: string | null;
+  /** @nullable */
+  course: string | null;
+  /** @nullable */
+  siwesCompany: string | null;
+  /** @nullable */
+  department: string | null;
+  /** @nullable */
+  siwesDuration: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpsertProfileBody {
+  /** @nullable */
+  fullName?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  school?: string | null;
+  /** @nullable */
+  course?: string | null;
+  /** @nullable */
+  siwesCompany?: string | null;
+  /** @nullable */
+  department?: string | null;
+  /** @nullable */
+  siwesDuration?: string | null;
+}
+
 export type ListEntriesParams = {
   /**
    * Filter by date (YYYY-MM-DD)
    */
   date?: string;
+  /**
+   * Filter by SIWES week number
+   */
+  week?: number;
+  /**
+   * Filter by month (YYYY-MM)
+   */
+  month?: string;
 };

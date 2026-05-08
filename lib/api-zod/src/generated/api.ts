@@ -20,6 +20,8 @@ export const HealthCheckResponse = zod.object({
  */
 export const ListEntriesQueryParams = zod.object({
   date: zod.coerce.string().optional(),
+  week: zod.coerce.number().optional(),
+  month: zod.coerce.string().optional(),
 });
 
 export const ListEntriesResponseItem = zod.object({
@@ -171,4 +173,46 @@ export const RewriteEntryResponse = zod.object({
   rewrittenEntry: zod
     .string()
     .describe("Professionally rewritten logbook entry"),
+});
+
+/**
+ * @summary Get the current user's profile
+ */
+export const GetProfileResponse = zod.object({
+  userId: zod.string(),
+  fullName: zod.string().nullable(),
+  email: zod.string().nullable(),
+  school: zod.string().nullable(),
+  course: zod.string().nullable(),
+  siwesCompany: zod.string().nullable(),
+  department: zod.string().nullable(),
+  siwesDuration: zod.string().nullable(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Create or update the current user's profile
+ */
+export const UpsertProfileBody = zod.object({
+  fullName: zod.string().nullish(),
+  email: zod.string().nullish(),
+  school: zod.string().nullish(),
+  course: zod.string().nullish(),
+  siwesCompany: zod.string().nullish(),
+  department: zod.string().nullish(),
+  siwesDuration: zod.string().nullish(),
+});
+
+export const UpsertProfileResponse = zod.object({
+  userId: zod.string(),
+  fullName: zod.string().nullable(),
+  email: zod.string().nullable(),
+  school: zod.string().nullable(),
+  course: zod.string().nullable(),
+  siwesCompany: zod.string().nullable(),
+  department: zod.string().nullable(),
+  siwesDuration: zod.string().nullable(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
 });

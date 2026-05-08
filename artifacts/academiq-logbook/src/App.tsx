@@ -12,6 +12,8 @@ import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import NewEntry from "@/pages/new-entry";
 import History from "@/pages/history";
+import Profile from "@/pages/profile";
+import Settings from "@/pages/settings";
 import { AppLayout } from "@/components/layout";
 
 const queryClient = new QueryClient();
@@ -51,7 +53,7 @@ const clerkAppearance = {
     colorInput: "hsl(214 32% 91%)",
     colorInputForeground: "hsl(222 47% 11%)",
     colorNeutral: "hsl(214 32% 91%)",
-    fontFamily: "'Outfit', sans-serif",
+    fontFamily: "'Inter', sans-serif",
     borderRadius: "0.75rem",
   },
   elements: {
@@ -191,6 +193,12 @@ function ClerkProviderWithRoutes() {
           </Route>
           <Route path="/history">
             {() => <ProtectedRoute component={History} />}
+          </Route>
+          <Route path="/profile">
+            {() => <ProtectedRoute component={Profile} />}
+          </Route>
+          <Route path="/settings">
+            {() => <ProtectedRoute component={Settings} />}
           </Route>
 
           <Route component={NotFound} />

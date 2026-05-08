@@ -1,24 +1,36 @@
-import { useState } from "react";
-import { useListEntries, useDeleteEntry, getListEntriesQueryKey, getGetRecentEntriesQueryKey, getGetEntryStatsQueryKey } from "@workspace/api-client-react";
+import { useState, useEffect } from "react";
+import { useListEntries, useDeleteEntry, useUpdateEntry, getListEntriesQueryKey, getGetRecentEntriesQueryKey, getGetEntryStatsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Trash2, Copy, Search, Calendar, ChevronDown, Check, Loader2 } from "lucide-react";
+import { Trash2, Copy, Search, Calendar, ChevronDown, Check, Loader2, Hash, Edit } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+
+type Entry = NonNullable<ReturnType<typeof useListEntries>['data']>[0];
 
 export default function History() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [weekFilter, setWeekFilter] = useState("");
   
-  const { data: entries, isLoading } = useListEntries(dateFilter ? { date: dateFilter } : undefined);
+  const { data: entries, isLoading } = useListEntries(
+    weekFilter ? { week: parseInt(weekFilter, 10) } : dateFilter ? { date: dateFilter } : undefined
+  );
   const deleteMutation = useDeleteEntry();
+  const updateMutation = useUpdateEntry();
   const queryClient = useQueryClient();
 
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  
+  const [editEntry, setEditEntry] = useState<Entry | null>(null);
+  const [editForm, setEditForm] = useState({ date: "", rawActivity: "", rewrittenEntry: "", week: "", dayOfWeek: "" });
 
   const handleCopy = (id: number, text: string) => {
     navigator.clipboard.writeText(text);
@@ -40,6 +52,42 @@ export default function History() {
         onError: () => {
           toast.error("Failed to delete entry");
         }
+      }
+    );
+  };
+
+  const handleEditClick = (entry: Entry) => {
+    setEditEntry(entry);
+    setEditForm({
+      date: entry.date,
+      rawActivity: entry.rawActivity,
+      rewrittenEntry: entry.rewrittenEntry || "",
+      week: entry.week?.toString() || "",
+      dayOfWeek: entry.dayOfWeek || ""
+    });
+  };
+
+  const handleUpdate = () => {
+    if (!editEntry) return;
+    updateMutation.mutate(
+      { 
+        id: editEntry.id, 
+        data: {
+          date: editForm.date,
+          rawActivity: editForm.rawActivity,
+          rewrittenEntry: editForm.rewrittenEntry,
+          week: editForm.week ? parseInt(editForm.week, 10) : null,
+          dayOfWeek: editForm.dayOfWeek
+        }
+      },
+      {
+        onSuccess: () => {
+          toast.success("Entry updated");
+          queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetRecentEntriesQueryKey() });
+          setEditEntry(null);
+        },
+        onError: () => toast.error("Failed to update entry")
       }
     );
   };
@@ -68,16 +116,27 @@ export default function History() {
             />
           </div>
           <div className="relative">
+            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Week (e.g. 4)"
+              type="number"
+              value={weekFilter}
+              onChange={(e) => setWeekFilter(e.target.value)}
+              className="pl-9 w-full sm:w-[120px] bg-card"
+            />
+          </div>
+          <div className="relative">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
               className="pl-9 w-full sm:w-[150px] bg-card"
+              disabled={!!weekFilter} // disable date filter if week is set
             />
           </div>
-          {dateFilter && (
-            <Button variant="ghost" onClick={() => setDateFilter("")} className="px-3">
+          {(dateFilter || weekFilter) && (
+            <Button variant="ghost" onClick={() => { setDateFilter(""); setWeekFilter(""); }} className="px-3">
               Clear
             </Button>
           )}
@@ -122,6 +181,10 @@ export default function History() {
                         {copiedId === entry.id ? "Copied" : "Copy"}
                       </Button>
                       
+                      <Button variant="ghost" size="icon" onClick={() => handleEditClick(entry)} className="text-muted-foreground hover:text-foreground">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 hover:text-destructive">
@@ -186,9 +249,9 @@ export default function History() {
             <Calendar className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
             <h3 className="text-xl font-medium text-foreground mb-1">No entries found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchTerm || dateFilter ? "Try adjusting your search or filters." : "You haven't written any logbook entries yet."}
+              {searchTerm || dateFilter || weekFilter ? "Try adjusting your search or filters." : "You haven't written any logbook entries yet."}
             </p>
-            {!searchTerm && !dateFilter && (
+            {!searchTerm && !dateFilter && !weekFilter && (
               <Button asChild>
                 <a href="/entry/new">Create First Entry</a>
               </Button>
@@ -196,6 +259,53 @@ export default function History() {
           </div>
         )}
       </div>
+
+      <Dialog open={!!editEntry} onOpenChange={(open) => !open && setEditEntry(null)}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Logbook Entry</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Date</Label>
+                <Input type="date" value={editForm.date} onChange={e => setEditForm(prev => ({ ...prev, date: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Week Number</Label>
+                <Input type="number" value={editForm.week} onChange={e => setEditForm(prev => ({ ...prev, week: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Day of Week</Label>
+              <Input value={editForm.dayOfWeek} onChange={e => setEditForm(prev => ({ ...prev, dayOfWeek: e.target.value }))} placeholder="e.g. Monday" />
+            </div>
+            <div className="space-y-2">
+              <Label>Raw Activity</Label>
+              <Textarea 
+                value={editForm.rawActivity} 
+                onChange={e => setEditForm(prev => ({ ...prev, rawActivity: e.target.value }))} 
+                className="h-[100px] resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Professional Version</Label>
+              <Textarea 
+                value={editForm.rewrittenEntry} 
+                onChange={e => setEditForm(prev => ({ ...prev, rewrittenEntry: e.target.value }))} 
+                className="h-[150px] font-serif resize-none leading-relaxed"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditEntry(null)}>Cancel</Button>
+            <Button onClick={handleUpdate} disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

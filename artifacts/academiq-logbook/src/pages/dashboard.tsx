@@ -1,8 +1,8 @@
 import { useGetEntryStats, useGetRecentEntries } from "@workspace/api-client-react";
 import { useUser } from "@clerk/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { format, parseISO } from "date-fns";
-import { CalendarDays, Flame, CheckCircle2, TrendingUp, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { format, parseISO, isSameDay, startOfWeek, addDays } from "date-fns";
+import { CalendarDays, Flame, CheckCircle2, TrendingUp, Sparkles, Loader2, ArrowRight, Plus } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 
@@ -16,11 +16,20 @@ export default function Dashboard() {
 
   const todayEntry = recentEntries?.find(e => e.date === format(today, "yyyy-MM-dd"));
 
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
+  const weekDays = Array.from({ length: 5 }).map((_, i) => addDays(weekStart, i));
+
   return (
-    <div className="flex flex-col gap-8 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-8 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+      <Link href="/entry/new">
+        <div className="fixed bottom-24 right-4 md:hidden z-40 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
+          <Plus className="h-6 w-6" />
+        </div>
+      </Link>
+
       <section className="flex flex-col gap-2">
         <h1 className="text-3xl md:text-4xl font-bold font-serif tracking-tight">
-          Hello, {user?.firstName || "Student"}
+          Hello, {user?.firstName || "Student"} 👋
         </h1>
         <p className="text-muted-foreground text-lg">
           Today is {formattedDate}. Let's make it count.
@@ -84,6 +93,39 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+      </section>
+
+      {/* Week Progress */}
+      <section className="bg-card border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 className="font-semibold text-lg flex items-center gap-2 mb-1">
+            <CalendarDays className="h-5 w-5 text-primary" />
+            Week Progress
+          </h3>
+          <p className="text-sm text-muted-foreground">Mon – Fri</p>
+        </div>
+        <div className="flex gap-3 sm:gap-6 w-full md:w-auto justify-between md:justify-start">
+          {weekDays.map((day, i) => {
+            const hasEntry = recentEntries?.some(e => e.date === format(day, "yyyy-MM-dd"));
+            const isToday = isSameDay(day, today);
+            return (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center border-2 transition-colors ${
+                  hasEntry 
+                    ? "bg-green-500 border-green-500 text-white" 
+                    : isToday
+                      ? "border-primary text-primary"
+                      : "border-muted text-muted-foreground bg-muted/20"
+                }`}>
+                  {hasEntry ? <CheckCircle2 className="h-5 w-5" /> : <span className="text-xs font-medium">{format(day, "d")}</span>}
+                </div>
+                <span className={`text-xs font-medium ${isToday ? "text-primary" : "text-muted-foreground"}`}>
+                  {format(day, "EEE")}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       {/* Today's Action */}
@@ -158,13 +200,22 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-muted/30 rounded-xl border border-dashed">
-            <CalendarDays className="h-10 w-10 text-muted-foreground/50 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-foreground">No recent entries</h3>
-            <p className="text-sm text-muted-foreground mt-1 mb-4">You haven't written anything in the past 7 days.</p>
-            <Link href="/entry/new">
-              <Button variant="outline">Create your first entry</Button>
-            </Link>
+          <div className="text-center py-16 bg-gradient-to-br from-primary/5 to-secondary/10 rounded-2xl border border-primary/10 shadow-sm relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="h-20 w-20 bg-background rounded-2xl shadow-sm border flex items-center justify-center mx-auto mb-6 rotate-3">
+                <Sparkles className="h-10 w-10 text-primary animate-pulse" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2 font-serif">A Fresh Start</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto mb-8 leading-relaxed">
+                Your logbook is a blank canvas. Start documenting your SIWES journey today and watch your professional narrative unfold.
+              </p>
+              <Link href="/entry/new">
+                <Button size="lg" className="rounded-full px-8 shadow-md hover:shadow-lg transition-all group">
+                  <Plus className="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform" />
+                  Write First Entry
+                </Button>
+              </Link>
+            </div>
           </div>
         )}
       </section>
