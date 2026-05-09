@@ -1,28 +1,31 @@
-import { useClerk, useUser } from "@clerk/react";
+import { useAuth } from "@/lib/auth-context";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { KeyRound, LogOut, Moon, Trash2 } from "lucide-react";
+import { LogOut, Moon, Trash2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function Settings() {
-  const { user } = useUser();
-  const clerk = useClerk();
+  const { user, signOut } = useAuth();
   const [, setLocation] = useLocation();
 
-  const handleSignOut = () => {
-    clerk.signOut(() => setLocation("/"));
+  const handleSignOut = async () => {
+    await signOut();
+    setLocation("/");
   };
 
   const handleDeleteAccount = async () => {
     try {
-      await user?.delete();
+      const { error } = await supabase.rpc("delete_user");
+      if (error) throw error;
+      await signOut();
       setLocation("/");
       toast.success("Account deleted successfully");
     } catch {
-      toast.error("Failed to delete account");
+      toast.error("Failed to delete account. Please contact support.");
     }
   };
 
@@ -34,33 +37,21 @@ export default function Settings() {
       </div>
 
       <div className="space-y-6">
-        {/* Account Section */}
         <Card className="border-muted/60 shadow-sm">
           <CardHeader>
             <CardTitle>Account</CardTitle>
-            <CardDescription>Manage your email and security settings.</CardDescription>
+            <CardDescription>Your account information.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-muted/10 rounded-lg border">
               <div>
                 <p className="font-medium">Email Address</p>
-                <p className="text-sm text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
+                <p className="text-sm text-muted-foreground">{user?.email}</p>
               </div>
-            </div>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/10 rounded-lg border gap-4">
-              <div>
-                <p className="font-medium">Password</p>
-                <p className="text-sm text-muted-foreground">Update your password</p>
-              </div>
-              <Button variant="outline" onClick={() => clerk.openUserProfile()} className="w-full sm:w-auto">
-                <KeyRound className="h-4 w-4 mr-2 text-muted-foreground" />
-                Change Password
-              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Sign Out Section */}
         <Card className="border-muted/60 shadow-sm">
           <CardHeader>
             <CardTitle>Session</CardTitle>
@@ -80,7 +71,6 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Appearance Section */}
         <Card className="border-muted/60 shadow-sm">
           <CardHeader>
             <CardTitle>Appearance</CardTitle>
@@ -102,7 +92,6 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Danger Zone Section */}
         <Card className="border-destructive/20 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-destructive"></div>
           <CardHeader>
@@ -131,10 +120,7 @@ export default function Settings() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteAccount}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
+                    <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                       Yes, delete my account
                     </AlertDialogAction>
                   </AlertDialogFooter>

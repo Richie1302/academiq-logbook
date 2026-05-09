@@ -1,7 +1,8 @@
+import { useAuth } from "@/lib/auth-context";
 import { useState, useEffect } from "react";
 import { useGetProfile, useUpsertProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useUser } from "@clerk/react";
+
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Loader2, Save, User as UserIcon } from "lucide-react";
 
 export default function Profile() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: profile, isLoading } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false } });
   const upsertMutation = useUpsertProfile();
@@ -29,7 +30,7 @@ export default function Profile() {
     if (profile) {
       setFormData({
         fullName: profile.fullName || "",
-        email: profile.email || user?.primaryEmailAddress?.emailAddress || "",
+        email: profile.email || user?.email || "",
         school: profile.school || "",
         course: profile.course || "",
         siwesCompany: profile.siwesCompany || "",
@@ -82,10 +83,10 @@ export default function Profile() {
       <Card className="border-muted/60 shadow-sm">
         <CardHeader className="flex flex-row items-center gap-4 border-b bg-muted/10 pb-4">
           <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl border-2 border-primary/20 shrink-0">
-            {formData.fullName?.[0]?.toUpperCase() || user?.firstName?.[0]?.toUpperCase() || <UserIcon className="h-8 w-8" />}
+            {formData.fullName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || <UserIcon className="h-8 w-8" />}
           </div>
           <div className="min-w-0">
-            <CardTitle className="text-xl truncate">{formData.fullName || user?.fullName || "Student"}</CardTitle>
+            <CardTitle className="text-xl truncate">{formData.fullName || user?.email?.split("@")[0] || "Student"}</CardTitle>
             <CardDescription className="truncate">{formData.email}</CardDescription>
           </div>
         </CardHeader>
