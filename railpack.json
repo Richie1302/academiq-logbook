@@ -1,11 +1,18 @@
 {
-  "install": {
-    "cmd": "pnpm install --no-frozen-lockfile --ignore-scripts"
+  "$schema": "https://schema.railpack.com",
+  "steps": {
+    "install": {
+      "commands": [
+        { "cmd": "pnpm install --no-frozen-lockfile --ignore-scripts" }
+      ]
+    },
+    "build": {
+      "commands": [
+        { "cmd": "pnpm --filter @workspace/api-server build" }
+      ]
+    }
   },
-  "build": {
-    "cmd": "pnpm --filter @workspace/api-server build"
-  },
-  "start": {
-    "cmd": "node artifacts/api-server/dist/index.mjs"
+  "deploy": {
+    "startCommand": "node artifacts/api-server/dist/index.mjs"
   }
 }
