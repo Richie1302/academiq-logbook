@@ -1,4 +1,22 @@
+import { Component, type ReactNode } from "react";
 import { Switch, Route, Redirect, useLocation, Router as WouterRouter } from "wouter";
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 32, fontFamily: "monospace", color: "red" }}>
+          <h2>App Error</h2>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{(this.state.error as Error).message}</pre>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{(this.state.error as Error).stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -206,12 +224,14 @@ function ClerkProviderWithRoutes() {
 
 function App() {
   return (
-    <TooltipProvider>
-      <WouterRouter base={basePath}>
-        <ClerkProviderWithRoutes />
-      </WouterRouter>
-      <Toaster position="top-center" richColors />
-    </TooltipProvider>
+    <ErrorBoundary>
+      <TooltipProvider>
+        <WouterRouter base={basePath}>
+          <ClerkProviderWithRoutes />
+        </WouterRouter>
+        <Toaster position="top-center" richColors />
+      </TooltipProvider>
+    </ErrorBoundary>
   );
 }
 
