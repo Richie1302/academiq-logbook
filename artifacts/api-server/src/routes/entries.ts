@@ -1,4 +1,4 @@
-import { requireAuth } from "@/middlewares/supabaseAuth";
+import { requireAuth } from "../middlewares/supabaseAuth";
 // Database: PostgreSQL via Drizzle ORM (@workspace/db)
 // Authentication: Clerk JWT — every route requires a valid session via requireAuth middleware
 // Data storage: entries stored in `entries` table, scoped by userId from Clerk auth

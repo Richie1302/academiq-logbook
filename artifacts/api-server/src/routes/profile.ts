@@ -1,4 +1,4 @@
-import { requireAuth } from "@/middlewares/supabaseAuth";
+import { requireAuth } from "../middlewares/supabaseAuth";
 // Database: PostgreSQL via Drizzle ORM (@workspace/db)
 // Authentication: Clerk JWT — requireAuth extracts userId from Clerk session
 // Data storage: user profiles stored in `profiles` table, keyed by userId (primary key)
