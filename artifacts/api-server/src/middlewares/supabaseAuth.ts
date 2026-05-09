@@ -5,6 +5,13 @@ import https from "https";
 const SUPABASE_URL = "https://xqbzrvcwfgqrvfelbtdr.supabase.co";
 let cachedJwks: Record<string, string> = {};
 
+function jwkToPem(jwk: any): string {
+  // Use the crpto module to import JWK and export as PEM
+  const { createPublicKey } = require("crypto");
+  const key = createPublicKey({ key: jwk, format: "jwk" });
+  return key.export({ type: "spki", format: "pem" }) as string;
+}
+
 function fetchPublicKey(kid: string): Promise<string> {
   return new Promise((resolve, reject) => {
     if (cachedJwks[kid]) return resolve(cachedJwks[kid]);
@@ -16,9 +23,7 @@ function fetchPublicKey(kid: string): Promise<string> {
           const jwks = JSON.parse(data);
           for (const key of jwks.keys) {
             if (key.kid === kid) {
-              // Convert JWK to PEM using the x5c certificate if available
-              // or use the raw JWK directly with jwt library
-              const pem = `-----BEGIN CERTIFICATE-----\n${key.x5c[0]}\n-----END CERTIFICATE-----`;
+              const pem = jwkToPem(key);
               cachedJwks[kid] = pem;
               return resolve(pem);
             }
@@ -43,10 +48,10 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   try {
     const decoded = jwt.decode(token, { complete: true });
     if (!decoded || typeof decoded === "string") throw new Error("Invalid token");
-    
+
     const kid = decoded.header.kid as string;
     const publicKey = await fetchPublicKey(kid);
-    
+
     const verified = jwt.verify(token, publicKey, { algorithms: ["ES256"] }) as jwt.JwtPayload;
     (req as any).userId = verified.sub as string;
     next();
