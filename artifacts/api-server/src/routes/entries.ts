@@ -182,10 +182,9 @@ router.post("/entries/rewrite", requireAuth, async (req: Request, res: Response)
 
   const { rawActivity, date, week, mode = "concise" } = parsed.data;
 
-  // OpenAI client uses Replit AI integration credentials
   const openai = new OpenAI({
-    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
   });
 
   const weekInfo = week ? `Week ${week} of SIWES` : "during SIWES";
@@ -216,8 +215,8 @@ Student's raw notes:
 Write the logbook entry now. Nothing else.`;
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-4.1",
-    max_completion_tokens: 400,
+    model: "llama-3.3-70b-versatile",
+    max_tokens: 400,
     messages: [{ role: "user", content: prompt }],
   });
 
