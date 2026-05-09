@@ -1,0 +1,11 @@
+{
+  "install": {
+    "cmd": "pnpm install --no-frozen-lockfile --ignore-scripts"
+  },
+  "build": {
+    "cmd": "pnpm --filter @workspace/api-server build"
+  },
+  "start": {
+    "cmd": "node artifacts/api-server/dist/index.mjs"
+  }
+}
