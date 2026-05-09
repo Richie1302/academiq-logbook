@@ -20,7 +20,8 @@
     "openai": "^6.36.0",
     "pino": "^9",
     "pino-http": "^10",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "@supabase/supabase-js": "^2.49.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
