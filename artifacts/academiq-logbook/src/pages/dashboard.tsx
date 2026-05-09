@@ -1,5 +1,6 @@
+import { useAuth } from "@/lib/auth-context";
 import { useGetEntryStats, useGetRecentEntries } from "@workspace/api-client-react";
-import { useUser } from "@clerk/react";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { format, parseISO, isSameDay, startOfWeek, addDays } from "date-fns";
 import { CalendarDays, Flame, CheckCircle2, TrendingUp, Sparkles, Loader2, ArrowRight, Plus } from "lucide-react";
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useDisplayName } from "@/hooks/useDisplayName";
 
 export default function Dashboard() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const displayName = useDisplayName();
   const { data: stats, isLoading: statsLoading } = useGetEntryStats();
   const { data: recentEntries, isLoading: entriesLoading } = useGetRecentEntries();
