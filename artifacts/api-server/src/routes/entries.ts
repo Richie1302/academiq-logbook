@@ -1,9 +1,10 @@
+import { requireAuth } from "@/middlewares/supabaseAuth";
 // Database: PostgreSQL via Drizzle ORM (@workspace/db)
 // Authentication: Clerk JWT — every route requires a valid session via requireAuth middleware
 // Data storage: entries stored in `entries` table, scoped by userId from Clerk auth
 
 import { Router, type IRouter, type Request, type Response } from "express";
-import { getAuth } from "@clerk/express";
+
 import { eq, and, desc } from "drizzle-orm";
 import { db, entriesTable } from "@workspace/db";
 import {
@@ -32,17 +33,6 @@ function serializeRow<T extends Record<string, unknown>>(row: T): T {
   ) as T;
 }
 
-// Middleware: extract Clerk userId from JWT; returns 401 if unauthenticated
-const requireAuth = (req: Request, res: Response, next: any) => {
-  const auth = getAuth(req);
-  const userId = auth?.sessionClaims?.userId || auth?.userId;
-  if (!userId) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  (req as any).userId = userId as string;
-  next();
-};
 
 // GET /entries — list entries for authenticated user (optionally filtered by date/week/month)
 router.get("/entries", requireAuth, async (req: Request, res: Response): Promise<void> => {

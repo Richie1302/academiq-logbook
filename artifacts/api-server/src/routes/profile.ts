@@ -1,10 +1,11 @@
+import { requireAuth } from "@/middlewares/supabaseAuth";
 // Database: PostgreSQL via Drizzle ORM (@workspace/db)
 // Authentication: Clerk JWT — requireAuth extracts userId from Clerk session
 // Data storage: user profiles stored in `profiles` table, keyed by userId (primary key)
 // Upsert logic: PUT /profile creates a new profile or updates the existing one atomically
 
 import { Router, type IRouter, type Request, type Response } from "express";
-import { getAuth } from "@clerk/express";
+
 import { eq } from "drizzle-orm";
 import { db, profilesTable } from "@workspace/db";
 import { GetProfileResponse, UpsertProfileBody } from "@workspace/api-zod";
@@ -18,17 +19,6 @@ function serializeRow<T extends Record<string, unknown>>(row: T): T {
   ) as T;
 }
 
-// Middleware: extract Clerk userId from JWT; returns 401 if unauthenticated
-const requireAuth = (req: Request, res: Response, next: any) => {
-  const auth = getAuth(req);
-  const userId = auth?.sessionClaims?.userId || auth?.userId;
-  if (!userId) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  (req as any).userId = userId as string;
-  next();
-};
 
 // GET /profile — retrieve the authenticated user's profile (404 if not yet created)
 router.get("/profile", requireAuth, async (req: Request, res: Response): Promise<void> => {
