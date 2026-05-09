@@ -1,5 +1,14 @@
 import { Component, type ReactNode } from "react";
 import { Switch, Route, Redirect, useLocation, Router as WouterRouter } from "wouter";
+import { setBaseUrl, setAuthTokenGetter } from "@workspace/api-client-react";
+import { supabase } from "@/lib/supabase";
+
+// Configure API client
+setBaseUrl(import.meta.env.VITE_API_URL ?? "");
+setAuthTokenGetter(async () => {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? null;
+});
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
