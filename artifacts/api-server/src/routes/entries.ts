@@ -76,10 +76,18 @@ router.post("/entries", requireAuth, async (req: Request, res: Response): Promis
     return;
   }
 
-  const [entry] = await db
-    .insert(entriesTable)
-    .values({ ...parsed.data, userId })
-    .returning();
+  let entry;
+  try {
+    const result = await db
+      .insert(entriesTable)
+      .values({ ...parsed.data, userId })
+      .returning();
+    entry = result[0];
+  } catch (err: any) {
+    console.error("DB insert error:", err?.message, err?.cause, JSON.stringify(err));
+    res.status(500).json({ error: err?.message || "Database error" });
+    return;
+  }
 
   res.status(201).json(GetEntryResponse.parse(serializeRow(entry)));
 });
