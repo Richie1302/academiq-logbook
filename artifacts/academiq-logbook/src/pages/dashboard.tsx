@@ -5,9 +5,11 @@ import { format, parseISO, isSameDay, startOfWeek, addDays } from "date-fns";
 import { CalendarDays, Flame, CheckCircle2, TrendingUp, Sparkles, Loader2, ArrowRight, Plus } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { useDisplayName } from "@/hooks/useDisplayName";
 
 export default function Dashboard() {
   const { user } = useUser();
+  const displayName = useDisplayName();
   const { data: stats, isLoading: statsLoading } = useGetEntryStats();
   const { data: recentEntries, isLoading: entriesLoading } = useGetRecentEntries();
 
@@ -16,7 +18,7 @@ export default function Dashboard() {
 
   const todayEntry = recentEntries?.find(e => e.date === format(today, "yyyy-MM-dd"));
 
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 5 }).map((_, i) => addDays(weekStart, i));
 
   return (
@@ -29,7 +31,7 @@ export default function Dashboard() {
 
       <section className="flex flex-col gap-2">
         <h1 className="text-3xl md:text-4xl font-bold font-serif tracking-tight">
-          Hello, {user?.firstName || "Student"} 👋
+          Hello, {displayName} 👋
         </h1>
         <p className="text-muted-foreground text-lg">
           Today is {formattedDate}. Let's make it count.
@@ -47,7 +49,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : stats?.totalEntries || 0}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : stats?.totalEntries ?? 0}
             </div>
           </CardContent>
         </Card>
@@ -61,7 +63,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : `${stats?.currentStreak || 0} days`}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : `${stats?.currentStreak ?? 0} days`}
             </div>
           </CardContent>
         </Card>
@@ -75,7 +77,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : stats?.entriesThisWeek || 0}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : stats?.entriesThisWeek ?? 0}
             </div>
           </CardContent>
         </Card>
@@ -89,7 +91,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : `${stats?.longestStreak || 0} days`}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : `${stats?.longestStreak ?? 0} days`}
             </div>
           </CardContent>
         </Card>
@@ -111,8 +113,8 @@ export default function Dashboard() {
             return (
               <div key={i} className="flex flex-col items-center gap-2">
                 <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center border-2 transition-colors ${
-                  hasEntry 
-                    ? "bg-green-500 border-green-500 text-white" 
+                  hasEntry
+                    ? "bg-green-500 border-green-500 text-white"
                     : isToday
                       ? "border-primary text-primary"
                       : "border-muted text-muted-foreground bg-muted/20"
@@ -137,8 +139,8 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle>{todayEntry ? "Today's Entry Completed" : "Ready for today?"}</CardTitle>
             <CardDescription>
-              {todayEntry 
-                ? "You've successfully documented your activities for today." 
+              {todayEntry
+                ? "You've successfully documented your activities for today."
                 : "Take 2 minutes to jot down what you did. We'll handle the professional formatting."}
             </CardDescription>
           </CardHeader>

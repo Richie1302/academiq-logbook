@@ -76,6 +76,17 @@ export interface EntryStats {
   entriesThisWeek: number;
 }
 
+/**
+ * Rewrite mode - concise (2-3 sentences) or detailed (4-6 sentences)
+ */
+export type RewriteEntryBodyMode =
+  (typeof RewriteEntryBodyMode)[keyof typeof RewriteEntryBodyMode];
+
+export const RewriteEntryBodyMode = {
+  concise: "concise",
+  detailed: "detailed",
+} as const;
+
 export interface RewriteEntryBody {
   /** Raw activity description to rewrite */
   rawActivity: string;
@@ -86,6 +97,8 @@ export interface RewriteEntryBody {
    * @nullable
    */
   week?: number | null;
+  /** Rewrite mode - concise (2-3 sentences) or detailed (4-6 sentences) */
+  mode?: RewriteEntryBodyMode;
 }
 
 export interface RewriteEntryResponse {

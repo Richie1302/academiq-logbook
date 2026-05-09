@@ -1,3 +1,7 @@
+// Database: PostgreSQL via Drizzle ORM (@workspace/db)
+// Authentication: Clerk JWT — every route requires a valid session via requireAuth middleware
+// Data storage: entries stored in `entries` table, scoped by userId from Clerk auth
+
 import { Router, type IRouter, type Request, type Response } from "express";
 import { getAuth } from "@clerk/express";
 import { eq, and, desc } from "drizzle-orm";
@@ -21,12 +25,14 @@ import OpenAI from "openai";
 
 const router: IRouter = Router();
 
+// Convert Drizzle Date objects to ISO strings before Zod parses the response
 function serializeRow<T extends Record<string, unknown>>(row: T): T {
   return Object.fromEntries(
     Object.entries(row).map(([k, v]) => [k, v instanceof Date ? v.toISOString() : v]),
   ) as T;
 }
 
+// Middleware: extract Clerk userId from JWT; returns 401 if unauthenticated
 const requireAuth = (req: Request, res: Response, next: any) => {
   const auth = getAuth(req);
   const userId = auth?.sessionClaims?.userId || auth?.userId;
@@ -38,7 +44,7 @@ const requireAuth = (req: Request, res: Response, next: any) => {
   next();
 };
 
-// GET /entries
+// GET /entries — list entries for authenticated user (optionally filtered by date/week/month)
 router.get("/entries", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const parsed = ListEntriesQueryParams.safeParse(req.query);
@@ -60,12 +66,10 @@ router.get("/entries", requireAuth, async (req: Request, res: Response): Promise
 
   let filtered = rows;
 
-  // Filter by week if provided
   if (parsed.success && parsed.data.week != null) {
     filtered = filtered.filter((r) => r.week === parsed.data.week);
   }
 
-  // Filter by month (YYYY-MM) if provided
   if (parsed.success && parsed.data.month) {
     filtered = filtered.filter((r) => r.date.startsWith(parsed.data.month!));
   }
@@ -73,7 +77,7 @@ router.get("/entries", requireAuth, async (req: Request, res: Response): Promise
   res.json(ListEntriesResponse.parse(filtered.map(serializeRow)));
 });
 
-// POST /entries
+// POST /entries — create a new logbook entry linked to authenticated user
 router.post("/entries", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const parsed = CreateEntryBody.safeParse(req.body);
@@ -90,7 +94,7 @@ router.post("/entries", requireAuth, async (req: Request, res: Response): Promis
   res.status(201).json(GetEntryResponse.parse(serializeRow(entry)));
 });
 
-// GET /entries/stats
+// GET /entries/stats — aggregate stats for authenticated user's entries
 router.get("/entries/stats", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const rows = await db
@@ -152,7 +156,7 @@ router.get("/entries/stats", requireAuth, async (req: Request, res: Response): P
   );
 });
 
-// GET /entries/recent
+// GET /entries/recent — last 7 days of entries for authenticated user
 router.get("/entries/recent", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const sevenDaysAgo = new Date();
@@ -169,7 +173,8 @@ router.get("/entries/recent", requireAuth, async (req: Request, res: Response): 
   res.json(GetRecentEntriesResponse.parse(filtered.map(serializeRow)));
 });
 
-// POST /entries/rewrite (must come before /entries/:id)
+// POST /entries/rewrite — AI rewrite of raw activity using OpenAI via Replit AI integration
+// Supports two modes: "concise" (2-3 sentences) and "detailed" (4-6 sentences)
 router.post("/entries/rewrite", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const parsed = RewriteEntryBody.safeParse(req.body);
   if (!parsed.success) {
@@ -177,35 +182,44 @@ router.post("/entries/rewrite", requireAuth, async (req: Request, res: Response)
     return;
   }
 
-  const { rawActivity, date, week } = parsed.data;
+  const { rawActivity, date, week, mode = "concise" } = parsed.data;
 
+  // OpenAI client uses Replit AI integration credentials
   const openai = new OpenAI({
     baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
     apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   });
 
-  const weekInfo = week ? `Week ${week} of SIWES` : "SIWES training";
-  const dateInfo = date ? `Date: ${date}` : "";
+  const weekInfo = week ? `Week ${week} of SIWES` : "during SIWES";
+  const dateInfo = date ? `on ${date}` : "";
 
-  const prompt = `You are an expert at writing professional SIWES (Student Industrial Work Experience Scheme) logbook entries for Nigerian university students.
+  const modeInstruction =
+    mode === "detailed"
+      ? `Write 4 to 6 sentences. Cover what was done, any tools or processes involved, what was learned or observed, and why it mattered. Natural, not templated.`
+      : `Write 2 to 3 sentences. Be specific about what was done. Natural and professional — not stiff or corporate.`;
 
-Convert the following raw activity description into a formal, professional SIWES logbook entry. Rules:
+  const prompt = `You write SIWES (Student Industrial Work Experience Scheme) logbook entries for Nigerian university students undergoing industrial training.
+
+${modeInstruction}
+
+Style rules:
 - First person, past tense
-- Professional, academic language
-- Expand with relevant technical context and what was learned
-- 2-4 concise, flowing sentences (no bullet points)
-- Avoid repetition and exaggeration
-- Realistic and technical but understandable
+- No bullet points, headers, or lists — flowing prose only
+- Avoid hollow filler phrases like "invaluable experience", "gained exposure to", "a plethora of"
+- If the student mentions tools, systems, or processes, name them specifically
+- Sound like a real student writing in their logbook, not a corporate report
+- Keep it grounded — don't exaggerate or over-formalize what happened
 
-Context: ${weekInfo}. ${dateInfo}
+Context: The student was working ${weekInfo} ${dateInfo}.
 
-Raw activity: "${rawActivity}"
+Student's raw notes:
+"${rawActivity}"
 
-Write only the logbook entry text, nothing else.`;
+Write the logbook entry now. Nothing else.`;
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-5.1",
-    max_completion_tokens: 512,
+    model: "gpt-4.1",
+    max_completion_tokens: 400,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -214,7 +228,7 @@ Write only the logbook entry text, nothing else.`;
   res.json(RewriteEntryResponse.parse({ rewrittenEntry }));
 });
 
-// GET /entries/:id
+// GET /entries/:id — fetch a single entry (must belong to authenticated user)
 router.get("/entries/:id", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const params = GetEntryParams.safeParse(req.params);
@@ -236,7 +250,7 @@ router.get("/entries/:id", requireAuth, async (req: Request, res: Response): Pro
   res.json(GetEntryResponse.parse(serializeRow(entry)));
 });
 
-// PATCH /entries/:id
+// PATCH /entries/:id — update an entry (must belong to authenticated user)
 router.patch("/entries/:id", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const params = UpdateEntryParams.safeParse(req.params);
@@ -265,7 +279,7 @@ router.patch("/entries/:id", requireAuth, async (req: Request, res: Response): P
   res.json(UpdateEntryResponse.parse(serializeRow(entry)));
 });
 
-// DELETE /entries/:id
+// DELETE /entries/:id — permanently delete an entry (must belong to authenticated user)
 router.delete("/entries/:id", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const params = DeleteEntryParams.safeParse(req.params);

@@ -167,6 +167,12 @@ export const RewriteEntryBody = zod.object({
   rawActivity: zod.string().describe("Raw activity description to rewrite"),
   date: zod.string().optional().describe("Date of the activity"),
   week: zod.number().nullish().describe("SIWES week number for context"),
+  mode: zod
+    .enum(["concise", "detailed"])
+    .optional()
+    .describe(
+      "Rewrite mode - concise (2-3 sentences) or detailed (4-6 sentences)",
+    ),
 });
 
 export const RewriteEntryResponse = zod.object({

@@ -48,23 +48,17 @@ export default defineConfig({
       },
     },
     output: {
-      workspace: apiZodSrc,
       client: "zod",
-      target: "generated",
-      mode: "split",
-      clean: true,
+      target: path.resolve(apiZodSrc, "generated/api.ts"),
+      mode: "single",
       prettier: true,
       override: {
         zod: {
           coerce: {
             query: ['boolean', 'number', 'string'],
             param: ['boolean', 'number', 'string'],
-            body: ['bigint', 'date'],
-            response: ['bigint', 'date'],
           },
         },
-        useDates: true,
-        useBigInt: true,
       },
     },
   },

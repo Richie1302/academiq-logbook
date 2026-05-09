@@ -345,6 +345,10 @@ components:
         week:
           type: ["integer", "null"]
           description: SIWES week number for context
+        mode:
+          type: string
+          enum: [concise, detailed]
+          description: Rewrite mode - concise (2-3 sentences) or detailed (4-6 sentences)
       required:
         - rawActivity
 

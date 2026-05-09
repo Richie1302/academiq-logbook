@@ -1,3 +1,8 @@
+// Database: PostgreSQL via Drizzle ORM (@workspace/db)
+// Authentication: Clerk JWT — requireAuth extracts userId from Clerk session
+// Data storage: user profiles stored in `profiles` table, keyed by userId (primary key)
+// Upsert logic: PUT /profile creates a new profile or updates the existing one atomically
+
 import { Router, type IRouter, type Request, type Response } from "express";
 import { getAuth } from "@clerk/express";
 import { eq } from "drizzle-orm";
@@ -6,12 +11,14 @@ import { GetProfileResponse, UpsertProfileBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
+// Convert Drizzle Date objects to ISO strings before Zod parses the response
 function serializeRow<T extends Record<string, unknown>>(row: T): T {
   return Object.fromEntries(
     Object.entries(row).map(([k, v]) => [k, v instanceof Date ? v.toISOString() : v]),
   ) as T;
 }
 
+// Middleware: extract Clerk userId from JWT; returns 401 if unauthenticated
 const requireAuth = (req: Request, res: Response, next: any) => {
   const auth = getAuth(req);
   const userId = auth?.sessionClaims?.userId || auth?.userId;
@@ -23,7 +30,7 @@ const requireAuth = (req: Request, res: Response, next: any) => {
   next();
 };
 
-// GET /profile
+// GET /profile — retrieve the authenticated user's profile (404 if not yet created)
 router.get("/profile", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const [profile] = await db
@@ -39,7 +46,7 @@ router.get("/profile", requireAuth, async (req: Request, res: Response): Promise
   res.json(GetProfileResponse.parse(serializeRow(profile)));
 });
 
-// PUT /profile
+// PUT /profile — create or update the authenticated user's profile (upsert)
 router.put("/profile", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
   const parsed = UpsertProfileBody.safeParse(req.body);

@@ -5,19 +5,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { KeyRound, Moon, Trash2 } from "lucide-react";
+import { KeyRound, LogOut, Moon, Trash2 } from "lucide-react";
 
 export default function Settings() {
   const { user } = useUser();
   const clerk = useClerk();
   const [, setLocation] = useLocation();
 
+  const handleSignOut = () => {
+    clerk.signOut(() => setLocation("/"));
+  };
+
   const handleDeleteAccount = async () => {
     try {
       await user?.delete();
       setLocation("/");
       toast.success("Account deleted successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete account");
     }
   };
@@ -34,7 +38,7 @@ export default function Settings() {
         <Card className="border-muted/60 shadow-sm">
           <CardHeader>
             <CardTitle>Account</CardTitle>
-            <CardDescription>Manage your security settings.</CardDescription>
+            <CardDescription>Manage your email and security settings.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-muted/10 rounded-lg border">
@@ -51,6 +55,26 @@ export default function Settings() {
               <Button variant="outline" onClick={() => clerk.openUserProfile()} className="w-full sm:w-auto">
                 <KeyRound className="h-4 w-4 mr-2 text-muted-foreground" />
                 Change Password
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sign Out Section */}
+        <Card className="border-muted/60 shadow-sm">
+          <CardHeader>
+            <CardTitle>Session</CardTitle>
+            <CardDescription>Sign out of your account on this device.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/10 rounded-lg border gap-4">
+              <div>
+                <p className="font-medium">Sign Out</p>
+                <p className="text-sm text-muted-foreground">You can sign back in at any time.</p>
+              </div>
+              <Button variant="outline" onClick={handleSignOut} className="w-full sm:w-auto">
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
               </Button>
             </div>
           </CardContent>
@@ -107,7 +131,10 @@ export default function Settings() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
                       Yes, delete my account
                     </AlertDialogAction>
                   </AlertDialogFooter>

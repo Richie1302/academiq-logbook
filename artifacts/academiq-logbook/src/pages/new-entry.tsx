@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
-import { useCreateEntry, useRewriteEntry, getGetRecentEntriesQueryKey, getGetEntryStatsQueryKey } from "@workspace/api-client-react";
+import { useCreateEntry, useRewriteEntry, getGetRecentEntriesQueryKey, getGetEntryStatsQueryKey, getListEntriesQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,42 +9,46 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, Mic, RefreshCcw } from "lucide-react";
+import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, RefreshCcw, AlignLeft, AlignJustify } from "lucide-react";
+
+type RewriteMode = "concise" | "detailed";
 
 export default function NewEntry() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
-  
+
   const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [week, setWeek] = useState("");
   const [rawActivity, setRawActivity] = useState("");
   const [rewritten, setRewritten] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [rewriteMode, setRewriteMode] = useState<RewriteMode>("concise");
 
   const rewriteMutation = useRewriteEntry();
   const createMutation = useCreateEntry();
 
-  const handleRewrite = () => {
+  const handleRewrite = (mode: RewriteMode = rewriteMode) => {
     if (!rawActivity.trim()) {
       toast.error("Please describe your activities first");
       return;
     }
 
     rewriteMutation.mutate(
-      { 
-        data: { 
-          rawActivity, 
+      {
+        data: {
+          rawActivity,
           date,
-          week: week ? parseInt(week, 10) : null 
-        } 
+          week: week ? parseInt(week, 10) : null,
+          mode,
+        }
       },
       {
         onSuccess: (res) => {
           setRewritten(res.rewrittenEntry);
-          toast.success("Activity rewritten successfully!");
+          toast.success("Entry rewritten successfully");
         },
         onError: () => {
-          toast.error("Failed to rewrite activity. Please try again.");
+          toast.error("Failed to rewrite. Please try again.");
         }
       }
     );
@@ -63,7 +67,7 @@ export default function NewEntry() {
           rawActivity,
           rewrittenEntry: rewritten,
           week: week ? parseInt(week, 10) : null,
-          dayOfWeek: format(new Date(date), "EEEE")
+          dayOfWeek: format(new Date(date + "T12:00:00"), "EEEE"),
         }
       },
       {
@@ -71,10 +75,11 @@ export default function NewEntry() {
           toast.success("Entry saved to logbook");
           queryClient.invalidateQueries({ queryKey: getGetRecentEntriesQueryKey() });
           queryClient.invalidateQueries({ queryKey: getGetEntryStatsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
           setLocation("/dashboard");
         },
         onError: () => {
-          toast.error("Failed to save entry");
+          toast.error("Failed to save entry. Please try again.");
         }
       }
     );
@@ -101,10 +106,10 @@ export default function NewEntry() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
             Date
           </Label>
-          <Input 
-            id="date" 
-            type="date" 
-            value={date} 
+          <Input
+            id="date"
+            type="date"
+            value={date}
             onChange={(e) => setDate(e.target.value)}
             className="bg-card"
           />
@@ -114,12 +119,12 @@ export default function NewEntry() {
             <Hash className="h-4 w-4 text-muted-foreground" />
             Week Number <span className="text-muted-foreground font-normal">(Optional)</span>
           </Label>
-          <Input 
-            id="week" 
-            type="number" 
+          <Input
+            id="week"
+            type="number"
             min="1"
-            placeholder="e.g. 4" 
-            value={week} 
+            placeholder="e.g. 4"
+            value={week}
             onChange={(e) => setWeek(e.target.value)}
             className="bg-card"
           />
@@ -134,34 +139,58 @@ export default function NewEntry() {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <Textarea 
+          <Textarea
             placeholder="e.g. Today I arrived at the office by 8am. My supervisor showed me how to use the server deployment tool. I helped configure a new router for the marketing department. Later in the afternoon I observed a database migration."
             className="min-h-[200px] border-0 focus-visible:ring-0 rounded-none resize-none p-6 text-base leading-relaxed bg-transparent"
             value={rawActivity}
             onChange={(e) => setRawActivity(e.target.value)}
           />
         </CardContent>
-        <CardFooter className="bg-muted/20 border-t p-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" disabled title="Voice input coming soon">
-              <Mic className="h-4 w-4" />
+        <CardFooter className="bg-muted/20 border-t p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <p className="text-xs text-muted-foreground">
+            {rawActivity.length} characters
+          </p>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+            {/* Mode toggle */}
+            <div className="flex items-center rounded-lg border border-muted overflow-hidden bg-background text-sm">
+              <button
+                type="button"
+                onClick={() => setRewriteMode("concise")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors font-medium ${
+                  rewriteMode === "concise"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
+              >
+                <AlignLeft className="h-3.5 w-3.5" />
+                Concise
+              </button>
+              <button
+                type="button"
+                onClick={() => setRewriteMode("detailed")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors font-medium ${
+                  rewriteMode === "detailed"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
+              >
+                <AlignJustify className="h-3.5 w-3.5" />
+                Detailed
+              </button>
+            </div>
+            <Button
+              onClick={() => handleRewrite(rewriteMode)}
+              disabled={rewriteMutation.isPending || !rawActivity.trim()}
+              className="shadow-sm group"
+            >
+              {rewriteMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Sparkles className="h-4 w-4 mr-2 text-primary-foreground group-hover:scale-110 transition-transform" />
+              )}
+              {rewriteMutation.isPending ? "Rewriting..." : "Rewrite with AI"}
             </Button>
-            <p className="text-xs text-muted-foreground">
-              {rawActivity.length} characters
-            </p>
           </div>
-          <Button 
-            onClick={handleRewrite} 
-            disabled={rewriteMutation.isPending || !rawActivity.trim()}
-            className="shadow-sm group"
-          >
-            {rewriteMutation.isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Sparkles className="h-4 w-4 mr-2 text-primary-foreground group-hover:scale-110 transition-transform" />
-            )}
-            ✨ Rewrite with AI
-          </Button>
         </CardFooter>
       </Card>
 
@@ -175,27 +204,29 @@ export default function NewEntry() {
                   <Sparkles className="h-5 w-5 text-primary" />
                   Professional Entry
                 </CardTitle>
-                <CardDescription>Ready for your logbook. Feel free to edit.</CardDescription>
+                <CardDescription>
+                  {rewriteMode === "concise" ? "Concise mode · 2-3 sentences" : "Detailed mode · 4-6 sentences"} · Feel free to edit before saving.
+                </CardDescription>
               </div>
               <div className="flex gap-2 self-end sm:self-auto">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleRewrite}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleRewrite(rewriteMode)}
                   className="gap-2"
                   disabled={rewriteMutation.isPending}
                 >
-                  <RefreshCcw className={`h-4 w-4 ${rewriteMutation.isPending ? 'animate-spin' : ''}`} />
+                  <RefreshCcw className={`h-4 w-4 ${rewriteMutation.isPending ? "animate-spin" : ""}`} />
                   Regenerate
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={handleCopy}
                   className="gap-2"
                 >
                   {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  {isCopied ? "Copied" : "Copy Text"}
+                  {isCopied ? "Copied" : "Copy"}
                 </Button>
               </div>
             </div>
@@ -211,18 +242,21 @@ export default function NewEntry() {
       )}
 
       <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 pt-4 border-t">
-        <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="order-3 sm:order-1">Cancel</Button>
-        <Button 
+        <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="order-3 sm:order-1">
+          Cancel
+        </Button>
+        <Button
           variant="outline"
-          onClick={handleSave} 
+          onClick={handleSave}
           disabled={createMutation.isPending || !rawActivity.trim()}
           className="order-2 sm:order-2"
         >
+          {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
           Save Without AI
         </Button>
-        <Button 
-          onClick={handleSave} 
-          disabled={createMutation.isPending || (!rawActivity.trim() && !rewritten)}
+        <Button
+          onClick={handleSave}
+          disabled={createMutation.isPending || !rawActivity.trim()}
           className="gap-2 px-8 order-1 sm:order-3"
           size="lg"
         >

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, PlusCircle, History, BookOpen, User, Settings } from "lucide-react";
+import { LogOut, Home, PlusCircle, History, BookOpen, User } from "lucide-react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
@@ -22,11 +22,19 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-[100dvh] flex flex-col md:flex-row bg-background">
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between p-4 border-b bg-card">
+      <header className="md:hidden flex items-center justify-between p-4 border-b bg-card sticky top-0 z-40">
         <div className="flex items-center gap-2 text-primary font-bold text-xl">
           <BookOpen className="h-6 w-6" />
           <span>AcademiQ</span>
         </div>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5 rounded-lg hover:bg-muted/50"
+          aria-label="Sign out"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Sign out</span>
+        </button>
       </header>
 
       {/* Sidebar (Desktop) / Bottom Nav (Mobile) */}
@@ -35,7 +43,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <BookOpen className="h-8 w-8" />
           <span>AcademiQ</span>
         </div>
-        
+
         <div className="flex-1 flex flex-row md:flex-col w-full justify-around md:justify-start p-2 md:p-4 gap-2">
           {navItems.map((item) => {
             const isActive = location === item.href;
@@ -59,16 +67,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="hidden md:block p-4 border-t">
           <Link href="/settings">
             <div className="flex items-center gap-3 mb-4 px-2 hover:bg-secondary/50 p-2 rounded-lg cursor-pointer transition-colors">
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm">
-                {user?.firstName?.[0] || "U"}
+              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm shrink-0">
+                {user?.firstName?.[0]?.toUpperCase() || "U"}
               </div>
-              <div className="flex flex-col overflow-hidden">
+              <div className="flex flex-col overflow-hidden min-w-0">
                 <span className="text-sm font-medium truncate">{user?.firstName || "Student"}</span>
                 <span className="text-xs text-muted-foreground truncate">{user?.primaryEmailAddress?.emailAddress}</span>
               </div>
             </div>
           </Link>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={handleSignOut}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            onClick={handleSignOut}
+          >
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out
           </Button>
