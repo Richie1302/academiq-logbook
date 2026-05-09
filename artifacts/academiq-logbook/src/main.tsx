@@ -1,21 +1,11 @@
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import "./index.css";
+document.getElementById("root")!.innerHTML = `<div style="padding:32px;font-family:sans-serif;background:white;min-height:100vh">
+  <h1 style="color:green">App is loading...</h1>
+  <p>If you see this, HTML is rendering correctly.</p>
+</div>`;
 
-window.onerror = (msg, src, line, col, err) => {
-  document.body.innerHTML = `<div style="padding:32px;font-family:monospace;color:red;background:white;min-height:100vh">
-    <h2>Runtime Error</h2>
-    <p><b>${msg}</b></p>
-    <p>${src}:${line}:${col}</p>
-    <pre>${err?.stack || ""}</pre>
+import("./bootstrap").catch(err => {
+  document.getElementById("root")!.innerHTML = `<div style="padding:32px;font-family:monospace;color:red;background:white;min-height:100vh">
+    <h2>Bootstrap Error</h2>
+    <pre>${err?.stack || err?.message || String(err)}</pre>
   </div>`;
-};
-
-window.onunhandledrejection = (e) => {
-  document.body.innerHTML = `<div style="padding:32px;font-family:monospace;color:red;background:white;min-height:100vh">
-    <h2>Unhandled Promise Rejection</h2>
-    <pre>${e.reason?.stack || e.reason || "Unknown error"}</pre>
-  </div>`;
-};
-
-createRoot(document.getElementById("root")!).render(<App />);
+});
