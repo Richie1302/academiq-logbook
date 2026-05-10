@@ -43,7 +43,7 @@ export default function Onboarding() {
         return;
       }
       console.log("Submitting profile with token:", session.access_token.substring(0, 20) + "...");
-      const result = await upsertProfile(form);
+      const result = await upsertProfile({ data: form });
       console.log("Profile saved:", result);
       await queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
       toast.success("Profile set up successfully!");

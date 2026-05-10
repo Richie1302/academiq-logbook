@@ -52,7 +52,7 @@ export default function Profile() {
 
   const handleSave = () => {
     upsertMutation.mutate(
-      formData,
+      { data: formData },
       {
         onSuccess: () => {
           toast.success("Profile saved");
