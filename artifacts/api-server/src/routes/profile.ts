@@ -47,14 +47,15 @@ router.put("/profile", requireAuth, async (req: Request, res: Response): Promise
     return;
   }
 
+  const { fullName, email, school, course, siwesCompany, department, siwesDuration } = parsed.data;
   let profile;
   try {
     const result = await db
       .insert(profilesTable)
-      .values({ userId, ...parsed.data })
+      .values({ userId, fullName, email, school, course, siwesCompany, department, siwesDuration })
       .onConflictDoUpdate({
         target: profilesTable.userId,
-        set: { ...parsed.data, updatedAt: new Date() },
+        set: { fullName, email, school, course, siwesCompany, department, siwesDuration, updatedAt: new Date() },
       })
       .returning();
     profile = result[0];
