@@ -50,19 +50,23 @@ export default function Profile() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = () => {
-    upsertMutation.mutate(
-      { data: formData },
-      {
-        onSuccess: () => {
-          toast.success("Profile saved");
-          queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
-        },
-        onError: () => {
-          toast.error("Failed to save profile");
-        }
-      }
-    );
+  const handleSave = async () => {
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) { toast.error("Session expired."); return; }
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/api/profile`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}` },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) throw new Error("Failed to save");
+      toast.success("Profile saved");
+      queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
+    } catch {
+      toast.error("Failed to save profile");
+    }
   };
 
   if (isLoading) {
