@@ -29,9 +29,11 @@ router.get("/profile", requireAuth, async (req: Request, res: Response): Promise
     .where(eq(profilesTable.userId, userId));
 
   if (!profile) {
+    res.set("Cache-Control", "no-store");
     res.status(404).json({ error: "Profile not found" });
     return;
   }
+  res.set("Cache-Control", "no-store");
 
   res.json(GetProfileResponse.parse(serializeRow(profile)));
 });

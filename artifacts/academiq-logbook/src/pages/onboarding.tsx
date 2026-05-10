@@ -35,14 +35,21 @@ export default function Onboarding() {
       return;
     }
     try {
-      console.log("Submitting profile:", form);
+      // Ensure session token is fresh before submitting
+      const { supabase } = await import("@/lib/supabase");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        toast.error("Session expired. Please sign in again.");
+        return;
+      }
+      console.log("Submitting profile with token:", session.access_token.substring(0, 20) + "...");
       const result = await upsertProfile(form);
       console.log("Profile saved:", result);
       await queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
       toast.success("Profile set up successfully!");
       setLocation("/dashboard");
     } catch (err: any) {
-      console.error("Profile save error:", err);
+      console.error("Profile save error:", err?.message, err);
       toast.error(err?.message || "Failed to save profile. Please try again.");
     }
   };
