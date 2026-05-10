@@ -81,7 +81,7 @@ export default function SignUp() {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-1 text-center">Check your email</h2>
-          <p className="text-slate-500 text-center mb-1 text-sm">We sent a 6-digit code to</p>
+          <p className="text-slate-500 text-center mb-1 text-sm">We sent an 8-digit code to</p>
           <p className="text-indigo-600 font-semibold text-center mb-6 text-sm">{email}</p>
           <div className="space-y-4">
             <div className="space-y-2">
