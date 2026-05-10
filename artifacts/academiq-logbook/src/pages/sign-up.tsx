@@ -87,13 +87,13 @@ export default function SignUp() {
             <div className="space-y-2">
               <Label htmlFor="otp">Verification Code</Label>
               <Input
-                id="otp" type="text" inputMode="numeric" maxLength={6}
+                id="otp" type="text" inputMode="numeric" maxLength={8}
                 value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, ""))}
-                placeholder="000000" className="text-center text-2xl font-bold tracking-widest"
+                placeholder="00000000" className="text-center text-2xl font-bold tracking-widest"
                 onKeyDown={e => e.key === "Enter" && handleVerify()}
               />
             </div>
-            <Button className="w-full" onClick={handleVerify} disabled={loading || otp.length < 6}>
+            <Button className="w-full" onClick={handleVerify} disabled={loading || otp.length < 8}>
               {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Verify Account
             </Button>
