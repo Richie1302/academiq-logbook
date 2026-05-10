@@ -51,8 +51,9 @@ function ProtectedRoute({ component: Component, skipOnboarding }: { component: R
   const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({ query: { retry: false, enabled: !!user } });
   if (loading || (!!user && profileLoading)) return null;
   if (!user) return <Redirect to="/" />;
-  // Only redirect to onboarding if profile fetch completed with no data (404 = new user)
-  if (!skipOnboarding && !profileLoading && profileError && !profile) return <Redirect to="/onboarding" />;
+  // Redirect to onboarding if: no profile (404) OR profile exists but has no meaningful data
+  const profileIsEmpty = !profile || (!profile.fullName && !profile.school && !profile.course);
+  if (!skipOnboarding && !profileLoading && profileIsEmpty) return <Redirect to="/onboarding" />;
   return <AppLayout><Component /></AppLayout>;
 }
 
