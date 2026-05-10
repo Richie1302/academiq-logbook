@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { useUpsertProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
+import { getGetProfileQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +14,7 @@ export default function Onboarding() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
-  const { mutateAsync: upsertProfile, isPending } = useUpsertProfile();
+  const [isPending, setIsPending] = useState(false);
 
   const [form, setForm] = useState({
     fullName: user?.user_metadata?.full_name ?? "",
@@ -34,23 +35,34 @@ export default function Onboarding() {
       toast.error("Please fill in all required fields.");
       return;
     }
+    setIsPending(true);
     try {
-      // Ensure session token is fresh before submitting
-      const { supabase } = await import("@/lib/supabase");
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
         toast.error("Session expired. Please sign in again.");
         return;
       }
-      console.log("Submitting profile with token:", session.access_token.substring(0, 20) + "...");
-      const result = await upsertProfile({ data: form });
-      console.log("Profile saved:", result);
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/api/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(form),
+      });
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Failed to save profile");
+      }
       await queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
       toast.success("Profile set up successfully!");
       setLocation("/dashboard");
     } catch (err: any) {
       console.error("Profile save error:", err?.message, err);
       toast.error(err?.message || "Failed to save profile. Please try again.");
+    } finally {
+      setIsPending(false);
     }
   };
 
