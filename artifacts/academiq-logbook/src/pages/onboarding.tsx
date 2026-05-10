@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { useUpsertProfile } from "@workspace/api-client-react";
+import { useUpsertProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
 export default function Onboarding() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
   const { mutateAsync: upsertProfile, isPending } = useUpsertProfile();
 
   const [form, setForm] = useState({
@@ -34,6 +36,7 @@ export default function Onboarding() {
     }
     try {
       await upsertProfile({ body: form });
+      await queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
       toast.success("Profile set up successfully!");
       setLocation("/dashboard");
     } catch {

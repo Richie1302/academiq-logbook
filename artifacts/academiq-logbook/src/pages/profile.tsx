@@ -13,7 +13,7 @@ import { Loader2, Save, User as UserIcon } from "lucide-react";
 export default function Profile() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { data: profile, isLoading } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false } });
+  const { data: profile, isLoading } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false, staleTime: 0 } });
   const upsertMutation = useUpsertProfile();
 
   const [formData, setFormData] = useState({
