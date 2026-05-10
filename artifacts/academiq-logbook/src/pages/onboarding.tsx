@@ -35,12 +35,15 @@ export default function Onboarding() {
       return;
     }
     try {
-      await upsertProfile({ body: form });
+      console.log("Submitting profile:", form);
+      const result = await upsertProfile({ body: form });
+      console.log("Profile saved:", result);
       await queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
       toast.success("Profile set up successfully!");
       setLocation("/dashboard");
-    } catch {
-      toast.error("Failed to save profile. Please try again.");
+    } catch (err: any) {
+      console.error("Profile save error:", err);
+      toast.error(err?.message || "Failed to save profile. Please try again.");
     }
   };
 
