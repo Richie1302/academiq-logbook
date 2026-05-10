@@ -23,7 +23,9 @@ import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 import SignIn from "@/pages/sign-in";
 import SignUp from "@/pages/sign-up";
+import Onboarding from "@/pages/onboarding";
 import { AppLayout } from "@/components/layout";
+import { useGetProfile } from "@workspace/api-client-react";
 
 const queryClient = new QueryClient();
 
@@ -44,10 +46,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
 }
 
-function ProtectedRoute({ component: Component }: { component: React.ComponentType<any> }) {
+function ProtectedRoute({ component: Component, skipOnboarding }: { component: React.ComponentType<any>; skipOnboarding?: boolean }) {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  const { data: profile, isLoading: profileLoading } = useGetProfile({ query: { retry: false, enabled: !!user } });
+  if (loading || (!!user && profileLoading)) return null;
   if (!user) return <Redirect to="/" />;
+  if (!skipOnboarding && !profile) return <Redirect to="/onboarding" />;
   return <AppLayout><Component /></AppLayout>;
 }
 
@@ -69,6 +73,12 @@ function AppRoutes() {
       <Route path="/history">{() => <ProtectedRoute component={History} />}</Route>
       <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
       <Route path="/settings">{() => <ProtectedRoute component={Settings} />}</Route>
+      <Route path="/onboarding">{() => {
+        const { user, loading } = useAuth();
+        if (loading) return null;
+        if (!user) return <Redirect to="/" />;
+        return <Onboarding />;
+      }}</Route>
       <Route component={NotFound} />
     </Switch>
   );
