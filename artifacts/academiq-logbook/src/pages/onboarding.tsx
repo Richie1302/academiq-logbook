@@ -36,7 +36,7 @@ export default function Onboarding() {
     }
     try {
       console.log("Submitting profile:", form);
-      const result = await upsertProfile({ body: form });
+      const result = await upsertProfile(form);
       console.log("Profile saved:", result);
       await queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
       toast.success("Profile set up successfully!");
