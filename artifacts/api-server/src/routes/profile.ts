@@ -41,12 +41,14 @@ router.get("/profile", requireAuth, async (req: Request, res: Response): Promise
 // PUT /profile — create or update the authenticated user's profile (upsert)
 router.put("/profile", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId as string;
+  console.log("PUT /profile req.body:", JSON.stringify(req.body));
   const parsed = UpsertProfileBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
 
+  console.log("PUT /profile parsed.data:", JSON.stringify(parsed.data));
   const { fullName, email, school, course, siwesCompany, department, siwesDuration } = parsed.data;
   let profile;
   try {
