@@ -40,8 +40,8 @@ export default function Profile() {
     } else if (user) {
       setFormData(prev => ({
         ...prev,
-        fullName: prev.fullName || user.fullName || "",
-        email: prev.email || user.primaryEmailAddress?.emailAddress || ""
+        fullName: prev.fullName || user?.user_metadata?.full_name || "",
+        email: prev.email || user?.email || ""
       }));
     }
   }, [profile, user]);
