@@ -48,10 +48,11 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
 
 function ProtectedRoute({ component: Component, skipOnboarding }: { component: React.ComponentType<any>; skipOnboarding?: boolean }) {
   const { user, loading } = useAuth();
-  const { data: profile, isLoading: profileLoading } = useGetProfile({ query: { retry: false, enabled: !!user } });
+  const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({ query: { retry: false, enabled: !!user } });
   if (loading || (!!user && profileLoading)) return null;
   if (!user) return <Redirect to="/" />;
-  if (!skipOnboarding && !profile) return <Redirect to="/onboarding" />;
+  // Only redirect to onboarding if profile fetch completed with no data (404 = new user)
+  if (!skipOnboarding && !profileLoading && profileError && !profile) return <Redirect to="/onboarding" />;
   return <AppLayout><Component /></AppLayout>;
 }
 

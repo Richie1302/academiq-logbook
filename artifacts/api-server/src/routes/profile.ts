@@ -45,14 +45,22 @@ router.put("/profile", requireAuth, async (req: Request, res: Response): Promise
     return;
   }
 
-  const [profile] = await db
-    .insert(profilesTable)
-    .values({ userId, ...parsed.data })
-    .onConflictDoUpdate({
-      target: profilesTable.userId,
-      set: { ...parsed.data, updatedAt: new Date() },
-    })
-    .returning();
+  let profile;
+  try {
+    const result = await db
+      .insert(profilesTable)
+      .values({ userId, ...parsed.data })
+      .onConflictDoUpdate({
+        target: profilesTable.userId,
+        set: { ...parsed.data, updatedAt: new Date() },
+      })
+      .returning();
+    profile = result[0];
+  } catch (err: any) {
+    console.error("Profile upsert error:", err?.message, err?.cause);
+    res.status(500).json({ error: err?.message || "Failed to save profile" });
+    return;
+  }
 
   res.json(GetProfileResponse.parse(serializeRow(profile)));
 });
