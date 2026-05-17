@@ -180,7 +180,18 @@ router.post("/entries/rewrite", requireAuth, async (req: Request, res: Response)
     return;
   }
 
-  const { rawActivity, date, week, mode = "concise" } = parsed.data;
+  const { date, week, mode = "concise" } = parsed.data;
+
+  // Sanitize and limit raw input to prevent prompt injection
+  const rawActivity = parsed.data.rawActivity
+    .slice(0, 1000)
+    .replace(/[<>]/g, "")
+    .trim();
+
+  if (rawActivity.length < 5) {
+    res.status(400).json({ error: "Activity description is too short." });
+    return;
+  }
 
   const openai = new OpenAI({
     baseURL: "https://api.groq.com/openai/v1",

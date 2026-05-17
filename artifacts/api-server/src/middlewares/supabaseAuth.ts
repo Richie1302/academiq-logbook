@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-  "https://xqbzrvcwfgqrvfelbtdr.supabase.co",
+  process.env.SUPABASE_URL ?? "https://xqbzrvcwfgqrvfelbtdr.supabase.co",
   process.env.SUPABASE_ANON_KEY!
 );
 
