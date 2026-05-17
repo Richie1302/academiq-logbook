@@ -84,8 +84,8 @@ router.post("/entries", requireAuth, async (req: Request, res: Response): Promis
       .returning();
     entry = result[0];
   } catch (err: any) {
-    console.error("DB insert error:", err?.message, err?.cause, JSON.stringify(err));
-    res.status(500).json({ error: err?.message || "Database error" });
+    console.error("[DB_INSERT_ERROR]", err?.message, err?.code);
+    res.status(500).json({ error: "Failed to create entry. Please try again." });
     return;
   }
 

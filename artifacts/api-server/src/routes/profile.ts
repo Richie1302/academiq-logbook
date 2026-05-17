@@ -60,8 +60,8 @@ router.put("/profile", requireAuth, async (req: Request, res: Response): Promise
       .returning();
     profile = result[0];
   } catch (err: any) {
-    console.error("Profile upsert error:", err?.message, err?.cause);
-    res.status(500).json({ error: err?.message || "Failed to save profile" });
+    console.error("[PROFILE_UPSERT_ERROR]", err?.message, err?.code);
+    res.status(500).json({ error: "Failed to save profile. Please try again." });
     return;
   }
 
