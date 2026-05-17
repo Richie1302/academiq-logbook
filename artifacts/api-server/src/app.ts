@@ -2,6 +2,7 @@ import express, { type Express, type Request, type Response, type NextFunction }
 import cors from "cors";
 import pinoHttp from "pino-http";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -26,6 +27,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:5173',
 ];
 
+app.use(helmet());
 app.use(cors({
   credentials: true,
   origin: (origin, callback) => {
