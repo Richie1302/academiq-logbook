@@ -63,6 +63,7 @@
 
 /* LIGHT MODE */
 :root {
+  --hero-bg: linear-gradient(180deg, oklch(0.97 0.025 280) 0%, oklch(0.985 0.01 280) 100%);
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
 
