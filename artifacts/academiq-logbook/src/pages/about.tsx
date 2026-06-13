@@ -16,7 +16,7 @@ function Nav() {
         <Link href="/sign-in"><span className="hidden cursor-pointer text-sm font-medium sm:block">Sign in</span></Link>
         <Link href="/sign-up">
           <button className="rounded-lg bg-gradient-to-b from-violet-500 to-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30">
-            Get started free
+            Get started — it's free
           </button>
         </Link>
       </div>
@@ -29,25 +29,25 @@ const values = [
     icon: Heart,
     color: "bg-red-100 text-red-500",
     title: "Built with empathy",
-    desc: "We remember what SIWES stress felt like. Every feature is designed to remove friction, not add to it. We build for students, not for ourselves.",
+    desc: "We remember what SIWES stress actually feels like. Every feature we ship is about removing friction, not adding more. We build for students — full stop.",
   },
   {
     icon: Shield,
     color: "bg-emerald-100 text-emerald-600",
     title: "Privacy first",
-    desc: "Your logbook is yours. We encrypt everything, never sell your data, and give you full control to export or delete at any time.",
+    desc: "Your logbook belongs to you. We encrypt everything, never sell your data, and you can export or delete everything whenever you want.",
   },
   {
     icon: Target,
     color: "bg-violet-100 text-violet-600",
     title: "Focused on Africa",
-    desc: "AcademiQ isn't a global tool adapted for Nigeria — it's built from scratch for the Nigerian university system, SIWES standards, and African students.",
+    desc: "AcademiQ isn't a Western tool with a Nigerian flag slapped on it. It's built from scratch for the Nigerian university system, SIWES standards, and African students.",
   },
   {
     icon: Lightbulb,
     color: "bg-amber-100 text-amber-600",
     title: "Always improving",
-    desc: "We ship updates weekly based on student feedback. If something isn't working for you, we want to know — and we'll fix it fast.",
+    desc: "We push updates every week based on what students tell us. If something's broken or confusing, tell us — we'll fix it fast.",
   },
 ];
 
@@ -62,21 +62,21 @@ const team = [
   {
     name: "Caleb Ogundiran",
     role: "Founder & CEO",
-    bio: "Cybersecurity graduate and full-stack developer. Built AcademiQ after watching his coursemates struggle with SIWES logbooks every single year.",
+    bio: "Cybersecurity grad, full-stack developer, and the person who got tired of watching classmates stress about logbooks every single year. So he built the fix.",
     img: "/avatar-femi.jpg",
     tag: "Builder",
   },
   {
     name: "Product Team",
     role: "Design & Engineering",
-    bio: "A small, focused team of developers and designers passionate about EdTech and building products that actually solve African student problems.",
+    bio: "A small, tight team of developers and designers who care about building things that actually work for African students — not just looking like they do.",
     img: "/avatar-chinedu.jpg",
     tag: "Engineers",
   },
   {
     name: "Student Council",
     role: "Community & Feedback",
-    bio: "A group of active SIWES students across 10+ universities who test every feature, report bugs, and shape the product roadmap.",
+    bio: "Active SIWES students from 10+ universities across Nigeria who test every feature, catch bugs early, and help decide what we build next.",
     img: "/avatar-ngozi.jpg",
     tag: "Community",
   },
@@ -90,13 +90,13 @@ export default function About() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pb-16 pt-12 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-          ABOUT ACADEMIQ
+          About AcademiQ
         </span>
         <h1 className="mt-5 text-5xl font-bold tracking-tight md:text-6xl">
           We exist to make <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">SIWES stress-free</span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground leading-relaxed">
-          AcademiQ was born from a simple frustration — Nigerian university students are brilliant, hardworking, and talented. But every year, thousands of them struggle with one avoidable problem: keeping up with their SIWES logbook. We decided to fix that.
+          AcademiQ started with a frustration — Nigerian students are sharp, hardworking, and capable. But every year, so many of them get tripped up by something completely avoidable: the SIWES logbook. We decided to do something about it.
         </p>
       </section>
 
@@ -105,20 +105,20 @@ export default function About() {
         <div className="mx-auto max-w-5xl px-6">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">OUR STORY</p>
-              <h2 className="mt-3 text-3xl font-bold leading-snug">Started by a student who lived the problem</h2>
+              <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">Our story</p>
+              <h2 className="mt-3 text-3xl font-bold leading-snug">Started by someone who lived through it</h2>
               <div className="mt-5 space-y-4 text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  AcademiQ was founded by Caleb Ogundiran, a Cybersecurity graduate from Caleb University Lagos. During his own SIWES placement, Caleb watched his coursemates — and himself — scramble to fill in weeks of missing logbook entries the night before submission deadlines.
+                  Caleb Ogundiran founded AcademiQ after going through SIWES himself at Caleb University Lagos. He watched his coursemates — and honestly, himself too — rush to fill in weeks of missing entries the night before submission.
                 </p>
                 <p>
-                  The entries were rushed, poorly written, and nowhere near reflective of the actual work done. Supervisors weren't impressed. Students were stressed. And nobody was learning from the experience the way they should have been.
+                  The entries were rushed, badly written, and didn't reflect anything close to the actual work done. Supervisors weren't impressed. Students were stressed. And no one was getting any real value from the experience.
                 </p>
                 <p>
-                  Caleb believed that if students just had a tool that made daily logging quick and easy — one that understood the SIWES context and helped them express their work professionally — the entire experience would transform. So he built it.
+                  Caleb figured that if students had a tool that made daily logging genuinely quick and easy — one that actually understood SIWES — the whole experience would be different. So he built it.
                 </p>
                 <p>
-                  AcademiQ launched in 2024 and has since helped over 10,000 students across Nigeria write better logbooks, reduce SIWES stress, and impress their supervisors.
+                  AcademiQ launched in 2024. Since then, over 10,000 students across Nigeria have used it to write better logbooks, stress less, and actually impress their supervisors.
                 </p>
               </div>
             </div>
@@ -138,12 +138,12 @@ export default function About() {
 
       {/* Mission */}
       <section className="mx-auto max-w-4xl px-6 py-16 text-center">
-        <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">OUR MISSION</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">Our mission</p>
         <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-          To give every African student the tools to document their growth professionally
+          To give every African student the tools they need to document their journey properly
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground leading-relaxed">
-          SIWES is one of the most important parts of a Nigerian student's university journey. It's where classroom theory meets real-world practice. AcademiQ's mission is to make sure that experience is properly captured, professionally documented, and genuinely reflected upon — by every student, at every university, across Africa.
+          SIWES is where everything clicks — classroom theory finally meets real-world practice. AcademiQ exists to make sure that experience gets properly captured, professionally documented, and genuinely reflected on. Not just at one school. Every student, every university, across Africa.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm">
           {[
@@ -163,7 +163,7 @@ export default function About() {
       {/* Values */}
       <section className="border-t border-slate-200 bg-white py-16">
         <div className="mx-auto max-w-5xl px-6">
-          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-violet-600">OUR VALUES</p>
+          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-violet-600">What we believe</p>
           <h2 className="mb-10 text-center text-3xl font-bold">What we stand for</h2>
           <div className="grid gap-5 md:grid-cols-2">
             {values.map((v) => (
@@ -181,8 +181,8 @@ export default function About() {
 
       {/* Team */}
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-violet-600">THE TEAM</p>
-        <h2 className="mb-10 text-center text-3xl font-bold">The people behind AcademiQ</h2>
+        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-violet-600">The team</p>
+        <h2 className="mb-10 text-center text-3xl font-bold">The people behind it</h2>
         <div className="grid gap-6 md:grid-cols-3">
           {team.map((t) => (
             <div key={t.name} className="rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm">
@@ -200,17 +200,17 @@ export default function About() {
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
           <Heart className="mx-auto h-10 w-10 text-white/80" />
-          <h2 className="mt-4 text-3xl font-bold text-white">Be part of the story</h2>
-          <p className="mt-2 text-sm text-white/80">Join 10,000+ students already using AcademiQ to ace their SIWES.</p>
+          <h2 className="mt-4 text-3xl font-bold text-white">Be part of it</h2>
+          <p className="mt-2 text-sm text-white/80">Over 10,000 students are already writing better logbooks. Come join them.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href="/sign-up">
               <button className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">
-                Get started free <ArrowRight className="h-4 w-4" />
+                Get started — it's free <ArrowRight className="h-4 w-4" />
               </button>
             </Link>
             <Link href="/contact">
               <button className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-6 py-3 text-sm font-semibold text-white">
-                Contact us
+                Reach out
               </button>
             </Link>
           </div>

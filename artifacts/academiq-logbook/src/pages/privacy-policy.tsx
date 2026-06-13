@@ -29,17 +29,17 @@ const sections = [
     icon: UserCheck,
     color: "bg-violet-100 text-violet-600",
     title: "1. Who We Are",
-    content: `AcademiQ ("we", "us", or "our") is an AI-powered SIWES logbook platform developed and operated by AcademiQ Technologies. Our registered address and primary contact email is hello@academiq.app.
+    content: `AcademiQ is an AI-powered SIWES logbook platform built and run by AcademiQ Technologies. If you ever need to reach us directly, you can do so at hello@academiq.app.
 
-We are committed to protecting your personal data and respecting your privacy in accordance with the Nigeria Data Protection Regulation (NDPR) 2019, the Nigeria Data Protection Act (NDPA) 2023, and other applicable data protection laws.
+We take your privacy seriously. This policy is written to be honest and clear — not to bury things in fine print. We follow the Nigeria Data Protection Regulation (NDPR) 2019 and the Nigeria Data Protection Act (NDPA) 2023.
 
-By using AcademiQ, you agree to the collection and use of your information as described in this Privacy Policy.`,
+Using AcademiQ means you're okay with us collecting and using your information the way we describe here.`,
   },
   {
     icon: Eye,
     color: "bg-blue-100 text-blue-600",
     title: "2. Information We Collect",
-    content: `We collect the following categories of personal data when you use AcademiQ:
+    content: `Here's what we collect when you use AcademiQ:
 
 **Account Information**
 When you register, we collect your name, email address, and password (stored in encrypted form). You may also optionally provide your university, department, course, and SIWES placement details.
@@ -59,7 +59,7 @@ We do not collect sensitive personal data such as financial information, nationa
     icon: Shield,
     color: "bg-emerald-100 text-emerald-600",
     title: "3. How We Use Your Information",
-    content: `We use your personal data only for the following purposes:
+    content: `We use your data only for these things — nothing else:
 
 • **To provide our service** — Creating and managing your account, generating AI logbook entries, storing your logbook history, and enabling PDF export.
 
@@ -77,7 +77,7 @@ We do not use your logbook content to train AI models without your explicit cons
     icon: Globe,
     color: "bg-amber-100 text-amber-600",
     title: "4. Legal Basis for Processing",
-    content: `Under the NDPA 2023 and NDPR 2019, we process your personal data on the following legal bases:
+    content: `Under Nigerian data protection law, here's the legal basis for why we process your data:
 
 • **Contractual necessity** — Processing required to deliver the AcademiQ service you signed up for.
 
@@ -93,7 +93,7 @@ We do not use your logbook content to train AI models without your explicit cons
     title: "5. Data Storage & Security",
     content: `Your data is stored on secure, enterprise-grade cloud infrastructure hosted within certified, access-controlled data centres.
 
-We implement the following security measures to protect your data:
+Here's what we do to keep your data safe:
 
 • End-to-end encryption for all data in transit (TLS 1.2+/HTTPS)
 • Encryption at rest for all stored data
@@ -102,7 +102,7 @@ We implement the following security measures to protect your data:
 • Regular security audits and vulnerability assessments
 • Automatic backups and disaster recovery procedures
 
-Despite these measures, no system is 100% secure. If we become aware of a data breach that affects your personal information, we will notify you and the relevant authorities within 72 hours as required by law.`,
+No system is completely unbreakable — but we do everything we can. If something ever goes wrong and your data is affected, we'll let you know and notify the relevant authorities within 72 hours, as required by law.`,
   },
   {
     icon: RefreshCw,
@@ -110,9 +110,9 @@ Despite these measures, no system is 100% secure. If we become aware of a data b
     title: "6. Data Sharing & Third Parties",
     content: `We do not sell your personal data to third parties. Ever.
 
-We share data only with a small number of trusted third-party service providers, strictly to operate and deliver the AcademiQ platform. These providers are contractually bound to process your data only on our instructions, to maintain appropriate security standards, and to comply with applicable data protection law.
+We share your data with a small number of trusted providers — and only because we need them to run AcademiQ. Every one of them is contractually required to protect your data and follow data protection law.
 
-The categories of providers we work with include:
+Here's who we work with and why:
 
 • **Authentication & database infrastructure** — Secure cloud services that store your account data and logbook entries with encryption at rest and in transit.
 
@@ -130,7 +130,7 @@ We may disclose your information if required to do so by law, court order, or a 
     icon: Lock,
     color: "bg-orange-100 text-orange-500",
     title: "7. Your Rights",
-    content: `Under the NDPA 2023 and NDPR 2019, you have the following rights regarding your personal data:
+    content: `Under Nigerian data protection law, here are your rights:
 
 • **Right of access** — You may request a copy of the personal data we hold about you at any time.
 
@@ -144,13 +144,13 @@ We may disclose your information if required to do so by law, court order, or a 
 
 • **Right to withdraw consent** — Where processing is based on consent, you may withdraw it at any time.
 
-To exercise any of these rights, email us at hello@academiq.app with the subject line "Data Rights Request". We will respond within 30 days.`,
+To use any of these rights, email us at hello@academiq.app with the subject line "Data Rights Request". We'll respond within 30 days.`,
   },
   {
     icon: Trash2,
     color: "bg-red-100 text-red-500",
     title: "8. Data Retention",
-    content: `We retain your personal data for as long as your account is active or as necessary to provide our services.
+    content: `We keep your data for as long as your account is open or as long as we need it to run the service.
 
 If you delete your account:
 • Your logbook entries and profile data are permanently deleted within 30 days
@@ -177,14 +177,12 @@ You can manage cookie preferences through your browser settings. Disabling essen
     icon: RefreshCw,
     color: "bg-cyan-100 text-cyan-600",
     title: "10. Changes to This Policy",
-    content: `We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements.
-
-When we make material changes, we will:
+    content: `We'll update this policy when things change. When we make significant changes, we'll:
 • Update the "Last updated" date at the top of this page
 • Notify you by email if the changes significantly affect your rights
 • Display a notice on the platform
 
-Your continued use of AcademiQ after the effective date of any changes constitutes your acceptance of the updated policy.`,
+If you keep using AcademiQ after a policy update, it means you're okay with the changes.`,
   },
 ];
 
@@ -203,7 +201,7 @@ export default function PrivacyPolicy() {
           Last updated: <strong>June 2025</strong> · Effective date: <strong>June 1, 2025</strong>
         </p>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-          Your privacy matters to us. This policy explains what data we collect, how we use it, and the rights you have over it — in plain English, not legal jargon.
+          Your privacy matters to us. This page explains what data we collect, how we use it, and what rights you have over it — in plain language, not lawyer-speak.
         </p>
       </section>
 
@@ -251,8 +249,8 @@ export default function PrivacyPolicy() {
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
           <Mail className="mx-auto h-10 w-10 text-white/80" />
-          <h2 className="mt-4 text-2xl font-bold text-white">Questions about your privacy?</h2>
-          <p className="mt-2 text-sm text-white/80">Our Data Protection Officer is available to help. Reach out anytime.</p>
+          <h2 className="mt-4 text-2xl font-bold text-white">Got a question about your privacy?</h2>
+          <p className="mt-2 text-sm text-white/80">Just ask. We're happy to explain anything here in plain terms.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a href="mailto:hello@academiq.app">
               <button className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">

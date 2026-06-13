@@ -16,7 +16,7 @@ function Nav() {
         <Link href="/sign-in"><span className="hidden cursor-pointer text-sm font-medium sm:block">Sign in</span></Link>
         <Link href="/sign-up">
           <button className="rounded-lg bg-gradient-to-b from-violet-500 to-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30">
-            Get started free
+            Create your free account
           </button>
         </Link>
       </div>
@@ -54,13 +54,13 @@ export default function Reviews() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pb-16 pt-12 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-          STUDENT REVIEWS
+          Student reviews
         </span>
         <h1 className="mt-5 text-5xl font-bold tracking-tight md:text-6xl">
           Loved by students <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">across Nigeria</span>
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-          Real reviews from real SIWES students. No paid testimonials, no fake stars.
+          Real students, real placements, real results. No paid reviews, no made-up stars.
         </p>
       </section>
 
@@ -68,9 +68,9 @@ export default function Reviews() {
       <section className="border-y border-slate-200 bg-white py-10">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-6 md:grid-cols-4">
           {[
-            { icon: Users, val: "10,000+", label: "Active students", color: "text-violet-600" },
+            { icon: Users, val: "10,000+", label: "Students active right now", color: "text-violet-600" },
             { icon: Star, val: "4.9 / 5", label: "Average rating", color: "text-amber-500" },
-            { icon: ThumbsUp, val: "98%", label: "Would recommend", color: "text-emerald-600" },
+            { icon: ThumbsUp, val: "98%", label: "Would recommend to a friend", color: "text-emerald-600" },
             { icon: Award, val: "1,200+", label: "Verified reviews", color: "text-blue-600" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3">
@@ -109,11 +109,11 @@ export default function Reviews() {
       {/* CTA */}
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
-          <h2 className="text-3xl font-bold text-white">Join 10,000+ satisfied students</h2>
-          <p className="mt-2 text-sm text-white/80">Start free. No credit card needed.</p>
+          <h2 className="text-3xl font-bold text-white">Come join them</h2>
+          <p className="mt-2 text-sm text-white/80">It's free to start. No card required.</p>
           <Link href="/sign-up">
             <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">
-              Get started free <ArrowRight className="h-4 w-4" />
+              Create your free account <ArrowRight className="h-4 w-4" />
             </button>
           </Link>
         </div>

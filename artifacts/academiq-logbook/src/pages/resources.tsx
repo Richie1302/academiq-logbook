@@ -117,19 +117,19 @@ export default function Resources() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pb-16 pt-12 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-          RESOURCES
+          Resources
         </span>
         <h1 className="mt-5 text-5xl font-bold tracking-tight md:text-6xl">
           Everything you need to <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">ace SIWES</span>
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-          Free guides, templates, sample entries, and tools to help Nigerian students get the most out of their industrial training.
+          Free guides, templates, and sample entries to help you stop stressing about your logbook and actually make the most of your SIWES.
         </p>
       </section>
 
       {/* Guides grid */}
       <section className="mx-auto max-w-6xl px-6 pb-16">
-        <h2 className="mb-6 text-2xl font-bold">Guides & Articles</h2>
+        <h2 className="mb-6 text-2xl font-bold">Guides & articles</h2>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {guides.map((g) => (
             <div key={g.title} className="group cursor-pointer rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-violet-200">
@@ -150,7 +150,7 @@ export default function Resources() {
       {/* Downloads */}
       <section className="border-y border-slate-200 bg-white py-14">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="mb-6 text-2xl font-bold">Free Downloads</h2>
+          <h2 className="mb-6 text-2xl font-bold">Free downloads</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {downloads.map((d) => (
               <div key={d.title} className="flex items-center justify-between rounded-xl border border-slate-100 p-4 hover:border-violet-200 transition cursor-pointer">
@@ -174,7 +174,7 @@ export default function Resources() {
       <section className="mx-auto max-w-3xl px-6 py-16">
         <div className="mb-8 flex items-center gap-3">
           <HelpCircle className="h-6 w-6 text-violet-500" />
-          <h2 className="text-2xl font-bold">Common SIWES Questions</h2>
+          <h2 className="text-2xl font-bold">Questions students always ask</h2>
         </div>
         <div className="space-y-4">
           {faqs.map((f) => (
@@ -190,11 +190,11 @@ export default function Resources() {
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
           <BookOpen className="mx-auto h-10 w-10 text-white/80" />
-          <h2 className="mt-4 text-3xl font-bold text-white">Ready to start your logbook?</h2>
-          <p className="mt-2 text-sm text-white/80">All the resources above are free. AcademiQ is free to start too.</p>
+          <h2 className="mt-4 text-3xl font-bold text-white">Ready to actually start?</h2>
+          <p className="mt-2 text-sm text-white/80">Everything above is free. AcademiQ is free to start too.</p>
           <Link href="/sign-up">
             <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">
-              Create free account <ArrowRight className="h-4 w-4" />
+              Create your free account <ArrowRight className="h-4 w-4" />
             </button>
           </Link>
         </div>

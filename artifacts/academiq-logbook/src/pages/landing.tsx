@@ -202,7 +202,7 @@ function Hero() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 pb-24 pt-10 md:grid-cols-2 md:gap-6 md:pt-16">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700 backdrop-blur">
-            <Plus className="h-3 w-3" /> AI-POWERED. SUPERVISOR APPROVED.
+            <Plus className="h-3 w-3" /> AI-powered. Supervisor approved.
           </span>
           <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight text-foreground md:text-6xl">
             Your SIWES <br /> logbook,{" "}
@@ -235,21 +235,21 @@ function Hero() {
   );
 }
 
-/* ---------- HOW IT WORKS ---------- */
+/* ---------- How it works ---------- */
 
 function HowItWorks() {
   const steps = [
-    { n: "01", icon: Pencil, color: "bg-violet-100 text-violet-600", t: "Write like you talk", d: "Jot down what you did today in plain English. No grammar stress, specifically for SIWES." },
-    { n: "02", icon: Sparkles, color: "bg-blue-100 text-blue-600", t: "AI does the heavy lifting", d: "Our AI structures, formats, and enhances your entry into a supervisor-ready report." },
-    { n: "03", icon: Download, color: "bg-emerald-100 text-emerald-600", t: "Save, export, repeat", d: "Download polished reports in one click and keep your SIWES logbook on track." },
+    { n: "01", icon: Pencil, color: "bg-violet-100 text-violet-600", t: "Write like you talk", d: "Type out what you did today in plain English. No formatting, no grammar stress — just write." },
+    { n: "02", icon: Sparkles, color: "bg-blue-100 text-blue-600", t: "The AI handles the rest", d: "It takes your rough note and turns it into something your supervisor will actually be impressed by." },
+    { n: "03", icon: Download, color: "bg-emerald-100 text-emerald-600", t: "Save it, export it, move on", d: "One click and your logbook entry is done. Export the whole thing as a PDF whenever you need it." },
   ];
   return (
     <section className="py-24" style={{ background: "var(--hero-bg)" }}>
       <div className="mx-auto max-w-6xl px-6 text-center">
         <p className="mb-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-violet-600">
-          <Plus className="h-3 w-3" /> HOW IT WORKS
+          <Plus className="h-3 w-3" /> How it works
         </p>
-        <h2 className="text-4xl font-bold tracking-tight md:text-5xl">Three steps. Done.</h2>
+        <h2 className="text-4xl font-bold tracking-tight md:text-5xl">Three steps and you're done.</h2>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
             <div key={s.n} className="relative rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
@@ -276,8 +276,8 @@ function Features() {
   return (
     <section className="py-24" style={{ background: "var(--hero-bg)" }}>
       <div className="mx-auto max-w-6xl px-6 text-center">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-600">BUILT FOR SIWES, END TO END</p>
-        <h2 className="text-4xl font-bold tracking-tight md:text-5xl">Everything you need, built for SIWES.</h2>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-600">Built for SIWES, end to end</p>
+        <h2 className="text-4xl font-bold tracking-tight md:text-5xl">Everything you need — built specifically for SIWES.</h2>
         <div className="mt-14 grid gap-5 md:grid-cols-3">
           <div className="row-span-2 rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
             <h3 className="text-lg font-bold">AI Writing Engine</h3>
@@ -344,13 +344,13 @@ function DemoPanel() {
       <Sphere className="right-24 bottom-32" size={70} />
       <div className="relative mx-auto max-w-5xl rounded-3xl border border-white/60 bg-white/70 p-10 shadow-[0_30px_80px_-20px_rgba(99,77,255,0.25)] backdrop-blur-xl">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">TRY IT YOURSELF</p>
-          <h2 className="mt-2 text-3xl font-bold md:text-4xl">See AcademiQ in action</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Type a simple note and watch AI turn it into a professional SIWES entry.</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">Try it yourself</p>
+          <h2 className="mt-2 text-3xl font-bold md:text-4xl">See it in action</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Type a rough note. Watch what happens.</p>
         </div>
         <div className="mt-8 grid items-start gap-8 md:grid-cols-2">
           <div className="rounded-xl border bg-white p-5 shadow-sm">
-            <p className="text-sm font-semibold">Your note (plain English)</p>
+            <p className="text-sm font-semibold">What you actually wrote</p>
             <div className="mt-3 rounded-lg border bg-slate-50 p-3 text-sm text-foreground/80">
               Today I worked on API integration for the inventory system. I connected the frontend to the backend and fixed some bugs.
             </div>
@@ -363,12 +363,12 @@ function DemoPanel() {
             <div className="absolute -left-10 top-1/2 hidden h-8 w-8 -translate-y-1/2 place-items-center rounded-full border bg-white shadow md:grid">
               <Plus className="h-4 w-4 text-violet-500" />
             </div>
-            <p className="text-sm font-semibold">AI generated SIWES entry</p>
+            <p className="text-sm font-semibold">What AcademiQ turns it into</p>
             <div className="mt-3 rounded-lg border bg-slate-50 p-3 text-sm text-foreground/80">
               I worked on the integration of the inventory system. I connected the frontend interface to the backend services, ensuring smooth data flow between components. I also identified, diagnosed, and fixed several bugs to improve system functionality and performance.
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              {["Professional tone", "Well structured", "Supervisor ready"].map((t) => (
+              {["Sounds professional", "Well structured", "Supervisor-ready"].map((t) => (
                 <span key={t} className="rounded-md bg-violet-100 px-2 py-1 text-[10px] font-medium text-violet-700">{t}</span>
               ))}
             </div>
@@ -390,15 +390,15 @@ function Testimonials() {
   return (
     <section className="py-20" style={{ background: "var(--hero-bg)" }}>
       <div className="mx-auto max-w-6xl px-6 text-center">
-        <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">TRUSTED BY THOUSANDS OF STUDENTS</p>
-        <h2 className="mt-2 text-3xl font-bold md:text-4xl">Loved by students. Approved by supervisors.</h2>
+        <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">What students are saying</p>
+        <h2 className="mt-2 text-3xl font-bold md:text-4xl">Real students. Real results.</h2>
         <div className="mt-12 grid gap-5 md:grid-cols-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm">
             <div className="grid h-10 w-10 place-items-center rounded-full bg-violet-100 text-violet-600">
               <Star className="h-5 w-5" />
             </div>
             <p className="mt-4 text-3xl font-bold text-violet-600">10,000+</p>
-            <p className="text-xs text-muted-foreground">Students trust AcademiQ</p>
+            <p className="text-xs text-muted-foreground">Students using AcademiQ</p>
             <div className="mt-6 flex gap-0.5 text-amber-400">
               {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}
             </div>
@@ -439,17 +439,17 @@ function FinalCTA() {
         <div className="relative grid items-center gap-8 md:grid-cols-2">
           <div>
             <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-violet-600">
-              <Plus className="h-3 w-3" /> JOIN 10,000+ SIWES STUDENTS
+              <Plus className="h-3 w-3" /> Join 10,000+ students
             </p>
             <h2 className="mt-3 text-3xl font-bold leading-tight md:text-4xl">
               Your supervisor will <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">notice</span><br />
               the difference.
             </h2>
-            <p className="mt-3 text-sm text-muted-foreground">Start writing better, more professional SIWES reports today.</p>
+            <p className="mt-3 text-sm text-muted-foreground">Stop putting it off. Start writing entries you're actually proud of.</p>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <Link href="/sign-up">
                 <button className="rounded-xl bg-gradient-to-b from-violet-500 to-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-lg">
-                  Generate your first entry free
+                  Write your first entry — it's free
                 </button>
               </Link>
               <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
@@ -520,7 +520,7 @@ function Footer() {
             </div>
             <span className="text-lg font-bold">AcademiQ</span>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">AI-Powered SIWES Logbook</p>
+          <p className="mt-2 text-xs text-muted-foreground">AI-powered SIWES logbook</p>
         </div>
         {cols.map((c) => (
           <div key={c.h}>

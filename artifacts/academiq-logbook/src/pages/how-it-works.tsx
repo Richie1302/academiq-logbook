@@ -30,36 +30,36 @@ const steps = [
     icon: Pencil,
     color: "bg-violet-100 text-violet-600",
     title: "Write what you did",
-    desc: "Open AcademiQ and type out your day's activities in plain, everyday English — just like you'd explain it to a friend. No special formatting, no technical jargon required. Mention the tasks you completed, the tools you used, any challenges you faced, and what you learned.",
-    tip: "💡 Tip: Even a rough 3-sentence note is enough for AcademiQ to work with.",
+    desc: "Open AcademiQ and type out what you did — just like you'd tell a friend. No special format, no jargon. Just say the tasks you did, the tools you used, any issues you ran into, and what you picked up from it.",
+    tip: "💡 Even three rough sentences is enough. Seriously.",
     example: `"Today I worked on API integration for the inventory module. Connected the frontend to the backend and fixed a few bugs that were causing data mismatches."`,
   },
   {
     n: "02",
     icon: Sparkles,
     color: "bg-blue-100 text-blue-600",
-    title: "AI enhances your entry",
-    desc: "Our AI engine — trained specifically on SIWES logbook standards — takes your rough note and transforms it into a structured, professional entry. It expands your points, applies correct technical terminology, improves grammar, and formats everything to match what Nigerian supervisors expect.",
-    tip: "💡 Tip: You can edit the generated entry before saving if you want to personalise it further.",
+    title: "The AI cleans it up",
+    desc: "Our AI — built specifically around SIWES standards — takes that rough note and turns it into a proper entry. It fills out your points, adds the right technical language, fixes the grammar, and formats everything the way Nigerian supervisors want to see it.",
+    tip: "💡 Not 100% happy with it? Edit it before saving. You're always in control.",
     example: `"I worked on the integration of the inventory management module by connecting the frontend interface to the backend REST API endpoints. I identified and resolved several data mismatch bugs that were arising from incorrect field mapping between the request and response objects..."`,
   },
   {
     n: "03",
     icon: Download,
     color: "bg-emerald-100 text-emerald-600",
-    title: "Export, submit, repeat",
-    desc: "Once you're happy with your entry, save it to your logbook. At the end of your SIWES period — or anytime your supervisor requests — export your entire logbook as a clean, well-formatted PDF with one click. Submit it confidently, knowing it meets professional standards.",
-    tip: "💡 Tip: Build a daily habit. Just 5 minutes each evening keeps your logbook complete.",
+    title: "Export it and you're done",
+    desc: "Once it looks good, save it. When your supervisor asks for your logbook — or when it's submission time — export everything as a clean PDF in one click. No scrambling, no rushing.",
+    tip: "💡 Five minutes before bed. That's all it takes to never fall behind again.",
     example: null,
   },
 ];
 
 const faqs = [
-  { q: "Is AcademiQ free to use?", a: "Yes! AcademiQ has a free tier that lets you create and export up to 30 logbook entries per month — more than enough for most SIWES students. Premium plans unlock unlimited entries and additional features." },
-  { q: "Will my supervisor know I used AI?", a: "AcademiQ generates entries based on the real activities you input. The AI enhances the writing quality — just like using Grammarly or spell-check. The content is always grounded in what you actually did." },
-  { q: "What if my SIWES is in a non-tech field?", a: "AcademiQ works across all SIWES disciplines — engineering, business, health sciences, agriculture, and more. Just describe your activities and the AI adapts to your field." },
-  { q: "Can I edit the AI-generated entries?", a: "Absolutely. Every generated entry is fully editable before you save it. You're always in control of the final content." },
-  { q: "Is my data safe?", a: "Yes. All your logbook data is encrypted and stored securely. We never share your data with third parties." },
+  { q: "Is AcademiQ free?", a: "Yes — and the free tier is genuinely generous. You get up to 30 entries a month, which covers most SIWES placements. If you need more, our paid plans have you covered." },
+  { q: "Will my supervisor know I used AI?", a: "AcademiQ works from the real activities you describe — it just helps you say it better. Think of it like Grammarly, but for logbook writing. The content is always based on what you actually did." },
+  { q: "What if my SIWES isn't in a tech field?", a: "AcademiQ works for every discipline — engineering, business, health sciences, agriculture, you name it. Just describe what you did and the AI figures out the rest." },
+  { q: "Can I edit what the AI generates?", a: "100%. Every entry is fully editable before you save it. You have the final say on everything." },
+  { q: "Is my data safe?", a: "Yes. Everything is encrypted and stored securely. We don't share your data with anyone, full stop." },
 ];
 
 export default function HowItWorks() {
@@ -70,7 +70,7 @@ export default function HowItWorks() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pb-16 pt-12 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-          HOW IT WORKS
+          How it works
         </span>
         <h1 className="mt-5 text-5xl font-bold tracking-tight md:text-6xl">
           From rough notes to <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">polished reports</span>
@@ -106,9 +106,9 @@ export default function HowItWorks() {
                   ) : (
                     <div className="space-y-3">
                       {[
-                        { icon: CheckCircle2, text: "Professional PDF ready to submit", c: "text-emerald-500" },
-                        { icon: Clock, text: "Full logbook history saved", c: "text-blue-500" },
-                        { icon: Shield, text: "Supervisor-approved formatting", c: "text-violet-500" },
+                        { icon: CheckCircle2, text: "Clean PDF ready to submit", c: "text-emerald-500" },
+                        { icon: Clock, text: "Your full logbook history saved", c: "text-blue-500" },
+                        { icon: Shield, text: "Formatted the way supervisors expect", c: "text-violet-500" },
                       ].map((item) => (
                         <div key={item.text} className="flex items-center gap-3">
                           <item.icon className={`h-5 w-5 ${item.c}`} />
@@ -163,11 +163,11 @@ export default function HowItWorks() {
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
           <Users className="mx-auto h-10 w-10 text-white/80" />
-          <h2 className="mt-4 text-3xl font-bold text-white">Ready to get started?</h2>
-          <p className="mt-2 text-sm text-white/80">Join thousands of students already using AcademiQ.</p>
+          <h2 className="mt-4 text-3xl font-bold text-white">Ready to give it a shot?</h2>
+          <p className="mt-2 text-sm text-white/80">Thousands of students are already writing better logbooks. You could be next.</p>
           <Link href="/sign-up">
             <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">
-              Start for free <ArrowRight className="h-4 w-4" />
+              Get started — it's free <ArrowRight className="h-4 w-4" />
             </button>
           </Link>
         </div>

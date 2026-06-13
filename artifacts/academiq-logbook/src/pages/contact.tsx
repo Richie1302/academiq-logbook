@@ -27,8 +27,8 @@ function Nav() {
 
 const reasons = [
   { icon: HelpCircle, color: "bg-violet-100 text-violet-600", label: "General question", value: "general" },
-  { icon: Bug, color: "bg-red-100 text-red-500", label: "Report a bug", value: "bug" },
-  { icon: Lightbulb, color: "bg-amber-100 text-amber-600", label: "Feature request", value: "feature" },
+  { icon: Bug, color: "bg-red-100 text-red-500", label: "Found a bug", value: "bug" },
+  { icon: Lightbulb, color: "bg-amber-100 text-amber-600", label: "Got an idea", value: "feature" },
   { icon: MessageCircle, color: "bg-emerald-100 text-emerald-600", label: "Partnership", value: "partnership" },
 ];
 
@@ -45,7 +45,7 @@ const channels = [
     icon: Twitter,
     color: "bg-sky-100 text-sky-500",
     title: "Twitter / X",
-    desc: "Quick questions, feedback, or just to say hi. We're active daily.",
+    desc: "Quick questions, feedback, or just to say hi. We're on there daily.",
     action: "@AcademiQApp",
     href: "https://twitter.com/AcademiQApp",
   },
@@ -53,7 +53,7 @@ const channels = [
     icon: Instagram,
     color: "bg-pink-100 text-pink-500",
     title: "Instagram",
-    desc: "Updates, student features, and behind-the-scenes content.",
+    desc: "Updates, student features, and behind-the-scenes stuff.",
     action: "@academiqapp",
     href: "https://instagram.com/academiqapp",
   },
@@ -76,13 +76,13 @@ export default function Contact() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pb-12 pt-12 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-          CONTACT US
+          Contact us
         </span>
         <h1 className="mt-5 text-5xl font-bold tracking-tight md:text-6xl">
           We'd love to <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">hear from you</span>
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-          Got a question, bug report, or feature idea? We're a small team that genuinely reads every message. Reach out — we'll get back to you.
+          Got a question, found a bug, or have an idea? We're a small team and we actually read every message that comes in. Reach out — we'll get back to you.
         </p>
       </section>
 
@@ -96,19 +96,19 @@ export default function Contact() {
                 <div className="grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-600">
                   <Mail className="h-8 w-8" />
                 </div>
-                <h3 className="mt-5 text-xl font-bold">Message sent!</h3>
-                <p className="mt-2 text-sm text-muted-foreground">Thanks for reaching out. We'll get back to you within 24 hours.</p>
+                <h3 className="mt-5 text-xl font-bold">Got it!</h3>
+                <p className="mt-2 text-sm text-muted-foreground">We'll get back to you within 24 hours. Thanks for writing in.</p>
                 <button
                   onClick={() => { setSubmitted(false); setForm({ name: "", email: "", message: "" }); }}
                   className="mt-6 text-sm font-medium text-violet-600 hover:underline"
                 >
-                  Send another message
+                  Send another one
                 </button>
               </div>
             ) : (
               <>
                 <h2 className="text-xl font-bold">Send us a message</h2>
-                <p className="mt-1 text-sm text-muted-foreground">We typically respond within 24 hours on weekdays.</p>
+                <p className="mt-1 text-sm text-muted-foreground">We usually get back to you within 24 hours on weekdays.</p>
 
                 {/* Reason selector */}
                 <div className="mt-6 grid grid-cols-2 gap-3">
@@ -156,7 +156,7 @@ export default function Contact() {
                     <label className="mb-1.5 block text-xs font-semibold text-foreground">Message</label>
                     <textarea
                       rows={5}
-                      placeholder="Tell us what's on your mind..."
+                      placeholder="What's on your mind?"
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
@@ -166,7 +166,7 @@ export default function Contact() {
                     onClick={handleSubmit}
                     className="w-full rounded-xl bg-gradient-to-b from-violet-500 to-violet-700 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/30 hover:opacity-95 transition"
                   >
-                    Send message
+                    Send it
                   </button>
                 </div>
               </>
@@ -175,14 +175,14 @@ export default function Contact() {
 
           {/* Right side */}
           <div className="space-y-5">
-            {/* Response time */}
+            {/* How fast we respond */}
             <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-600">
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-bold">Response time</p>
-                <p className="text-sm text-muted-foreground">We reply within <span className="font-semibold text-violet-600">24 hours</span> on weekdays. Usually much faster.</p>
+                <p className="text-sm font-bold">How fast we respond</p>
+                <p className="text-sm text-muted-foreground">We reply within <span className="font-semibold text-violet-600">24 hours</span> on weekdays — usually faster.</p>
               </div>
             </div>
 
@@ -205,10 +205,10 @@ export default function Contact() {
             <div className="rounded-2xl border border-violet-200 bg-violet-50 p-6">
               <div className="flex items-center gap-2">
                 <Linkedin className="h-5 w-5 text-violet-600" />
-                <p className="text-sm font-bold text-violet-700">Student Community</p>
+                <p className="text-sm font-bold text-violet-700">Student community</p>
               </div>
               <p className="mt-2 text-sm text-violet-700/80">
-                Join our growing community of SIWES students on LinkedIn. Share tips, ask questions, and connect with peers across Nigerian universities.
+                Join the community on LinkedIn. Share tips, ask questions, and connect with students from universities across Nigeria.
               </p>
               <a href="https://linkedin.com/company/academiqapp" target="_blank" rel="noopener noreferrer">
                 <button className="mt-4 rounded-lg border border-violet-300 bg-white px-4 py-2 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition">

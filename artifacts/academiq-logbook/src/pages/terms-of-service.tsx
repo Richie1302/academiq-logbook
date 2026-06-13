@@ -29,34 +29,32 @@ const sections = [
     icon: FileText,
     color: "bg-violet-100 text-violet-600",
     title: "1. Acceptance of Terms",
-    content: `By accessing or using AcademiQ ("the Service", "the Platform"), you ("User", "you") agree to be bound by these Terms of Service ("Terms") and our Privacy Policy, which is incorporated herein by reference.
+    content: `Using AcademiQ means you agree to these Terms and our Privacy Policy. If you're using AcademiQ on behalf of a school or organisation, you're confirming you have the authority to agree on their behalf.
 
-If you are using AcademiQ on behalf of an institution or organisation, you represent that you have the authority to bind that entity to these Terms.
+If you don't agree with any of this, please don't use AcademiQ. We can update these Terms at any time — if you keep using the platform after a change, that means you accept the updated version.
 
-If you do not agree to these Terms, do not access or use AcademiQ. We reserve the right to update these Terms at any time. Continued use of the platform after changes constitutes acceptance of the revised Terms.
-
-These Terms constitute a legally binding agreement between you and AcademiQ Technologies ("Company", "we", "us").`,
+These Terms are a legal agreement between you and AcademiQ Technologies.`,
   },
   {
     icon: UserCheck,
     color: "bg-blue-100 text-blue-600",
     title: "2. Eligibility & Account Registration",
-    content: `To use AcademiQ, you must:
+    content: `To use AcademiQ, you need to:
 
 • Be at least 16 years of age, or have the consent of a parent or legal guardian
 • Be a currently enrolled or recently graduated student, educator, or academic professional
 • Provide accurate, current, and complete information during registration
 • Maintain the security of your account credentials and not share your password with others
 
-You are responsible for all activity that occurs under your account. If you suspect unauthorised access to your account, you must notify us immediately at hello@academiq.app.
+Whatever happens under your account is your responsibility. If you think someone else has gotten into it, let us know straight away at hello@academiq.app.
 
-We reserve the right to refuse registration, suspend, or terminate accounts at our discretion, particularly where we believe the Terms have been violated.`,
+We can refuse, suspend, or close accounts — especially if we think the Terms are being broken.`,
   },
   {
     icon: ShieldCheck,
     color: "bg-emerald-100 text-emerald-600",
     title: "3. Permitted Use",
-    content: `AcademiQ is provided for personal, educational, and non-commercial use by students, educators, and academic institutions.
+    content: `AcademiQ is for students, educators, and academic institutions. It's for personal and educational use — not commercial resale.
 
 You may use AcademiQ to:
 • Write, generate, edit, and export SIWES logbook entries
@@ -64,13 +62,13 @@ You may use AcademiQ to:
 • Share read-only access to your logbook with your supervisor
 • Access educational resources on the platform
 
-You agree to use the platform in good faith and in a manner consistent with its intended purpose — supporting genuine academic and industrial training documentation.`,
+Use it honestly and for what it's designed for — helping you document your real SIWES experience.`,
   },
   {
     icon: Ban,
     color: "bg-red-100 text-red-500",
     title: "4. Prohibited Use",
-    content: `You must not use AcademiQ for any of the following:
+    content: `Here's what you can't use AcademiQ for:
 
 • **Academic fraud** — Submitting AI-generated content as your own work in violation of your institution's academic integrity policies. You are solely responsible for ensuring your use of AcademiQ complies with your university's rules.
 
@@ -84,22 +82,22 @@ You agree to use the platform in good faith and in a manner consistent with its 
 
 • **Resale** — Reselling, sublicensing, or commercially exploiting AcademiQ or its output without our written permission.
 
-Violation of these prohibitions may result in immediate account termination and, where applicable, legal action.`,
+Breaking these rules can get your account closed immediately and, in serious cases, lead to legal action.`,
   },
   {
     icon: FileText,
     color: "bg-amber-100 text-amber-600",
     title: "5. Your Content & Intellectual Property",
-    content: `You retain full ownership of the content you input into AcademiQ, including your original notes and descriptions.
+    content: `Everything you write and input on AcademiQ is yours. We don't claim ownership over any of it.
 
-By using AcademiQ, you grant us a limited, non-exclusive, royalty-free licence to process your content solely for the purpose of providing the Service — including generating AI-enhanced entries, storing your logbook, and enabling PDF export.
+By using AcademiQ, you give us permission to process your content — but only to actually run the service. That means generating your AI entries, storing your logbook, and letting you export to PDF.
 
-We do not claim ownership over your logbook content. We will not use your individual entries to train AI models without your explicit written consent.
+We don't own your logbook. And we won't use your entries to train AI models without your explicit written permission.
 
 **AI-Generated Content**
-The logbook entries generated by our AI are based on your input and are provided to you for your use. You are responsible for reviewing and verifying the accuracy of all AI-generated content before submitting it to supervisors or institutions.
+The entries the AI generates are based on what you put in — they're for your use. Always read them over before sending to your supervisor. You're responsible for what you submit.
 
-AcademiQ's platform design, branding, code, and non-user-generated content are the intellectual property of AcademiQ Technologies and may not be copied, reproduced, or distributed without our written permission.`,
+The AcademiQ platform itself — the design, the code, the branding — belongs to us. Please don't copy or redistribute it without asking first.`,
   },
   {
     icon: CreditCard,
@@ -125,55 +123,51 @@ You may cancel your subscription at any time from your Settings page. Cancellati
     icon: AlertTriangle,
     color: "bg-orange-100 text-orange-500",
     title: "7. Disclaimers & Limitation of Liability",
-    content: `**No Academic Guarantee**
-AcademiQ is a writing assistance tool. We do not guarantee that your supervisor, institution, or employer will accept, approve, or be satisfied with any content generated using our platform. You are solely responsible for the quality, accuracy, and appropriateness of content you submit.
+    content: `**No academic guarantee**
+AcademiQ helps you write better — it doesn't guarantee your supervisor will love every entry. You're responsible for reviewing and standing behind the content you submit.
 
-**Service Availability**
-We aim to maintain high availability but do not guarantee uninterrupted access to AcademiQ. The platform may be unavailable due to maintenance, upgrades, or circumstances beyond our control.
+**Service availability**
+We do our best to keep AcademiQ running smoothly, but we can't promise zero downtime. Maintenance and the occasional unexpected issue can happen.
 
-**As-Is Basis**
-AcademiQ is provided "as is" and "as available" without warranties of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, or non-infringement.
+**As-is**
+AcademiQ is provided as-is. We don't make any formal warranties beyond what's stated in these Terms.
 
-**Limitation of Liability**
-To the fullest extent permitted by Nigerian law, AcademiQ Technologies shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of data, academic penalties, or reputational harm, arising from your use of or inability to use the Service.
-
-Our total liability to you for any claim arising from these Terms or your use of AcademiQ shall not exceed the amount you paid us in the 3 months preceding the claim.`,
+**Liability limits**
+We're not liable for indirect or consequential losses — like academic penalties or reputational damage — that result from using or being unable to use AcademiQ. Our total liability to you won't exceed what you've paid us in the 3 months before a claim.`,
   },
   {
     icon: Globe,
     color: "bg-teal-100 text-teal-600",
     title: "8. Third-Party Services",
-    content: `AcademiQ integrates with third-party services including AI providers, cloud infrastructure, and payment processors. Your use of these integrated services may be subject to their own terms and privacy policies.
-
-We are not responsible for the content, practices, or terms of third-party services. Links to external websites or services from AcademiQ do not constitute endorsement.`,
+    content: `AcademiQ uses third-party services to run — things like AI, cloud infrastructure, and payment processing. Your use of those services may also be covered by their own terms. We're not responsible for what those services do, and linking to them doesn't mean we endorse them.`,
   },
   {
     icon: Gavel,
     color: "bg-slate-100 text-slate-600",
     title: "9. Governing Law & Dispute Resolution",
-    content: `These Terms are governed by and construed in accordance with the laws of the Federal Republic of Nigeria.
+    content: `These Terms follow Nigerian law.
 
-**Dispute Resolution**
-In the event of a dispute arising from these Terms or your use of AcademiQ, the parties agree to first attempt to resolve the matter informally by contacting us at hello@academiq.app. We will respond within 14 business days.
+**Sorting out disputes**
+If something goes wrong, let's talk first. Email us at hello@academiq.app and we'll do our best to resolve it within 14 business days.
 
-If the dispute cannot be resolved informally within 30 days, it shall be referred to and finally resolved by arbitration under the Arbitration and Mediation Act 2023 of Nigeria, with the seat of arbitration in Lagos State.
+If we can't resolve it informally within 30 days, we'll go to arbitration under the Arbitration and Mediation Act 2023 of Nigeria, seated in Lagos State.
 
-Nothing in this clause prevents either party from seeking urgent injunctive relief from a court of competent jurisdiction.`,
+Either party can still go to court for urgent relief if needed.`,
   },
   {
     icon: Ban,
     color: "bg-rose-100 text-rose-500",
     title: "10. Termination",
-    content: `**By You**
-You may terminate your account at any time by deleting it from your Settings page. Upon termination, your personal data will be deleted in accordance with our Privacy Policy.
+    content: `**Leaving AcademiQ**
+You can delete your account anytime from your Settings page. When you do, your data will be deleted in line with our Privacy Policy.
 
-**By Us**
-We reserve the right to suspend or terminate your account immediately, without prior notice, if:
-• You violate these Terms, particularly the Prohibited Use section
-• We are required to do so by law
-• We reasonably believe your actions harm other users or the platform
+**If we close your account**
+We can suspend or close your account immediately if:
+• You've broken these Terms — especially the prohibited use section
+• We're legally required to
+• Your actions are harming other users or the platform
 
-Upon termination by us for cause, you will not be entitled to a refund of any prepaid fees.
+If we close your account for breaking the rules, we won't be issuing a refund.
 
 Sections of these Terms that by their nature should survive termination (including intellectual property, disclaimers, and governing law) shall continue to apply after termination.`,
   },
@@ -181,27 +175,24 @@ Sections of these Terms that by their nature should survive termination (includi
     icon: RefreshCw,
     color: "bg-cyan-100 text-cyan-600",
     title: "11. Changes to These Terms",
-    content: `We reserve the right to modify these Terms at any time. When we make material changes, we will:
+    content: `We can update these Terms when we need to. If we make a significant change, we'll:
 
-• Update the "Last updated" date at the top of this page
-• Notify registered users by email at least 14 days before changes take effect
-• Display a prominent notice on the platform
+• Update the date at the top of this page
+• Email you at least 14 days before it kicks in
+• Show a notice on the platform
 
-Your continued use of AcademiQ after the effective date of any revised Terms constitutes your acceptance of those Terms. If you do not agree to the revised Terms, you must stop using the platform and delete your account.`,
+If you keep using AcademiQ after the update, that means you're okay with the new Terms. If not, you can delete your account and leave.`,
   },
   {
     icon: Mail,
     color: "bg-pink-100 text-pink-500",
     title: "12. Contact Information",
-    content: `If you have any questions about these Terms of Service, please contact us:
+    content: `Got questions about these Terms? Just ask.
 
-AcademiQ Technologies
 Email: hello@academiq.app
 Contact form: academiq.app/contact
 
-For legal notices, please email hello@academiq.app with the subject line "Legal Notice".
-
-We aim to respond to all enquiries within 5 business days.`,
+For formal legal notices, email hello@academiq.app with "Legal Notice" in the subject line. We aim to respond to everything within 5 business days.`,
   },
 ];
 
@@ -220,7 +211,7 @@ export default function TermsOfService() {
           Last updated: <strong>June 2025</strong> · Effective date: <strong>June 1, 2025</strong>
         </p>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-          Please read these Terms carefully before using AcademiQ. By creating an account or using our platform, you agree to be bound by these Terms.
+          Please read this before using AcademiQ. By signing up or using the platform, you're agreeing to these Terms.
         </p>
       </section>
 
@@ -228,9 +219,9 @@ export default function TermsOfService() {
       <section className="mx-auto max-w-5xl px-6 pb-10">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { icon: Scale, color: "bg-violet-100 text-violet-600", title: "Nigerian law governs", desc: "These Terms are governed by the laws of the Federal Republic of Nigeria." },
-            { icon: ShieldCheck, color: "bg-emerald-100 text-emerald-600", title: "Your content is yours", desc: "You retain full ownership of all content you create on AcademiQ." },
-            { icon: AlertTriangle, color: "bg-amber-100 text-amber-600", title: "Use responsibly", desc: "You are responsible for ensuring your use complies with your institution's policies." },
+            { icon: Scale, color: "bg-violet-100 text-violet-600", title: "Governed by Nigerian law", desc: "These Terms follow the laws of the Federal Republic of Nigeria." },
+            { icon: ShieldCheck, color: "bg-emerald-100 text-emerald-600", title: "Your content is yours", desc: "Everything you write on AcademiQ belongs to you." },
+            { icon: AlertTriangle, color: "bg-amber-100 text-amber-600", title: "Use responsibly", desc: "Make sure your use of AcademiQ lines up with your institution's own rules." },
           ].map((c) => (
             <div key={c.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className={`grid h-10 w-10 place-items-center rounded-xl ${c.color}`}>
@@ -268,8 +259,8 @@ export default function TermsOfService() {
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
           <Gavel className="mx-auto h-10 w-10 text-white/80" />
-          <h2 className="mt-4 text-2xl font-bold text-white">Questions about these Terms?</h2>
-          <p className="mt-2 text-sm text-white/80">We're happy to clarify anything. Reach out and we'll respond within 5 business days.</p>
+          <h2 className="mt-4 text-2xl font-bold text-white">Got questions about these Terms?</h2>
+          <p className="mt-2 text-sm text-white/80">We're happy to explain anything here in plain terms. Reach out and we'll get back to you within 5 business days.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a href="mailto:hello@academiq.app">
               <button className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">

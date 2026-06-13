@@ -16,7 +16,7 @@ function Nav() {
         <Link href="/sign-in"><span className="hidden cursor-pointer text-sm font-medium sm:block">Sign in</span></Link>
         <Link href="/sign-up">
           <button className="rounded-lg bg-gradient-to-b from-violet-500 to-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30">
-            Get started free
+            Get started — it's free
           </button>
         </Link>
       </div>
@@ -29,84 +29,84 @@ const features = [
     icon: Brain,
     color: "bg-violet-100 text-violet-600",
     title: "AI Writing Engine",
-    desc: "Our AI is trained specifically on SIWES logbook standards across all Nigerian universities. It understands the structure, tone, and technical depth supervisors expect — and applies it automatically to your entries.",
+    desc: "The AI knows SIWES. It understands what Nigerian supervisors want to read — the structure, the tone, the technical depth — and it applies all of that automatically so you don't have to think about it.",
     tags: ["Claude-powered", "SIWES-trained", "Industry-aware"],
   },
   {
     icon: FileText,
     color: "bg-red-100 text-red-500",
     title: "One-Click PDF Export",
-    desc: "Export your entire logbook — or selected entries — as a beautifully formatted PDF. Includes your name, school, department, and supervisor details. Print-ready and professionally laid out.",
+    desc: "Export your whole logbook or just selected entries as a clean, properly formatted PDF. Your name, school, department — all included. Print it, email it, or share the file directly.",
     tags: ["Print-ready", "Branded", "Instant"],
   },
   {
     icon: Flame,
     color: "bg-orange-100 text-orange-500",
     title: "Streak & Progress Tracking",
-    desc: "Stay consistent with visual streak tracking. See your weekly activity, total hours logged, and completion rate at a glance. Build the daily habit that makes your SIWES period stress-free.",
+    desc: "Missing entries is how SIWES becomes a nightmare. Streak tracking keeps you honest — you can see your weekly activity, hours logged, and how far along you are at a glance.",
     tags: ["Daily streaks", "Weekly insights", "Progress charts"],
   },
   {
     icon: ClipboardList,
     color: "bg-blue-100 text-blue-600",
     title: "Supervisor-Ready Templates",
-    desc: "Choose from templates tailored to different SIWES roles — software engineering, electrical, mechanical, business admin, and more. Every template is structured to match what supervisors in those fields expect.",
+    desc: "Pick a template built for your role — software engineering, electrical, mechanical, business admin, and more. Each one is structured the way supervisors in that field actually want to see it.",
     tags: ["Role-specific", "Multi-discipline", "Structured"],
   },
   {
     icon: ShieldCheck,
     color: "bg-emerald-100 text-emerald-600",
     title: "Secure & Private",
-    desc: "Your logbook data is fully encrypted in transit and at rest. We never share your entries with anyone. You own your data and can export or delete it at any time.",
+    desc: "Your entries are yours. We encrypt everything and don't share your data with anyone. Export it, delete it — you're in full control.",
     tags: ["End-to-end encryption", "GDPR-aligned", "Your data, always"],
   },
   {
     icon: Sparkles,
     color: "bg-pink-100 text-pink-500",
     title: "Smart Suggestions",
-    desc: "As you write, AcademiQ suggests relevant technical terms, action verbs, and industry-specific phrases to strengthen your entries. Like autocomplete, but for professional writing.",
+    desc: "As you type, AcademiQ nudges you with better wording — technical terms, stronger action verbs, industry phrases that make your entries sound sharper. Like autocomplete, but actually useful.",
     tags: ["Real-time", "Context-aware", "Domain-specific"],
   },
   {
     icon: BarChart2,
     color: "bg-indigo-100 text-indigo-600",
     title: "Analytics Dashboard",
-    desc: "Get a bird's-eye view of your SIWES progress. See how many entries you've written, average entry quality score, most active days, and more — all in one clean dashboard.",
+    desc: "See your whole SIWES journey at once — how many entries you've written, your most active days, quality scores, everything. One screen, no digging around.",
     tags: ["Visual charts", "Quality scores", "Activity heatmap"],
   },
   {
     icon: Bell,
     color: "bg-amber-100 text-amber-600",
     title: "Daily Reminders",
-    desc: "Set a daily reminder to write your log entry. AcademiQ sends a gentle notification so you never fall behind. Consistency is the key to a complete, stress-free logbook.",
+    desc: "Set a reminder for whenever works for you — end of day, after dinner, whatever. A quick nudge so daily logging actually becomes a habit.",
     tags: ["Push notifications", "Customisable time", "Weekly digest"],
   },
   {
     icon: Globe,
     color: "bg-teal-100 text-teal-600",
     title: "Works on Any Device",
-    desc: "AcademiQ is fully responsive — write your entries on your phone, tablet, or laptop. Your data syncs instantly across all devices so you're never tied to one screen.",
+    desc: "Write on your phone after work, review on your laptop at home. Everything syncs instantly so you can pick up wherever you left off.",
     tags: ["Mobile-first", "Cross-device sync", "Offline-friendly"],
   },
   {
     icon: Zap,
     color: "bg-yellow-100 text-yellow-600",
     title: "Lightning Fast",
-    desc: "AI generation takes under 10 seconds. No loading screens, no waiting. From rough note to polished entry faster than you can brew your evening tea.",
+    desc: "The AI generates your entry in under 10 seconds. No spinning wheels, no waiting. Faster than it takes to make tea.",
     tags: ["< 10s generation", "Instant save", "Zero lag"],
   },
   {
     icon: Lock,
     color: "bg-slate-100 text-slate-600",
     title: "Supervisor Access Control",
-    desc: "Share a read-only view of your logbook with your supervisor directly from AcademiQ — no printing required. Control what they can see and revoke access at any time.",
+    desc: "Share a read-only link with your supervisor directly — no printing, no emailing PDFs back and forth. You control what they see and can pull access whenever you want.",
     tags: ["Shareable link", "Read-only mode", "Access control"],
   },
   {
     icon: RefreshCw,
     color: "bg-cyan-100 text-cyan-600",
     title: "Unlimited Revisions",
-    desc: "Not happy with the AI's first draft? Regenerate with one click or tweak it manually. Every entry can be revised as many times as you like before saving.",
+    desc: "Not loving the first draft? Hit regenerate or edit it yourself. You can revise as many times as you want before saving — no limits.",
     tags: ["Regenerate", "Manual edit", "Version history"],
   },
 ];
@@ -119,13 +119,13 @@ export default function Features() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pb-16 pt-12 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-          FEATURES
+          Features
         </span>
         <h1 className="mt-5 text-5xl font-bold tracking-tight md:text-6xl">
           Everything built for <span className="bg-gradient-to-r from-violet-500 to-violet-700 bg-clip-text text-transparent">SIWES success</span>
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-          AcademiQ isn't a generic writing tool. Every feature is designed around the specific needs of Nigerian SIWES students.
+          This isn't a generic writing tool with a SIWES label slapped on it. Every single feature was built with Nigerian students in mind.
         </p>
       </section>
 
@@ -152,11 +152,11 @@ export default function Features() {
       {/* CTA */}
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 p-10 text-center shadow-xl">
-          <h2 className="text-3xl font-bold text-white">All features. Free to start.</h2>
-          <p className="mt-2 text-sm text-white/80">No credit card required. Cancel anytime.</p>
+          <h2 className="text-3xl font-bold text-white">All of this. Free to start.</h2>
+          <p className="mt-2 text-sm text-white/80">No card needed. Cancel whenever you want.</p>
           <Link href="/sign-up">
             <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-violet-700 shadow-lg">
-              Get started free <ArrowRight className="h-4 w-4" />
+              Get started — it's free <ArrowRight className="h-4 w-4" />
             </button>
           </Link>
         </div>
