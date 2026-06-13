@@ -1,9 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import { createClient } from "@supabase/supabase-js";
 
+if (!process.env.SUPABASE_URL) throw new Error("SUPABASE_URL env variable is required");
+if (!process.env.SUPABASE_ANON_KEY) throw new Error("SUPABASE_ANON_KEY env variable is required");
+
 const supabase = createClient(
-  process.env.SUPABASE_URL ?? "https://xqbzrvcwfgqrvfelbtdr.supabase.co",
-  process.env.SUPABASE_ANON_KEY!
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
 );
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
