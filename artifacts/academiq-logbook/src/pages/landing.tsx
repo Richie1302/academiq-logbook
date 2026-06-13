@@ -59,12 +59,12 @@ function Nav() {
         <span className="text-lg font-bold tracking-tight text-foreground">AcademiQ</span>
       </div>
       <ul className="hidden items-center gap-8 text-sm text-foreground/80 md:flex">
-        <li className="cursor-pointer hover:text-foreground">How it works</li>
-        <li className="cursor-pointer hover:text-foreground">Features</li>
+        <li className="cursor-pointer hover:text-foreground"><Link href="/how-it-works">How it works</Link></li>
+        <li className="cursor-pointer hover:text-foreground"><Link href="/features">Features</Link></li>
         <li className="cursor-pointer hover:text-foreground">Pricing</li>
-        <li className="cursor-pointer hover:text-foreground">Reviews</li>
+        <li className="cursor-pointer hover:text-foreground"><Link href="/reviews">Reviews</Link></li>
         <li className="flex cursor-pointer items-center gap-1 hover:text-foreground">
-          Resources <ChevronDown className="h-3.5 w-3.5" />
+          <Link href="/resources">Resources</Link> <ChevronDown className="h-3.5 w-3.5" />
         </li>
       </ul>
       <div className="flex items-center gap-5">
