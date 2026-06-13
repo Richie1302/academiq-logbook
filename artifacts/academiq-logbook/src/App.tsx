@@ -20,6 +20,8 @@ import HowItWorks from "@/pages/how-it-works";
 import Features from "@/pages/features";
 import Reviews from "@/pages/reviews";
 import Resources from "@/pages/resources";
+import About from "@/pages/about";
+import Contact from "@/pages/contact";
 import Dashboard from "@/pages/dashboard";
 import NewEntry from "@/pages/new-entry";
 import History from "@/pages/history";
@@ -76,6 +78,8 @@ function AppRoutes() {
       <Route path="/features" component={Features} />
       <Route path="/reviews" component={Reviews} />
       <Route path="/resources" component={Resources} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-up" component={SignUp} />
       <Route path="/dashboard">{() => <ProtectedRoute component={Dashboard} />}</Route>
