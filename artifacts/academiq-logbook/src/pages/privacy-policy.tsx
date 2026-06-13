@@ -91,15 +91,16 @@ We do not use your logbook content to train AI models without your explicit cons
     icon: Server,
     color: "bg-indigo-100 text-indigo-600",
     title: "5. Data Storage & Security",
-    content: `Your data is stored on secure cloud infrastructure provided by Supabase, with servers located within secure, certified data centres.
+    content: `Your data is stored on secure, enterprise-grade cloud infrastructure hosted within certified, access-controlled data centres.
 
 We implement the following security measures to protect your data:
 
-• End-to-end encryption for data in transit (TLS/HTTPS)
+• End-to-end encryption for all data in transit (TLS 1.2+/HTTPS)
 • Encryption at rest for all stored data
 • Role-based access controls — only authorised personnel can access user data
+• Secure, industry-standard authentication and session management
 • Regular security audits and vulnerability assessments
-• Secure password hashing (bcrypt)
+• Automatic backups and disaster recovery procedures
 
 Despite these measures, no system is 100% secure. If we become aware of a data breach that affects your personal information, we will notify you and the relevant authorities within 72 hours as required by law.`,
   },
@@ -109,16 +110,21 @@ Despite these measures, no system is 100% secure. If we become aware of a data b
     title: "6. Data Sharing & Third Parties",
     content: `We do not sell your personal data to third parties. Ever.
 
-We share data only with the following trusted service providers, strictly for the purposes of operating AcademiQ:
+We share data only with a small number of trusted third-party service providers, strictly to operate and deliver the AcademiQ platform. These providers are contractually bound to process your data only on our instructions, to maintain appropriate security standards, and to comply with applicable data protection law.
 
-• **Supabase** — Database and authentication infrastructure
-• **Anthropic** — AI API for generating logbook entry content (content is processed but not stored by Anthropic beyond the API call)
-• **Resend** — Transactional email delivery
-• **Vercel / Railway** — Application hosting and deployment
+The categories of providers we work with include:
 
-All third-party providers are contractually bound to process your data only on our instructions and in compliance with applicable data protection law.
+• **Authentication & database infrastructure** — Secure cloud services that store your account data and logbook entries with encryption at rest and in transit.
 
-We may disclose your information if required to do so by law, court order, or lawful request from a Nigerian government authority.`,
+• **AI processing** — An AI provider used to generate logbook entry content. Your input is processed to generate a response and is not retained or used to train models beyond the scope of your request.
+
+• **Email delivery** — A transactional email service used to send account notifications and support responses.
+
+• **Hosting & deployment** — Cloud infrastructure providers that serve the AcademiQ web application and API.
+
+We do not share your data with advertisers, data brokers, or any party for marketing purposes.
+
+We may disclose your information if required to do so by law, court order, or a lawful request from a Nigerian government authority. We will notify you of such requests where legally permitted to do so.`,
   },
   {
     icon: Lock,
