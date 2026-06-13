@@ -13,6 +13,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { useEffect } from "react";
+
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [location]);
+  return null;
+}
 
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
@@ -72,7 +79,9 @@ function HomeRedirect() {
 
 function AppRoutes() {
   return (
-    <Switch>
+    <>
+      <ScrollToTop />
+      <Switch>
       <Route path="/" component={HomeRedirect} />
       <Route path="/how-it-works" component={HowItWorks} />
       <Route path="/features" component={Features} />
@@ -95,6 +104,7 @@ function AppRoutes() {
       }}</Route>
       <Route component={NotFound} />
     </Switch>
+    </>
   );
 }
 
