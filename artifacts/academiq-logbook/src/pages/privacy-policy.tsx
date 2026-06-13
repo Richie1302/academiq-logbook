@@ -41,16 +41,16 @@ Using AcademiQ means you're okay with us collecting and using your information t
     title: "2. Information We Collect",
     content: `Here's what we collect when you use AcademiQ:
 
-**Account Information**
+Account Information
 When you register, we collect your name, email address, and password (stored in encrypted form). You may also optionally provide your university, department, course, and SIWES placement details.
 
-**Logbook Content**
+Logbook Content
 The entries you write and the AI-generated content associated with them are stored securely in your account. This content belongs to you.
 
-**Usage Data**
+Usage Data
 We automatically collect information about how you interact with our platform — including pages visited, features used, session duration, and device/browser type. This helps us improve AcademiQ.
 
-**Communications**
+Communications
 If you contact us by email or through our contact form, we retain your messages to respond to you and improve our support.
 
 We do not collect sensitive personal data such as financial information, national identification numbers, or health data.`,
@@ -61,15 +61,15 @@ We do not collect sensitive personal data such as financial information, nationa
     title: "3. How We Use Your Information",
     content: `We use your data only for these things — nothing else:
 
-• **To provide our service** — Creating and managing your account, generating AI logbook entries, storing your logbook history, and enabling PDF export.
+• To provide our service — Creating and managing your account, generating AI logbook entries, storing your logbook history, and enabling PDF export.
 
-• **To improve AcademiQ** — Analysing anonymised usage patterns to fix bugs, improve features, and build a better product.
+• To improve AcademiQ — Analysing anonymised usage patterns to fix bugs, improve features, and build a better product.
 
-• **To communicate with you** — Sending important account notifications, product updates, and responding to your support requests. You can opt out of marketing emails at any time.
+• To communicate with you — Sending important account notifications, product updates, and responding to your support requests. You can opt out of marketing emails at any time.
 
-• **To ensure security** — Detecting and preventing fraud, abuse, and unauthorised access to our platform.
+• To ensure security — Detecting and preventing fraud, abuse, and unauthorised access to our platform.
 
-• **To comply with legal obligations** — Retaining records as required by Nigerian law and responding to lawful requests from authorities.
+• To comply with legal obligations — Retaining records as required by Nigerian law and responding to lawful requests from authorities.
 
 We do not use your logbook content to train AI models without your explicit consent.`,
   },
@@ -79,13 +79,13 @@ We do not use your logbook content to train AI models without your explicit cons
     title: "4. Legal Basis for Processing",
     content: `Under Nigerian data protection law, here's the legal basis for why we process your data:
 
-• **Contractual necessity** — Processing required to deliver the AcademiQ service you signed up for.
+• Contractual necessity — Processing required to deliver the AcademiQ service you signed up for.
 
-• **Legitimate interests** — Processing for fraud prevention, platform security, and product improvement, where these interests are not overridden by your rights.
+• Legitimate interests — Processing for fraud prevention, platform security, and product improvement, where these interests are not overridden by your rights.
 
-• **Consent** — Where we ask for your explicit consent (e.g. marketing emails), you may withdraw it at any time without affecting prior processing.
+• Consent — Where we ask for your explicit consent (e.g. marketing emails), you may withdraw it at any time without affecting prior processing.
 
-• **Legal compliance** — Where we are required by law to process or retain your data.`,
+• Legal compliance — Where we are required by law to process or retain your data.`,
   },
   {
     icon: Server,
@@ -114,13 +114,13 @@ We share your data with a small number of trusted providers — and only because
 
 Here's who we work with and why:
 
-• **Authentication & database infrastructure** — Secure cloud services that store your account data and logbook entries with encryption at rest and in transit.
+• Authentication & database infrastructure — Secure cloud services that store your account data and logbook entries with encryption at rest and in transit.
 
-• **AI processing** — An AI provider used to generate logbook entry content. Your input is processed to generate a response and is not retained or used to train models beyond the scope of your request.
+• AI processing — An AI provider used to generate logbook entry content. Your input is processed to generate a response and is not retained or used to train models beyond the scope of your request.
 
-• **Email delivery** — A transactional email service used to send account notifications and support responses.
+• Email delivery — A transactional email service used to send account notifications and support responses.
 
-• **Hosting & deployment** — Cloud infrastructure providers that serve the AcademiQ web application and API.
+• Hosting & deployment — Cloud infrastructure providers that serve the AcademiQ web application and API.
 
 We do not share your data with advertisers, data brokers, or any party for marketing purposes.
 
@@ -132,17 +132,17 @@ We may disclose your information if required to do so by law, court order, or a 
     title: "7. Your Rights",
     content: `Under Nigerian data protection law, here are your rights:
 
-• **Right of access** — You may request a copy of the personal data we hold about you at any time.
+• Right of access — You may request a copy of the personal data we hold about you at any time.
 
-• **Right to rectification** — You may ask us to correct inaccurate or incomplete personal data.
+• Right to rectification — You may ask us to correct inaccurate or incomplete personal data.
 
-• **Right to erasure** — You may request that we delete your account and all associated data. We will comply within 30 days, except where we are required by law to retain certain information.
+• Right to erasure — You may request that we delete your account and all associated data. We will comply within 30 days, except where we are required by law to retain certain information.
 
-• **Right to data portability** — You may request your logbook data in a structured, machine-readable format (JSON or PDF).
+• Right to data portability — You may request your logbook data in a structured, machine-readable format (JSON or PDF).
 
-• **Right to object** — You may object to processing based on legitimate interests, including direct marketing.
+• Right to object — You may object to processing based on legitimate interests, including direct marketing.
 
-• **Right to withdraw consent** — Where processing is based on consent, you may withdraw it at any time.
+• Right to withdraw consent — Where processing is based on consent, you may withdraw it at any time.
 
 To use any of these rights, email us at hello@academiq.app with the subject line "Data Rights Request". We'll respond within 30 days.`,
   },
@@ -167,9 +167,9 @@ You can delete your account at any time from your Settings page.`,
 
 The following types of cookies are used:
 
-• **Authentication cookies** — Required to keep you signed in securely
-• **Preference cookies** — To remember your in-app settings
-• **Analytics cookies** — Anonymised data to understand how the platform is used (you can opt out)
+• Authentication cookies — Required to keep you signed in securely
+• Preference cookies — To remember your in-app settings
+• Analytics cookies — Anonymised data to understand how the platform is used (you can opt out)
 
 You can manage cookie preferences through your browser settings. Disabling essential cookies may affect the functionality of AcademiQ.`,
   },

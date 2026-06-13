@@ -70,17 +70,17 @@ Use it honestly and for what it's designed for — helping you document your rea
     title: "4. Prohibited Use",
     content: `Here's what you can't use AcademiQ for:
 
-• **Academic fraud** — Submitting AI-generated content as your own work in violation of your institution's academic integrity policies. You are solely responsible for ensuring your use of AcademiQ complies with your university's rules.
+• Academic fraud — Submitting AI-generated content as your own work in violation of your institution's academic integrity policies. You are solely responsible for ensuring your use of AcademiQ complies with your university's rules.
 
-• **Misrepresentation** — Creating logbook entries that contain entirely fabricated activities, false dates, or false employer/supervisor information.
+• Misrepresentation — Creating logbook entries that contain entirely fabricated activities, false dates, or false employer/supervisor information.
 
-• **Unauthorised access** — Attempting to access other users' accounts, bypassing security measures, or reverse-engineering the platform.
+• Unauthorised access — Attempting to access other users' accounts, bypassing security measures, or reverse-engineering the platform.
 
-• **Harmful content** — Uploading or generating content that is defamatory, obscene, threatening, or in violation of any applicable law.
+• Harmful content — Uploading or generating content that is defamatory, obscene, threatening, or in violation of any applicable law.
 
-• **Spam or abuse** — Using the platform to send unsolicited communications or to scrape data.
+• Spam or abuse — Using the platform to send unsolicited communications or to scrape data.
 
-• **Resale** — Reselling, sublicensing, or commercially exploiting AcademiQ or its output without our written permission.
+• Resale — Reselling, sublicensing, or commercially exploiting AcademiQ or its output without our written permission.
 
 Breaking these rules can get your account closed immediately and, in serious cases, lead to legal action.`,
   },
@@ -94,7 +94,7 @@ By using AcademiQ, you give us permission to process your content — but only t
 
 We don't own your logbook. And we won't use your entries to train AI models without your explicit written permission.
 
-**AI-Generated Content**
+AI-Generated Content
 The entries the AI generates are based on what you put in — they're for your use. Always read them over before sending to your supervisor. You're responsible for what you submit.
 
 The AcademiQ platform itself — the design, the code, the branding — belongs to us. Please don't copy or redistribute it without asking first.`,
@@ -105,34 +105,34 @@ The AcademiQ platform itself — the design, the code, the branding — belongs 
     title: "6. Subscription & Payments",
     content: `AcademiQ offers a free tier with limited features and paid subscription plans with expanded capabilities. Pricing details are available on our Pricing page.
 
-**Free Tier**
+Free Tier
 The free tier is provided at no cost and may be modified or discontinued at any time with reasonable notice.
 
-**Paid Plans**
+Paid Plans
 • Subscriptions are billed in advance on a monthly or annual basis
 • Payments are processed securely through our payment provider
 • All prices are displayed in Nigerian Naira (NGN) or United States Dollars (USD) where applicable
 
-**Refunds**
+Refunds
 We offer a 7-day refund policy for new paid subscriptions. Refund requests must be submitted to hello@academiq.app within 7 days of your first payment. Refunds are not available after this window or for renewals.
 
-**Cancellation**
+Cancellation
 You may cancel your subscription at any time from your Settings page. Cancellation takes effect at the end of the current billing period. You will retain access to paid features until the period ends.`,
   },
   {
     icon: AlertTriangle,
     color: "bg-orange-100 text-orange-500",
     title: "7. Disclaimers & Limitation of Liability",
-    content: `**No academic guarantee**
+    content: `No academic guarantee
 AcademiQ helps you write better — it doesn't guarantee your supervisor will love every entry. You're responsible for reviewing and standing behind the content you submit.
 
-**Service availability**
+Service availability
 We do our best to keep AcademiQ running smoothly, but we can't promise zero downtime. Maintenance and the occasional unexpected issue can happen.
 
-**As-is**
+As-is
 AcademiQ is provided as-is. We don't make any formal warranties beyond what's stated in these Terms.
 
-**Liability limits**
+Liability limits
 We're not liable for indirect or consequential losses — like academic penalties or reputational damage — that result from using or being unable to use AcademiQ. Our total liability to you won't exceed what you've paid us in the 3 months before a claim.`,
   },
   {
@@ -147,7 +147,7 @@ We're not liable for indirect or consequential losses — like academic penaltie
     title: "9. Governing Law & Dispute Resolution",
     content: `These Terms follow Nigerian law.
 
-**Sorting out disputes**
+Sorting out disputes
 If something goes wrong, let's talk first. Email us at hello@academiq.app and we'll do our best to resolve it within 14 business days.
 
 If we can't resolve it informally within 30 days, we'll go to arbitration under the Arbitration and Mediation Act 2023 of Nigeria, seated in Lagos State.
@@ -158,10 +158,10 @@ Either party can still go to court for urgent relief if needed.`,
     icon: Ban,
     color: "bg-rose-100 text-rose-500",
     title: "10. Termination",
-    content: `**Leaving AcademiQ**
+    content: `Leaving AcademiQ
 You can delete your account anytime from your Settings page. When you do, your data will be deleted in line with our Privacy Policy.
 
-**If we close your account**
+If we close your account
 We can suspend or close your account immediately if:
 • You've broken these Terms — especially the prohibited use section
 • We're legally required to
