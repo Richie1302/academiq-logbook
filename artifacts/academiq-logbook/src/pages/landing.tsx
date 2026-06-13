@@ -491,9 +491,24 @@ function FinalCTA() {
 
 function Footer() {
   const cols = [
-    { h: "Product", l: ["Features", "How it works", "Pricing", "Updates"] },
-    { h: "Resources", l: ["Blog", "Guides", "Templates", "Help center"] },
-    { h: "Company", l: ["About us", "Contact us", "Privacy policy", "Terms of service"] },
+    { h: "Product", l: [
+      { label: "Features", href: "/features" },
+      { label: "How it works", href: "/how-it-works" },
+      { label: "Pricing", href: null },
+      { label: "Updates", href: null },
+    ]},
+    { h: "Resources", l: [
+      { label: "Blog", href: "/resources" },
+      { label: "Guides", href: "/resources" },
+      { label: "Templates", href: "/resources" },
+      { label: "Help center", href: "/resources" },
+    ]},
+    { h: "Company", l: [
+      { label: "About us", href: null },
+      { label: "Contact us", href: null },
+      { label: "Privacy policy", href: null },
+      { label: "Terms of service", href: null },
+    ]},
   ];
   return (
     <footer className="border-t border-slate-200" style={{ background: "var(--hero-bg)" }}>
@@ -511,7 +526,11 @@ function Footer() {
           <div key={c.h}>
             <p className="text-sm font-semibold">{c.h}</p>
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
-              {c.l.map((x) => <li key={x} className="cursor-pointer hover:text-foreground">{x}</li>)}
+              {c.l.map((x) => (
+                <li key={x.label} className="cursor-pointer hover:text-foreground">
+                  {x.href ? <Link href={x.href}>{x.label}</Link> : x.label}
+                </li>
+              ))}
             </ul>
           </div>
         ))}
