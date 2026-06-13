@@ -506,8 +506,8 @@ function Footer() {
     { h: "Company", l: [
       { label: "About us", href: "/about" },
       { label: "Contact us", href: "/contact" },
-      { label: "Privacy policy", href: null },
-      { label: "Terms of service", href: null },
+      { label: "Privacy policy", href: "/privacy-policy" },
+      { label: "Terms of service", href: "/terms-of-service" },
     ]},
   ];
   return (

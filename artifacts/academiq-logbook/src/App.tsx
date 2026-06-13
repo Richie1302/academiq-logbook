@@ -29,6 +29,8 @@ import Reviews from "@/pages/reviews";
 import Resources from "@/pages/resources";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms-of-service";
 import Dashboard from "@/pages/dashboard";
 import NewEntry from "@/pages/new-entry";
 import History from "@/pages/history";
@@ -89,6 +91,8 @@ function AppRoutes() {
       <Route path="/resources" component={Resources} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-up" component={SignUp} />
       <Route path="/dashboard">{() => <ProtectedRoute component={Dashboard} />}</Route>
