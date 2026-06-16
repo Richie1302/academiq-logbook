@@ -3,6 +3,50 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { LogOut, Home, PlusCircle, History, BookOpen, User, MessageCircle, FileText, Settings, Sparkles } from "lucide-react";
 
+// NavItem must be defined OUTSIDE AppLayout to avoid hook rule violations
+function NavItem({ href, label, icon: Icon, location }: {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  location: string;
+}) {
+  const isActive = location === href;
+  return (
+    <Link href={href}>
+      <div className={`flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-xl transition-colors cursor-pointer ${
+        isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+      }`}>
+        <Icon className="h-5 w-5 shrink-0" />
+        <span className="text-xs md:text-sm">{label}</span>
+      </div>
+    </Link>
+  );
+}
+
+const mainNav = [
+  { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/entry/new", label: "New Entry", icon: PlusCircle },
+  { href: "/history", label: "History", icon: History },
+];
+
+const aiNav = [
+  { href: "/chat", label: "Ask AcademiQ", icon: MessageCircle },
+  { href: "/summary", label: "Weekly Summary", icon: FileText },
+];
+
+const accountNav = [
+  { href: "/profile", label: "Profile", icon: User },
+  { href: "/settings", label: "Settings", icon: Settings },
+];
+
+const mobileNav = [
+  { href: "/dashboard", label: "Home", icon: Home },
+  { href: "/entry/new", label: "New Entry", icon: PlusCircle },
+  { href: "/history", label: "History", icon: History },
+  { href: "/chat", label: "Ask AI", icon: MessageCircle },
+  { href: "/profile", label: "Profile", icon: User },
+];
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
   const [location, setLocation] = useLocation();
@@ -10,44 +54,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const handleSignOut = async () => {
     await signOut();
     setLocation("/");
-  };
-
-  const mainNav = [
-    { href: "/dashboard", label: "Dashboard", icon: Home },
-    { href: "/entry/new", label: "New Entry", icon: PlusCircle },
-    { href: "/history", label: "History", icon: History },
-  ];
-
-  const aiNav = [
-    { href: "/chat", label: "Ask AcademiQ", icon: MessageCircle },
-    { href: "/summary", label: "Weekly Summary", icon: FileText },
-  ];
-
-  const accountNav = [
-    { href: "/profile", label: "Profile", icon: User },
-    { href: "/settings", label: "Settings", icon: Settings },
-  ];
-
-  const mobileNav = [
-    { href: "/dashboard", label: "Home", icon: Home },
-    { href: "/entry/new", label: "New Entry", icon: PlusCircle },
-    { href: "/history", label: "History", icon: History },
-    { href: "/chat", label: "Ask AI", icon: MessageCircle },
-    { href: "/profile", label: "Profile", icon: User },
-  ];
-
-  const NavItem = ({ href, label, icon: Icon }: { href: string; label: string; icon: React.ElementType }) => {
-    const isActive = location === href;
-    return (
-      <Link href={href}>
-        <div className={`flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-xl transition-colors cursor-pointer ${
-          isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-        }`}>
-          <Icon className="h-5 w-5 shrink-0" />
-          <span className="text-xs md:text-sm">{label}</span>
-        </div>
-      </Link>
-    );
   };
 
   return (
@@ -76,19 +82,19 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
         <div className="flex-1 flex flex-col p-3 gap-1 overflow-y-auto">
           <div className="mb-2">
-            {mainNav.map(item => <NavItem key={item.href} {...item} />)}
+            {mainNav.map(item => <NavItem key={item.href} {...item} location={location} />)}
           </div>
 
           <div className="pt-3 border-t">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-1.5 flex items-center gap-1.5">
               <Sparkles className="h-3 w-3" /> AI Tools
             </p>
-            {aiNav.map(item => <NavItem key={item.href} {...item} />)}
+            {aiNav.map(item => <NavItem key={item.href} {...item} location={location} />)}
           </div>
 
           <div className="pt-3 border-t">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-1.5">Account</p>
-            {accountNav.map(item => <NavItem key={item.href} {...item} />)}
+            {accountNav.map(item => <NavItem key={item.href} {...item} location={location} />)}
           </div>
         </div>
 
