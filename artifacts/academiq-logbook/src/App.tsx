@@ -1,25 +1,21 @@
 import { Component, type ReactNode } from "react";
 import { Switch, Route, Redirect, useLocation, Router as WouterRouter } from "wouter";
-import { setBaseUrl, setAuthTokenGetter } from "@workspace/api-client-react";
-import { supabase } from "@/lib/supabase";
-
-// Configure API client
-setBaseUrl(import.meta.env.VITE_API_URL ?? "");
-setAuthTokenGetter(async () => {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? null;
-});
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { useEffect } from "react";
+import { setBaseUrl, setAuthTokenGetter, useGetProfile } from "@workspace/api-client-react";
+import { supabase } from "@/lib/supabase";
+import { AppLayout } from "@/components/layout";
+import { Loader2 } from "lucide-react";
 
-function ScrollToTop() {
-  const [location] = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [location]);
-  return null;
-}
+// Configure API client — must be done before any component renders
+setBaseUrl(import.meta.env.VITE_API_URL ?? "");
+setAuthTokenGetter(async () => {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? null;
+});
 
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
@@ -42,10 +38,16 @@ import Onboarding from "@/pages/onboarding";
 import WeeklySummary from "@/pages/weekly-summary";
 import AIChatAssistant from "@/pages/ai-chat";
 import SupervisorPortal from "@/pages/supervisor-portal";
-import { AppLayout } from "@/components/layout";
-import { useGetProfile } from "@workspace/api-client-react";
 
 const queryClient = new QueryClient();
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[100dvh] bg-background">
+      <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
+    </div>
+  );
+}
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -64,20 +66,31 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
 }
 
-function ProtectedRoute({ component: Component, skipOnboarding }: { component: React.ComponentType<any>; skipOnboarding?: boolean }) {
-  const { user, loading } = useAuth();
-  const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({ query: { retry: 1, enabled: !!user, staleTime: 30000 } });
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [location]);
+  return null;
+}
 
-  // Wait for auth + profile to resolve
-  if (loading || (!!user && profileLoading)) return null;
+function ProtectedRoute({ component: Component, skipOnboarding }: {
+  component: React.ComponentType<any>;
+  skipOnboarding?: boolean;
+}) {
+  const { user, loading } = useAuth();
+  const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({
+    query: { retry: 1, enabled: !!user, staleTime: 30000 },
+  });
+
+  // Show spinner while auth or profile loads — never return null (blank screen)
+  if (loading || (!!user && profileLoading)) return <PageLoader />;
+
+  // Not logged in
   if (!user) return <Redirect to="/" />;
 
-  // If profile fetch errored (API down, network issue) — don't redirect to onboarding
-  // Let the user through to avoid a broken loop
+  // Profile fetch errored (Railway cold start / network) — let through, don't loop
   if (profileError) return <AppLayout><Component /></AppLayout>;
 
-  // Only redirect to onboarding if profile definitively has NO data at all
-  // A profile with any one of these fields set is considered onboarded
+  // Only send to onboarding if ALL key fields are missing
   const profileIsEmpty = !profile || (
     !profile.fullName &&
     !profile.school &&
@@ -86,13 +99,22 @@ function ProtectedRoute({ component: Component, skipOnboarding }: { component: R
     !profile.department
   );
 
-  if (!skipOnboarding && !profileLoading && profileIsEmpty) return <Redirect to="/onboarding" />;
+  if (!skipOnboarding && profileIsEmpty) return <Redirect to="/onboarding" />;
+
   return <AppLayout><Component /></AppLayout>;
+}
+
+// Extracted to a proper component — hooks cannot be called inside inline JSX functions
+function OnboardingRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (!user) return <Redirect to="/" />;
+  return <Onboarding />;
 }
 
 function HomeRedirect() {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading) return <PageLoader />;
   if (user) return <Redirect to="/dashboard" />;
   return <Landing />;
 }
@@ -102,33 +124,28 @@ function AppRoutes() {
     <>
       <ScrollToTop />
       <Switch>
-      <Route path="/" component={HomeRedirect} />
-      <Route path="/how-it-works" component={HowItWorks} />
-      <Route path="/features" component={Features} />
-      <Route path="/reviews" component={Reviews} />
-      <Route path="/resources" component={Resources} />
-      <Route path="/about" component={About} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/privacy-policy" component={PrivacyPolicy} />
-      <Route path="/terms-of-service" component={TermsOfService} />
-      <Route path="/sign-in" component={SignIn} />
-      <Route path="/sign-up" component={SignUp} />
-      <Route path="/dashboard">{() => <ProtectedRoute component={Dashboard} />}</Route>
-      <Route path="/entry/new">{() => <ProtectedRoute component={NewEntry} />}</Route>
-      <Route path="/history">{() => <ProtectedRoute component={History} />}</Route>
-      <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
-      <Route path="/settings">{() => <ProtectedRoute component={Settings} />}</Route>
-      <Route path="/summary">{() => <ProtectedRoute component={WeeklySummary} />}</Route>
-      <Route path="/chat">{() => <ProtectedRoute component={AIChatAssistant} />}</Route>
-      <Route path="/supervisor/:token" component={SupervisorPortal} />
-      <Route path="/onboarding">{() => {
-        const { user, loading } = useAuth();
-        if (loading) return null;
-        if (!user) return <Redirect to="/" />;
-        return <Onboarding />;
-      }}</Route>
-      <Route component={NotFound} />
-    </Switch>
+        <Route path="/" component={HomeRedirect} />
+        <Route path="/how-it-works" component={HowItWorks} />
+        <Route path="/features" component={Features} />
+        <Route path="/reviews" component={Reviews} />
+        <Route path="/resources" component={Resources} />
+        <Route path="/about" component={About} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/terms-of-service" component={TermsOfService} />
+        <Route path="/sign-in" component={SignIn} />
+        <Route path="/sign-up" component={SignUp} />
+        <Route path="/supervisor/:token" component={SupervisorPortal} />
+        <Route path="/onboarding" component={OnboardingRoute} />
+        <Route path="/dashboard">{() => <ProtectedRoute component={Dashboard} />}</Route>
+        <Route path="/entry/new">{() => <ProtectedRoute component={NewEntry} />}</Route>
+        <Route path="/history">{() => <ProtectedRoute component={History} />}</Route>
+        <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
+        <Route path="/settings">{() => <ProtectedRoute component={Settings} />}</Route>
+        <Route path="/summary">{() => <ProtectedRoute component={WeeklySummary} />}</Route>
+        <Route path="/chat">{() => <ProtectedRoute component={AIChatAssistant} />}</Route>
+        <Route component={NotFound} />
+      </Switch>
     </>
   );
 }

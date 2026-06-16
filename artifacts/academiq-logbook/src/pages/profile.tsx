@@ -114,7 +114,6 @@ export default function Profile() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { supabase } = await import("@/lib/supabase");
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) { toast.error("Session expired."); return; }
 
