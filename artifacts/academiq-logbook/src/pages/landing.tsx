@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import Nav from "@/components/MobileNav";
 import {
   ArrowRight,
   Play,
@@ -17,8 +18,7 @@ import {
   Twitter,
   Instagram,
   Linkedin,
-  ChevronDown,
-  Box,
+  Plus,
 } from "lucide-react";
 
 /* ---------- shared decorative bits ---------- */
@@ -44,40 +44,6 @@ function Sphere({ className = "", size = 60 }: { className?: string; size?: numb
       className={`absolute rounded-full bg-gradient-to-br from-white via-violet-100 to-violet-300/70 shadow-2xl ${className}`}
       style={{ width: size, height: size }}
     />
-  );
-}
-
-/* ---------- NAV ---------- */
-
-function Nav() {
-  return (
-    <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-      <div className="flex items-center gap-2">
-        <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 text-white shadow-md">
-          <Box className="h-4 w-4" />
-        </div>
-        <span className="text-lg font-bold tracking-tight text-foreground">AcademiQ</span>
-      </div>
-      <ul className="hidden items-center gap-8 text-sm text-foreground/80 md:flex">
-        <li className="cursor-pointer hover:text-foreground"><Link href="/how-it-works">How it works</Link></li>
-        <li className="cursor-pointer hover:text-foreground"><Link href="/features">Features</Link></li>
-        <li className="cursor-pointer hover:text-foreground">Pricing</li>
-        <li className="cursor-pointer hover:text-foreground"><Link href="/reviews">Reviews</Link></li>
-        <li className="flex cursor-pointer items-center gap-1 hover:text-foreground">
-          <Link href="/resources">Resources</Link> <ChevronDown className="h-3.5 w-3.5" />
-        </li>
-      </ul>
-      <div className="flex items-center gap-5">
-        <Link href="/sign-in">
-          <span className="hidden cursor-pointer text-sm font-medium text-foreground sm:block">Sign in</span>
-        </Link>
-        <Link href="/sign-up">
-          <button className="rounded-lg bg-gradient-to-b from-violet-500 to-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30 hover:opacity-95">
-            Get started free
-          </button>
-        </Link>
-      </div>
-    </nav>
   );
 }
 

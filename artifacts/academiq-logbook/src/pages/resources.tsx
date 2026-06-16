@@ -1,28 +1,8 @@
 import { Link } from "wouter";
+import Nav from "@/components/MobileNav";
 import { Box, ArrowRight, BookOpen, FileText, Video, Download, Lightbulb, GraduationCap, ClipboardList, HelpCircle } from "lucide-react";
 
-function Nav() {
-  return (
-    <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-      <Link href="/">
-        <div className="flex items-center gap-2 cursor-pointer">
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 text-white shadow-md">
-            <Box className="h-4 w-4" />
-          </div>
-          <span className="text-lg font-bold tracking-tight">AcademiQ</span>
-        </div>
-      </Link>
-      <div className="flex items-center gap-5">
-        <Link href="/sign-in"><span className="hidden cursor-pointer text-sm font-medium sm:block">Sign in</span></Link>
-        <Link href="/sign-up">
-          <button className="rounded-lg bg-gradient-to-b from-violet-500 to-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30">
-            Get started free
-          </button>
-        </Link>
-      </div>
-    </nav>
-  );
-}
+
 
 const guides = [
   {
