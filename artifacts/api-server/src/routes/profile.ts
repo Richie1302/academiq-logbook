@@ -1,13 +1,9 @@
 import { requireAuth } from "../middlewares/supabaseAuth";
-// Authentication: Clerk JWT — requireAuth extracts userId from Clerk session
-// Data storage: user profiles stored in `profiles` table, keyed by userId (primary key)
-// Upsert logic: PUT /profile creates a new profile or updates the existing one atomically
-
 import { Router, type IRouter, type Request, type Response } from "express";
-
 import { eq } from "drizzle-orm";
-import { db, profilesTable } from "@workspace/db";
+import { db, profilesTable, entriesTable } from "@workspace/db";
 import { GetProfileResponse, UpsertProfileBody } from "@workspace/api-zod";
+import crypto from "crypto";
 
 const router: IRouter = Router();
 
@@ -65,6 +61,63 @@ router.put("/profile", requireAuth, async (req: Request, res: Response): Promise
   }
 
   res.json(GetProfileResponse.parse(serializeRow(profile)));
+});
+
+// POST /profile/supervisor-token — generate or regenerate supervisor access token
+router.post("/profile/supervisor-token", requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const userId = (req as any).userId as string;
+  const token = crypto.randomBytes(32).toString("hex");
+
+  await db
+    .update(profilesTable)
+    .set({ supervisorToken: token, updatedAt: new Date() })
+    .where(eq(profilesTable.userId, userId));
+
+  res.json({ token });
+});
+
+// GET /supervisor/:token — public route, no auth required — supervisor read-only view
+router.get("/supervisor/:token", async (req: Request, res: Response): Promise<void> => {
+  const { token } = req.params;
+  if (!token || token.length < 16) {
+    res.status(400).json({ error: "Invalid token" });
+    return;
+  }
+
+  const [profile] = await db
+    .select()
+    .from(profilesTable)
+    .where(eq(profilesTable.supervisorToken, token));
+
+  if (!profile) {
+    res.status(404).json({ error: "Logbook not found. The link may have expired or been revoked." });
+    return;
+  }
+
+  const entries = await db
+    .select()
+    .from(entriesTable)
+    .where(eq(entriesTable.userId, profile.userId))
+    .orderBy(entriesTable.date);
+
+  res.json({
+    profile: {
+      fullName: profile.fullName,
+      school: profile.school,
+      course: profile.course,
+      siwesCompany: profile.siwesCompany,
+      department: profile.department,
+      siwesDuration: profile.siwesDuration,
+    },
+    entries: entries.map(e => ({
+      id: e.id,
+      date: e.date,
+      dayOfWeek: e.dayOfWeek,
+      week: e.week,
+      rewrittenEntry: e.rewrittenEntry,
+      rawActivity: e.rawActivity,
+    })),
+  });
 });
 
 export default router;

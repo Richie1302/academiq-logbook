@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, RefreshCcw, AlignLeft, AlignJustify, Lightbulb, X } from "lucide-react";
+import EntryQualityScore from "@/components/EntryQualityScore";
 
 type RewriteMode = "concise" | "detailed";
 
@@ -300,6 +301,11 @@ export default function NewEntry() {
             />
           </CardContent>
         </Card>
+      )}
+
+      {/* Quality score — shown after AI rewrites */}
+      {rewritten && (
+        <EntryQualityScore entryText={rewritten} />
       )}
 
       <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 pt-4 border-t">

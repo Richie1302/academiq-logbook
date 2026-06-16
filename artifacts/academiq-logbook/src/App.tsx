@@ -39,6 +39,9 @@ import Settings from "@/pages/settings";
 import SignIn from "@/pages/sign-in";
 import SignUp from "@/pages/sign-up";
 import Onboarding from "@/pages/onboarding";
+import WeeklySummary from "@/pages/weekly-summary";
+import AIChatAssistant from "@/pages/ai-chat";
+import SupervisorPortal from "@/pages/supervisor-portal";
 import { AppLayout } from "@/components/layout";
 import { useGetProfile } from "@workspace/api-client-react";
 
@@ -100,6 +103,9 @@ function AppRoutes() {
       <Route path="/history">{() => <ProtectedRoute component={History} />}</Route>
       <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
       <Route path="/settings">{() => <ProtectedRoute component={Settings} />}</Route>
+      <Route path="/summary">{() => <ProtectedRoute component={WeeklySummary} />}</Route>
+      <Route path="/chat">{() => <ProtectedRoute component={AIChatAssistant} />}</Route>
+      <Route path="/supervisor/:token" component={SupervisorPortal} />
       <Route path="/onboarding">{() => {
         const { user, loading } = useAuth();
         if (loading) return null;

@@ -68,6 +68,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 app.use("/api", apiLimiter);
 app.use("/api/entries/rewrite", aiLimiter);
+app.use("/api/entries/weekly-summary", aiLimiter);
 app.use("/api", router);
 
 export default app;

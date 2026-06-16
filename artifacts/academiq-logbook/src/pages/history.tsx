@@ -13,6 +13,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { exportEntriesToPDF, exportSingleEntry, exportWeekEntries } from "@/lib/pdf-export";
+import EntryQualityScore from "@/components/EntryQualityScore";
 
 interface Entry {
   id: number;
@@ -324,6 +325,10 @@ export default function History() {
                           )}
                         </div>
                       </div>
+                    </div>
+                    {/* Quality score */}
+                    <div className="px-5 pb-5">
+                      <EntryQualityScore entryText={entry.rewrittenEntry || entry.rawActivity} />
                     </div>
                   </CollapsibleContent>
                 </div>

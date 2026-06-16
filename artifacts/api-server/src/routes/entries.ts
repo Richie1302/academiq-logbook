@@ -308,4 +308,66 @@ router.delete("/entries/:id", requireAuth, async (req: Request, res: Response): 
   res.sendStatus(204);
 });
 
+// POST /entries/weekly-summary — generate a weekly summary from entries using AI
+router.post("/entries/weekly-summary", requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const userId = (req as any).userId as string;
+  const { week } = req.body;
+
+  if (!week || isNaN(parseInt(week, 10))) {
+    res.status(400).json({ error: "Week number is required" });
+    return;
+  }
+
+  const weekEntries = await db
+    .select()
+    .from(entriesTable)
+    .where(and(eq(entriesTable.userId, userId), eq(entriesTable.week, parseInt(week, 10))))
+    .orderBy(entriesTable.date);
+
+  if (!weekEntries.length) {
+    res.status(404).json({ error: "No entries found for this week" });
+    return;
+  }
+
+  const entriesText = weekEntries
+    .map((e, i) => `Day ${i + 1} (${e.dayOfWeek || e.date}): ${e.rewrittenEntry || e.rawActivity}`)
+    .join("\n\n");
+
+  const openai = new OpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
+  });
+
+  const prompt = `You write professional SIWES (Student Industrial Work Experience Scheme) weekly summary reports for Nigerian university students.
+
+Here are the student's daily logbook entries for Week ${week}:
+
+${entriesText}
+
+Write a cohesive, professional weekly summary (3-5 paragraphs) that:
+- Synthesises the week's activities into a coherent narrative
+- Highlights key tasks completed, skills applied, and tools used
+- Mentions any challenges encountered and how they were resolved
+- Reflects on learning outcomes for the week
+- Sounds professional but natural — not robotic or hollow
+- Is written in first person
+
+Output only the summary text, no headers, no labels.`;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 600,
+      temperature: 0.7,
+    });
+
+    const summary = completion.choices[0]?.message?.content?.trim() ?? "";
+    res.json({ summary, week: parseInt(week, 10), entryCount: weekEntries.length });
+  } catch (err: any) {
+    console.error("[WEEKLY_SUMMARY_ERROR]", err?.message);
+    res.status(500).json({ error: "Failed to generate summary. Please try again." });
+  }
+});
+
 export default router;

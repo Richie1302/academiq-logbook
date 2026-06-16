@@ -11,6 +11,7 @@ export const profilesTable = pgTable("profiles", {
   siwesCompany: text("siwes_company"),
   department: text("department"),
   siwesDuration: text("siwes_duration"),
+  supervisorToken: text("supervisor_token"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });

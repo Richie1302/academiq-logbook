@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Save, User as UserIcon, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
+import { Loader2, Save, User as UserIcon, GraduationCap, Building2, CheckCircle2, Share2, Copy, Check, RefreshCw } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -16,6 +17,9 @@ export default function Profile() {
   const { data: profile, isLoading } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false, staleTime: 0 } });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [supervisorToken, setSupervisorToken] = useState<string | null>(null);
+  const [isGeneratingToken, setIsGeneratingToken] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -72,6 +76,39 @@ export default function Profile() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const generateToken = async () => {
+    setIsGeneratingToken(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) { toast.error("Session expired."); return; }
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${apiUrl}/api/profile/supervisor-token`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to generate token");
+      const data = await res.json();
+      setSupervisorToken(data.token);
+      toast.success("Supervisor link generated");
+    } catch {
+      toast.error("Failed to generate link. Please try again.");
+    } finally {
+      setIsGeneratingToken(false);
+    }
+  };
+
+  const supervisorLink = supervisorToken
+    ? `${window.location.origin}/supervisor/${supervisorToken}`
+    : null;
+
+  const copyLink = () => {
+    if (!supervisorLink) return;
+    navigator.clipboard.writeText(supervisorLink);
+    setCopiedLink(true);
+    toast.success("Link copied to clipboard");
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   const handleSave = async () => {
@@ -216,6 +253,41 @@ export default function Profile() {
               Save Profile
             </Button>
           </div>
+        </CardContent>
+      </Card>
+      {/* Supervisor Share Card */}
+      <Card className="border-muted/60 shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Share2 className="h-4 w-4 text-primary" /> Share with Supervisor
+          </CardTitle>
+          <CardDescription>
+            Generate a read-only link to your logbook that your supervisor can view anytime — no login required.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {!supervisorLink ? (
+            <Button variant="outline" onClick={generateToken} disabled={isGeneratingToken} className="gap-2">
+              {isGeneratingToken ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+              {isGeneratingToken ? "Generating..." : "Generate supervisor link"}
+            </Button>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 rounded-xl border bg-muted/20 px-4 py-3">
+                <p className="text-sm text-muted-foreground flex-1 truncate font-mono">{supervisorLink}</p>
+                <Button size="sm" variant="ghost" onClick={copyLink} className="shrink-0 gap-1.5">
+                  {copiedLink ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                  {copiedLink ? "Copied" : "Copy"}
+                </Button>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-muted-foreground">This link gives read-only access to your logbook.</p>
+                <Button size="sm" variant="ghost" onClick={generateToken} disabled={isGeneratingToken} className="text-xs gap-1.5 text-muted-foreground shrink-0">
+                  <RefreshCw className="h-3 w-3" /> Regenerate
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, PlusCircle, History, BookOpen, User } from "lucide-react";
+import { LogOut, Home, PlusCircle, History, BookOpen, User, MessageCircle, FileText, Settings, Sparkles } from "lucide-react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
@@ -12,15 +12,47 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     setLocation("/");
   };
 
-  const navItems = [
+  const mainNav = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
     { href: "/entry/new", label: "New Entry", icon: PlusCircle },
     { href: "/history", label: "History", icon: History },
+  ];
+
+  const aiNav = [
+    { href: "/chat", label: "Ask AcademiQ", icon: MessageCircle },
+    { href: "/summary", label: "Weekly Summary", icon: FileText },
+  ];
+
+  const accountNav = [
+    { href: "/profile", label: "Profile", icon: User },
+    { href: "/settings", label: "Settings", icon: Settings },
+  ];
+
+  const mobileNav = [
+    { href: "/dashboard", label: "Home", icon: Home },
+    { href: "/entry/new", label: "New Entry", icon: PlusCircle },
+    { href: "/history", label: "History", icon: History },
+    { href: "/chat", label: "Ask AI", icon: MessageCircle },
     { href: "/profile", label: "Profile", icon: User },
   ];
 
+  const NavItem = ({ href, label, icon: Icon }: { href: string; label: string; icon: React.ElementType }) => {
+    const isActive = location === href;
+    return (
+      <Link href={href}>
+        <div className={`flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-xl transition-colors cursor-pointer ${
+          isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+        }`}>
+          <Icon className="h-5 w-5 shrink-0" />
+          <span className="text-xs md:text-sm">{label}</span>
+        </div>
+      </Link>
+    );
+  };
+
   return (
     <div className="min-h-[100dvh] flex flex-col md:flex-row bg-background">
+      {/* Mobile top header */}
       <header className="md:hidden flex items-center justify-between p-4 border-b bg-card sticky top-0 z-40">
         <div className="flex items-center gap-2 text-primary font-bold text-xl">
           <BookOpen className="h-6 w-6" />
@@ -35,31 +67,34 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </button>
       </header>
 
-      <nav className="fixed bottom-0 w-full md:relative md:w-64 border-t md:border-t-0 md:border-r bg-card z-50 flex flex-row md:flex-col md:h-screen">
-        <div className="hidden md:flex items-center gap-2 p-6 text-primary font-bold text-2xl border-b">
+      {/* Desktop sidebar */}
+      <nav className="hidden md:flex md:w-64 border-r bg-card z-50 md:flex-col md:h-screen md:sticky md:top-0">
+        <div className="flex items-center gap-2 p-6 text-primary font-bold text-2xl border-b">
           <BookOpen className="h-8 w-8" />
           <span>AcademiQ</span>
         </div>
 
-        <div className="flex-1 flex flex-row md:flex-col w-full justify-around md:justify-start p-2 md:p-4 gap-2">
-          {navItems.map((item) => {
-            const isActive = location === item.href;
-            return (
-              <Link key={item.href} href={item.href}>
-                <div className={`flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-xl transition-colors cursor-pointer ${
-                  isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                }`}>
-                  <item.icon className="h-5 w-5" />
-                  <span className="text-xs md:text-base">{item.label}</span>
-                </div>
-              </Link>
-            );
-          })}
+        <div className="flex-1 flex flex-col p-3 gap-1 overflow-y-auto">
+          <div className="mb-2">
+            {mainNav.map(item => <NavItem key={item.href} {...item} />)}
+          </div>
+
+          <div className="pt-3 border-t">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-1.5 flex items-center gap-1.5">
+              <Sparkles className="h-3 w-3" /> AI Tools
+            </p>
+            {aiNav.map(item => <NavItem key={item.href} {...item} />)}
+          </div>
+
+          <div className="pt-3 border-t">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-1.5">Account</p>
+            {accountNav.map(item => <NavItem key={item.href} {...item} />)}
+          </div>
         </div>
 
-        <div className="hidden md:block p-4 border-t">
+        <div className="p-4 border-t">
           <Link href="/settings">
-            <div className="flex items-center gap-3 mb-4 px-2 hover:bg-secondary/50 p-2 rounded-lg cursor-pointer transition-colors">
+            <div className="flex items-center gap-3 mb-3 px-2 hover:bg-secondary/50 p-2 rounded-lg cursor-pointer transition-colors">
               <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm shrink-0">
                 {user?.email?.[0]?.toUpperCase() || "U"}
               </div>
@@ -73,6 +108,25 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out
           </Button>
+        </div>
+      </nav>
+
+      {/* Mobile bottom nav */}
+      <nav className="fixed bottom-0 w-full border-t bg-card z-50 flex flex-row md:hidden">
+        <div className="flex flex-row w-full justify-around p-2">
+          {mobileNav.map((item) => {
+            const isActive = location === item.href;
+            return (
+              <Link key={item.href} href={item.href}>
+                <div className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors cursor-pointer min-w-[56px] ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}>
+                  <item.icon className="h-5 w-5" />
+                  <span className="text-[10px] font-medium">{item.label}</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </nav>
 
