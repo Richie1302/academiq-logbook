@@ -66,11 +66,26 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
 
 function ProtectedRoute({ component: Component, skipOnboarding }: { component: React.ComponentType<any>; skipOnboarding?: boolean }) {
   const { user, loading } = useAuth();
-  const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({ query: { retry: false, enabled: !!user } });
+  const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({ query: { retry: 1, enabled: !!user, staleTime: 30000 } });
+
+  // Wait for auth + profile to resolve
   if (loading || (!!user && profileLoading)) return null;
   if (!user) return <Redirect to="/" />;
-  // Redirect to onboarding if: no profile (404) OR profile exists but has no meaningful data
-  const profileIsEmpty = !profile || (!profile.fullName && !profile.school && !profile.course);
+
+  // If profile fetch errored (API down, network issue) — don't redirect to onboarding
+  // Let the user through to avoid a broken loop
+  if (profileError) return <AppLayout><Component /></AppLayout>;
+
+  // Only redirect to onboarding if profile definitively has NO data at all
+  // A profile with any one of these fields set is considered onboarded
+  const profileIsEmpty = !profile || (
+    !profile.fullName &&
+    !profile.school &&
+    !profile.course &&
+    !profile.siwesCompany &&
+    !profile.department
+  );
+
   if (!skipOnboarding && !profileLoading && profileIsEmpty) return <Redirect to="/onboarding" />;
   return <AppLayout><Component /></AppLayout>;
 }
