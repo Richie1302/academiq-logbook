@@ -110,6 +110,7 @@ export default function History() {
   const handleExportAll = () => {
     if (!filteredEntries?.length) return;
     exportEntriesToPDF(filteredEntries, profile, "siwes-logbook-full.pdf");
+    localStorage.setItem("academiq_has_exported", "true");
     toast.success("PDF exported");
   };
 

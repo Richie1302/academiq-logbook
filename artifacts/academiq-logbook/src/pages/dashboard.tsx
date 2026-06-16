@@ -1,35 +1,48 @@
 import { useAuth } from "@/lib/auth-context";
-import { useGetEntryStats, useGetRecentEntries } from "@workspace/api-client-react";
-
+import { useGetEntryStats, useGetRecentEntries, useGetProfile, getGetProfileQueryKey, useListEntries } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { format, parseISO, isSameDay, startOfWeek, addDays } from "date-fns";
 import { CalendarDays, Flame, CheckCircle2, TrendingUp, Sparkles, Loader2, ArrowRight, Plus } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useDisplayName } from "@/hooks/useDisplayName";
+import OnboardingChecklist from "@/components/OnboardingChecklist";
+import AchievementBadges from "@/components/AchievementBadges";
+
+function isProfileComplete(profile: any): boolean {
+  if (!profile) return false;
+  return !!(profile.fullName && profile.school && profile.course && profile.siwesCompany);
+}
 
 export default function Dashboard() {
   const { user } = useAuth();
   const displayName = useDisplayName();
   const { data: stats, isLoading: statsLoading } = useGetEntryStats();
   const { data: recentEntries, isLoading: entriesLoading } = useGetRecentEntries();
+  const { data: profile } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false, staleTime: 30000 } });
+  const { data: allEntries } = useListEntries();
 
   const today = new Date();
   const formattedDate = format(today, "EEEE, MMMM do");
-
   const todayEntry = recentEntries?.find(e => e.date === format(today, "yyyy-MM-dd"));
-
   const weekStart = startOfWeek(today, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 5 }).map((_, i) => addDays(weekStart, i));
 
+  const profileComplete = isProfileComplete(profile);
+  const hasFirstEntry = (stats?.totalEntries ?? 0) >= 1;
+  const hasExported = localStorage.getItem("academiq_has_exported") === "true";
+  const hasStreak3 = (stats?.currentStreak ?? 0) >= 3 || (stats?.longestStreak ?? 0) >= 3;
+
   return (
     <div className="flex flex-col gap-8 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+      {/* Mobile FAB */}
       <Link href="/entry/new">
         <div className="fixed bottom-24 right-4 md:hidden z-40 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
           <Plus className="h-6 w-6" />
         </div>
       </Link>
 
+      {/* Greeting */}
       <section className="flex flex-col gap-2">
         <h1 className="text-3xl md:text-4xl font-bold font-serif tracking-tight">
           Hello, {displayName} 👋
@@ -39,13 +52,20 @@ export default function Dashboard() {
         </p>
       </section>
 
+      {/* Onboarding checklist — shows until all done and dismissed */}
+      <OnboardingChecklist
+        profileComplete={profileComplete}
+        hasFirstEntry={hasFirstEntry}
+        hasExported={hasExported}
+        hasStreak3={hasStreak3}
+      />
+
       {/* Stats Grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="bg-primary/5 border-primary/10 shadow-none">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CalendarDays className="h-4 w-4 text-primary" />
-              Total Entries
+              <CalendarDays className="h-4 w-4 text-primary" /> Total Entries
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -58,8 +78,7 @@ export default function Dashboard() {
         <Card className="bg-orange-500/5 border-orange-500/10 shadow-none">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Flame className="h-4 w-4 text-orange-500" />
-              Current Streak
+              <Flame className="h-4 w-4 text-orange-500" /> Current Streak
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -72,8 +91,7 @@ export default function Dashboard() {
         <Card className="bg-green-500/5 border-green-500/10 shadow-none">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
-              This Week
+              <CheckCircle2 className="h-4 w-4 text-green-500" /> This Week
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -86,8 +104,7 @@ export default function Dashboard() {
         <Card className="bg-blue-500/5 border-blue-500/10 shadow-none">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-blue-500" />
-              Longest Streak
+              <TrendingUp className="h-4 w-4 text-blue-500" /> Longest Streak
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -102,8 +119,7 @@ export default function Dashboard() {
       <section className="bg-card border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <h3 className="font-semibold text-lg flex items-center gap-2 mb-1">
-            <CalendarDays className="h-5 w-5 text-primary" />
-            Week Progress
+            <CalendarDays className="h-5 w-5 text-primary" /> Week Progress
           </h3>
           <p className="text-sm text-muted-foreground">Mon – Fri</p>
         </div>
@@ -114,11 +130,9 @@ export default function Dashboard() {
             return (
               <div key={i} className="flex flex-col items-center gap-2">
                 <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center border-2 transition-colors ${
-                  hasEntry
-                    ? "bg-green-500 border-green-500 text-white"
-                    : isToday
-                      ? "border-primary text-primary"
-                      : "border-muted text-muted-foreground bg-muted/20"
+                  hasEntry ? "bg-green-500 border-green-500 text-white"
+                    : isToday ? "border-primary text-primary"
+                    : "border-muted text-muted-foreground bg-muted/20"
                 }`}>
                   {hasEntry ? <CheckCircle2 className="h-5 w-5" /> : <span className="text-xs font-medium">{format(day, "d")}</span>}
                 </div>
@@ -135,7 +149,7 @@ export default function Dashboard() {
       <section>
         <Card className="border-2 shadow-sm relative overflow-hidden bg-card">
           {!todayEntry && (
-            <div className="absolute right-0 top-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
           )}
           <CardHeader>
             <CardTitle>{todayEntry ? "Today's Entry Completed" : "Ready for today?"}</CardTitle>
@@ -163,22 +177,32 @@ export default function Dashboard() {
         </Card>
       </section>
 
+      {/* Achievement Badges */}
+      {!statsLoading && (
+        <section>
+          <AchievementBadges
+            totalEntries={stats?.totalEntries ?? 0}
+            currentStreak={stats?.currentStreak ?? 0}
+            longestStreak={stats?.longestStreak ?? 0}
+            totalWeeks={stats?.totalWeeks ?? 0}
+            hasExported={hasExported}
+            profileComplete={profileComplete}
+          />
+        </section>
+      )}
+
       {/* Recent Entries */}
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold tracking-tight">Recent Activity</h2>
           <Link href="/history">
-            <Button variant="link" className="text-muted-foreground hover:text-foreground px-0">
-              View all
-            </Button>
+            <Button variant="link" className="text-muted-foreground hover:text-foreground px-0">View all</Button>
           </Link>
         </div>
 
         {entriesLoading ? (
           <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-24 bg-muted animate-pulse rounded-xl"></div>
-            ))}
+            {[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted animate-pulse rounded-xl" />)}
           </div>
         ) : recentEntries && recentEntries.length > 0 ? (
           <div className="space-y-3">
@@ -210,7 +234,7 @@ export default function Dashboard() {
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-2 font-serif">A Fresh Start</h3>
               <p className="text-muted-foreground max-w-sm mx-auto mb-8 leading-relaxed">
-                Your logbook is a blank canvas. Start documenting your SIWES journey today and watch your professional narrative unfold.
+                Your logbook is a blank canvas. Start documenting your SIWES journey today.
               </p>
               <Link href="/entry/new">
                 <Button size="lg" className="rounded-full px-8 shadow-md hover:shadow-lg transition-all group">

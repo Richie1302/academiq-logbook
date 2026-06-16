@@ -8,14 +8,31 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { LogOut, Trash2, Bell, Lock, Download, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { LogOut, Trash2, Bell, Lock, Download, Loader2, CheckCircle2, Eye, EyeOff, BellOff, BellRing } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useListEntries, useGetProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
 import { exportEntriesToPDF } from "@/lib/pdf-export";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 export default function Settings() {
   const { user, signOut } = useAuth();
   const [, setLocation] = useLocation();
+
+  // Push notifications
+  const { isSupported, permission, isRegistered, reminderTime, requestPermission, disableNotifications, updateReminderTime } = usePushNotifications();
+  const [isRequestingPush, setIsRequestingPush] = useState(false);
+
+  const handleTogglePush = async () => {
+    if (isRegistered) {
+      disableNotifications();
+      toast.success("Push notifications disabled");
+    } else {
+      setIsRequestingPush(true);
+      const granted = await requestPermission();
+      setIsRequestingPush(false);
+      if (!granted) toast.error("Permission denied. Enable notifications in your browser settings.");
+    }
+  };
 
   // Notifications (stored in localStorage)
   const [notifDailyReminder, setNotifDailyReminder] = useState(() => localStorage.getItem("notif_daily") !== "false");
@@ -80,6 +97,7 @@ export default function Settings() {
     setIsExporting(true);
     try {
       exportEntriesToPDF(allEntries, profile, "academiq-full-logbook.pdf");
+      localStorage.setItem("academiq_has_exported", "true");
       toast.success(`Exported ${allEntries.length} entries as PDF`);
     } catch {
       toast.error("Export failed. Please try again.");
@@ -169,7 +187,57 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Notifications */}
+        {/* Push Notifications */}
+        {isSupported && (
+          <Card className="border-muted/60 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                {isRegistered ? <BellRing className="h-4 w-4 text-violet-500" /> : <BellOff className="h-4 w-4" />}
+                Browser Push Notifications
+              </CardTitle>
+              <CardDescription>Get daily reminders to write your logbook entry.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/10 rounded-lg border gap-4">
+                <div>
+                  <p className="font-medium">Daily reminder</p>
+                  <p className="text-sm text-muted-foreground">
+                    {permission === "denied"
+                      ? "Blocked in browser — enable in your browser settings."
+                      : isRegistered
+                      ? "You'll get a daily nudge to write your entry."
+                      : "Allow notifications to get daily reminders."}
+                  </p>
+                </div>
+                <Button
+                  variant={isRegistered ? "outline" : "default"}
+                  onClick={handleTogglePush}
+                  disabled={isRequestingPush || permission === "denied"}
+                  className="w-full sm:w-auto"
+                >
+                  {isRequestingPush ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  {isRegistered ? "Disable" : "Enable notifications"}
+                </Button>
+              </div>
+              {isRegistered && (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/10 rounded-lg border gap-4">
+                  <div>
+                    <p className="font-medium">Reminder time</p>
+                    <p className="text-sm text-muted-foreground">What time should we remind you?</p>
+                  </div>
+                  <input
+                    type="time"
+                    value={reminderTime}
+                    onChange={(e) => updateReminderTime(e.target.value)}
+                    className="rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* In-App Notifications */}
         <Card className="border-muted/60 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Bell className="h-4 w-4" /> Notifications</CardTitle>
