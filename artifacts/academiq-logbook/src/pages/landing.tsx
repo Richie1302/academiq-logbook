@@ -19,6 +19,7 @@ import {
   Instagram,
   Linkedin,
   Plus,
+  Box,
 } from "lucide-react";
 
 /* ---------- shared decorative bits ---------- */
