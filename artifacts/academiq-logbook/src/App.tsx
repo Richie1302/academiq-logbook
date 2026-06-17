@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setBaseUrl, setAuthTokenGetter, useGetProfile } from "@workspace/api-client-react";
 import { supabase } from "@/lib/supabase";
 import { AppLayout } from "@/components/layout";
@@ -88,20 +88,31 @@ function ProtectedRoute({ component: Component, skipOnboarding }: {
   skipOnboarding?: boolean;
 }) {
   const { user, loading } = useAuth();
+  const [timedOut, setTimedOut] = useState(false);
   const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({
     query: { retry: 1, enabled: !!user, staleTime: 30000 },
   });
 
-  // Show spinner while auth or profile loads — never return null (blank screen)
-  if (loading || (!!user && profileLoading)) return <PageLoader />;
+  // Safety valve — if profile hasn't resolved in 5s, stop waiting and let user through
+  useEffect(() => {
+    if (!profileLoading) return;
+    const t = setTimeout(() => setTimedOut(true), 5000);
+    return () => clearTimeout(t);
+  }, [profileLoading]);
+
+  // Wait for auth — but never wait forever for profile
+  if (loading) return <PageLoader />;
 
   // Not logged in
   if (!user) return <Redirect to="/" />;
 
-  // Profile fetch errored (Railway cold start / network) — let through, don't loop
-  if (profileError) return <AppLayout><Component /></AppLayout>;
+  // Profile still loading and not timed out yet
+  if (profileLoading && !timedOut && !profileError) return <PageLoader />;
 
-  // Only send to onboarding if ALL key fields are missing
+  // Profile fetch errored or timed out — let through, don't loop to onboarding
+  if (profileError || timedOut) return <AppLayout><Component /></AppLayout>;
+
+  // Only redirect to onboarding if ALL key fields are genuinely missing
   const profileIsEmpty = !profile || (
     !profile.fullName &&
     !profile.school &&
