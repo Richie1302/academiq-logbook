@@ -370,4 +370,87 @@ Output only the summary text, no headers, no labels.`;
   }
 });
 
+// POST /entries/chat — AI chat assistant for SIWES questions (proxied through backend)
+router.post("/entries/chat", requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const { messages } = req.body;
+
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    res.status(400).json({ error: "Messages array is required" });
+    return;
+  }
+
+  const openai = new OpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
+  });
+
+  const systemPrompt = `You are AcademiQ's AI assistant — a helpful, friendly, and knowledgeable guide for Nigerian university students going through SIWES (Student Industrial Work Experience Scheme).
+
+You help students with:
+- Writing and improving their logbook entries
+- Understanding SIWES requirements and best practices
+- Career advice related to their industrial training
+- Answering questions about logbook structure, format, and submission
+- Motivating students to stay consistent with their daily logs
+
+You are warm, encouraging, and conversational. You speak plainly — no unnecessary jargon. You understand the Nigerian university system and the specific challenges SIWES students face. Keep responses concise but helpful — 2-4 paragraphs max unless more detail is needed.`;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages.slice(-10).map((m: any) => ({ role: m.role, content: m.content })),
+      ],
+      max_tokens: 800,
+      temperature: 0.7,
+    });
+
+    const reply = completion.choices[0]?.message?.content?.trim() ?? "Sorry, I couldn't generate a response. Please try again.";
+    res.json({ reply });
+  } catch (err: any) {
+    console.error("[CHAT_ERROR]", err?.message);
+    res.status(500).json({ error: "Failed to get response. Please try again." });
+  }
+});
+
+// POST /entries/quality-score — AI quality score for a logbook entry (proxied through backend)
+router.post("/entries/quality-score", requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const { entryText } = req.body;
+
+  if (!entryText || typeof entryText !== "string" || entryText.trim().length < 10) {
+    res.status(400).json({ error: "entryText is required and must be at least 10 characters" });
+    return;
+  }
+
+  const openai = new OpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
+  });
+
+  const prompt = `You are an expert SIWES logbook evaluator for Nigerian university students. Score this logbook entry and return ONLY valid JSON with no markdown, no explanation.
+
+Score each dimension 1-10 and return exactly this structure:
+{"overall":<1-10>,"clarity":<1-10>,"detail":<1-10>,"professionalism":<1-10>,"relevance":<1-10>,"feedback":"<one sentence overall feedback>","suggestions":["<suggestion 1>","<suggestion 2>"]}
+
+Entry: "${entryText.substring(0, 800)}"`;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 400,
+      temperature: 0.3,
+    });
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? "{}";
+    const clean = raw.replace(/```json|```/g, "").trim();
+    const score = JSON.parse(clean);
+    res.json(score);
+  } catch (err: any) {
+    console.error("[QUALITY_SCORE_ERROR]", err?.message);
+    res.status(500).json({ error: "Failed to score entry. Please try again." });
+  }
+});
+
 export default router;

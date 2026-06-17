@@ -68,12 +68,21 @@ router.post("/profile/supervisor-token", requireAuth, async (req: Request, res: 
   const userId = (req as any).userId as string;
   const token = crypto.randomBytes(32).toString("hex");
 
-  await db
-    .update(profilesTable)
-    .set({ supervisorToken: token, updatedAt: new Date() })
-    .where(eq(profilesTable.userId, userId));
+  try {
+    // Use upsert so it works even if profile row doesn't exist yet
+    await db
+      .insert(profilesTable)
+      .values({ userId, supervisorToken: token })
+      .onConflictDoUpdate({
+        target: profilesTable.userId,
+        set: { supervisorToken: token, updatedAt: new Date() },
+      });
 
-  res.json({ token });
+    res.json({ token });
+  } catch (err: any) {
+    console.error("[SUPERVISOR_TOKEN_ERROR]", err?.message);
+    res.status(500).json({ error: "Failed to generate supervisor link. Please try again." });
+  }
 });
 
 // GET /supervisor/:token — public route, no auth required — supervisor read-only view

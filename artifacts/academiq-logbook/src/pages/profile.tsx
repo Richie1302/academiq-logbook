@@ -136,11 +136,15 @@ export default function Profile() {
           siwesDuration: formData.siwesDuration,
         }),
       });
-      if (!response.ok) throw new Error("Failed to save");
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: "Unknown server error" }));
+        throw new Error(errData.error || `Server error ${response.status}`);
+      }
       toast.success("Profile saved successfully");
       queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() });
-    } catch {
-      toast.error("Failed to save profile. Please try again.");
+    } catch (err: any) {
+      console.error("[PROFILE_SAVE_ERROR]", err?.message);
+      toast.error(err?.message || "Failed to save profile. Please try again.");
     } finally {
       setIsSaving(false);
     }

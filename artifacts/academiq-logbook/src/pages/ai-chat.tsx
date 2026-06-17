@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface Message {
   role: "user" | "assistant";
@@ -18,32 +19,27 @@ const SUGGESTED = [
   "How long should a SIWES logbook entry be?",
 ];
 
-const SYSTEM = `You are AcademiQ's AI assistant — a helpful, friendly, and knowledgeable guide for Nigerian university students going through SIWES (Student Industrial Work Experience Scheme). 
-
-You help students with:
-- Writing and improving their logbook entries
-- Understanding SIWES requirements and best practices
-- Career advice related to their industrial training
-- Answering questions about logbook structure, format, and submission
-- Motivating students to stay consistent with their daily logs
-
-You are warm, encouraging, and conversational. You speak plainly — no unnecessary jargon. You understand the Nigerian university system and the specific challenges SIWES students face. Keep responses concise but helpful — 2-4 paragraphs max unless more detail is needed.`;
-
 async function chat(messages: Message[]): Promise<string> {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("Session expired. Please sign in again.");
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const response = await fetch(`${apiUrl}/api/entries/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      system: SYSTEM,
-      messages: messages.map(m => ({ role: m.role, content: m.content })),
-    }),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ messages }),
   });
 
-  if (!response.ok) throw new Error("Failed to get response");
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ error: "Unknown error" }));
+    throw new Error(err.error || `Server error ${response.status}`);
+  }
+
   const data = await response.json();
-  return data.content?.[0]?.text?.trim() ?? "Sorry, I couldn't generate a response. Please try again.";
+  return data.reply ?? "Sorry, I couldn't generate a response. Please try again.";
 }
 
 export default function AIChatAssistant() {

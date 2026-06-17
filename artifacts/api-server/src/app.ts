@@ -60,15 +60,17 @@ const aiLimiter = rateLimit({
   message: { error: "AI rewrite rate limit exceeded. Please wait before trying again." },
 });
 
-// Global error handler — prevents stack traces leaking to client
+app.use("/api", apiLimiter);
+app.use("/api/entries/rewrite", aiLimiter);
+app.use("/api/entries/weekly-summary", aiLimiter);
+app.use("/api/entries/chat", aiLimiter);
+app.use("/api/entries/quality-score", aiLimiter);
+app.use("/api", router);
+
+// Global error handler — MUST be registered AFTER all routes
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error({ err: err.message }, "Unhandled error");
   res.status(500).json({ error: "Internal server error" });
 });
-
-app.use("/api", apiLimiter);
-app.use("/api/entries/rewrite", aiLimiter);
-app.use("/api/entries/weekly-summary", aiLimiter);
-app.use("/api", router);
 
 export default app;

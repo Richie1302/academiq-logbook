@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Sparkles, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
 
 interface QualityScore {
   overall: number;
@@ -18,35 +19,25 @@ interface Props {
 }
 
 async function scoreEntry(text: string): Promise<QualityScore> {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 600,
-      system: `You are an expert SIWES logbook evaluator for Nigerian university students. Score logbook entries and return ONLY valid JSON, no markdown, no explanation outside the JSON.`,
-      messages: [{
-        role: "user",
-        content: `Score this SIWES logbook entry on a scale of 1-10 for each dimension. Return ONLY this JSON structure:
-{
-  "overall": <1-10>,
-  "clarity": <1-10>,
-  "detail": <1-10>,
-  "professionalism": <1-10>,
-  "relevance": <1-10>,
-  "feedback": "<one sentence overall feedback>",
-  "suggestions": ["<suggestion 1>", "<suggestion 2>"]
-}
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("Session expired");
 
-Entry: "${text.substring(0, 800)}"`,
-      }],
-    }),
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const response = await fetch(`${apiUrl}/api/entries/quality-score`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ entryText: text }),
   });
 
-  const data = await response.json();
-  const raw = data.content?.[0]?.text?.trim() ?? "{}";
-  const clean = raw.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ error: "Unknown error" }));
+    throw new Error(err.error || `Server error ${response.status}`);
+  }
+
+  return response.json();
 }
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
