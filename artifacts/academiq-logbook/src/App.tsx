@@ -39,7 +39,18 @@ import WeeklySummary from "@/pages/weekly-summary";
 import AIChatAssistant from "@/pages/ai-chat";
 import SupervisorPortal from "@/pages/supervisor-portal";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      retryDelay: 1000,
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
+      // Never throw to ErrorBoundary — handle errors locally per component
+      throwOnError: false,
+    },
+  },
+});
 
 function PageLoader() {
   return (

@@ -1,5 +1,5 @@
 import { useAuth } from "@/lib/auth-context";
-import { useGetEntryStats, useGetRecentEntries, useGetProfile, getGetProfileQueryKey, useListEntries } from "@workspace/api-client-react";
+import { useGetEntryStats, useGetRecentEntries, useGetProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { format, parseISO, isSameDay, startOfWeek, addDays } from "date-fns";
 import { CalendarDays, Flame, CheckCircle2, TrendingUp, Sparkles, Loader2, ArrowRight, Plus } from "lucide-react";
@@ -17,10 +17,9 @@ function isProfileComplete(profile: any): boolean {
 export default function Dashboard() {
   const { user } = useAuth();
   const displayName = useDisplayName();
-  const { data: stats, isLoading: statsLoading } = useGetEntryStats();
-  const { data: recentEntries, isLoading: entriesLoading } = useGetRecentEntries();
+  const { data: stats, isLoading: statsLoading, isError: statsError } = useGetEntryStats();
+  const { data: recentEntries, isLoading: entriesLoading, isError: entriesError } = useGetRecentEntries();
   const { data: profile } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false, staleTime: 30000 } });
-  const { data: allEntries } = useListEntries();
 
   const today = new Date();
   const formattedDate = format(today, "EEEE, MMMM do");
@@ -70,7 +69,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : stats?.totalEntries ?? 0}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : statsError ? "—" : stats?.totalEntries ?? 0}
             </div>
           </CardContent>
         </Card>
@@ -83,7 +82,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : `${stats?.currentStreak ?? 0} days`}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : statsError ? "—" : `${stats?.currentStreak ?? 0} days`}
             </div>
           </CardContent>
         </Card>
@@ -96,7 +95,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : stats?.entriesThisWeek ?? 0}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : statsError ? "—" : stats?.entriesThisWeek ?? 0}
             </div>
           </CardContent>
         </Card>
@@ -109,7 +108,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold text-foreground">
-              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : `${stats?.longestStreak ?? 0} days`}
+              {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : statsError ? "—" : `${stats?.longestStreak ?? 0} days`}
             </div>
           </CardContent>
         </Card>
@@ -203,6 +202,10 @@ export default function Dashboard() {
         {entriesLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted animate-pulse rounded-xl" />)}
+          </div>
+        ) : entriesError ? (
+          <div className="text-center py-10 rounded-2xl border border-dashed border-muted bg-muted/5">
+            <p className="text-sm text-muted-foreground">Couldn't load entries. Check your connection and refresh.</p>
           </div>
         ) : recentEntries && recentEntries.length > 0 ? (
           <div className="space-y-3">
