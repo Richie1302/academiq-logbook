@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useDisplayName } from "@/hooks/useDisplayName";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import AchievementBadges from "@/components/AchievementBadges";
+import AnnouncementModal from "@/components/AnnouncementModal";
 
 function isProfileComplete(profile: any): boolean {
   if (!profile) return false;
@@ -34,6 +35,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col gap-8 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+      <AnnouncementModal />
       {/* Mobile FAB */}
       <Link href="/entry/new">
         <div className="fixed bottom-24 right-4 md:hidden z-40 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
