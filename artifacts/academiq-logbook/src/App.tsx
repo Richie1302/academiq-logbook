@@ -34,6 +34,7 @@ import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 import SignIn from "@/pages/sign-in";
 import SignUp from "@/pages/sign-up";
+import ResetPassword from "@/pages/reset-password";
 import Onboarding from "@/pages/onboarding";
 import WeeklySummary from "@/pages/weekly-summary";
 import AIChatAssistant from "@/pages/ai-chat";
@@ -157,6 +158,7 @@ function AppRoutes() {
         <Route path="/terms-of-service" component={TermsOfService} />
         <Route path="/sign-in" component={SignIn} />
         <Route path="/sign-up" component={SignUp} />
+        <Route path="/reset-password" component={ResetPassword} />
         <Route path="/supervisor/:token" component={SupervisorPortal} />
         <Route path="/onboarding" component={OnboardingRoute} />
         <Route path="/dashboard">{() => <ProtectedRoute component={Dashboard} />}</Route>

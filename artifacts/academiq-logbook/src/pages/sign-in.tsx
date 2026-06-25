@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Loader2, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
 
@@ -14,7 +14,14 @@ export default function SignIn() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [, setLocation] = useLocation();
 
+  // Forgot password state
+  const [showForgot, setShowForgot] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
   const handleSignIn = async () => {
+    if (!email || !password) { toast.error("Please enter your email and password"); return; }
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
@@ -37,6 +44,87 @@ export default function SignIn() {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!resetEmail.trim()) { toast.error("Please enter your email address"); return; }
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setResetSent(true);
+    }
+    setResetLoading(false);
+  };
+
+  // ---- Forgot Password View ----
+  if (showForgot) {
+    return (
+      <div className="flex min-h-[100dvh] items-center justify-center bg-slate-50 px-4 py-8">
+        <div className="bg-white rounded-2xl w-full max-w-md p-8 shadow-xl border border-slate-200">
+          <div className="flex items-center gap-2 text-primary font-bold text-2xl mb-6 justify-center">
+            <BookOpen className="h-7 w-7" />
+            <span>AcademiQ</span>
+          </div>
+
+          {resetSent ? (
+            <div className="text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
+                <svg className="h-7 w-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 mb-2">Check your email</h2>
+              <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                We sent a password reset link to <span className="font-semibold text-slate-700">{resetEmail}</span>. Check your inbox and follow the link to reset your password.
+              </p>
+              <p className="text-xs text-slate-400 mb-6">Didn't get it? Check your spam folder or try again.</p>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => { setResetSent(false); setResetEmail(""); setShowForgot(false); }}
+              >
+                Back to Sign In
+              </Button>
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={() => setShowForgot(false)}
+                className="mb-4 flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" /> Back to sign in
+              </button>
+              <h2 className="text-2xl font-bold text-slate-900 mb-1">Reset your password</h2>
+              <p className="text-slate-500 text-sm mb-6">Enter your email and we'll send you a reset link.</p>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email">Email address</Label>
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    value={resetEmail}
+                    onChange={e => setResetEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    onKeyDown={e => e.key === "Enter" && handleResetPassword()}
+                    autoFocus
+                  />
+                </div>
+                <Button className="w-full" onClick={handleResetPassword} disabled={resetLoading}>
+                  {resetLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Send reset link
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Sign In View ----
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-slate-50 px-4 py-8">
       <div className="bg-white rounded-2xl w-full max-w-md p-8 shadow-xl border border-slate-200">
@@ -68,17 +156,39 @@ export default function SignIn() {
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="you@example.com"
+            />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e => e.key === "Enter" && handleSignIn()} />
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Password</Label>
+              <button
+                onClick={() => { setResetEmail(email); setShowForgot(true); }}
+                className="text-xs font-medium text-primary hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="••••••••"
+              onKeyDown={e => e.key === "Enter" && handleSignIn()}
+            />
           </div>
           <Button className="w-full" onClick={handleSignIn} disabled={loading}>
             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             Sign In
           </Button>
         </div>
+
         <p className="text-center text-slate-500 text-sm mt-6">
           Don't have an account?{" "}
           <Link href="/sign-up" className="text-indigo-600 font-semibold hover:text-indigo-700">Sign up</Link>
