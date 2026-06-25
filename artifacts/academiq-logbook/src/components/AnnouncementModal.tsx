@@ -1,19 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Sparkles, Rocket } from "lucide-react";
 
-const DISMISSED_KEY = "academiq_announcement_v1_dismissed";
-
 export default function AnnouncementModal() {
   const [visible, setVisible] = useState(false);
   const [countdown, setCountdown] = useState(30);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    // Only show if not dismissed before
-    const dismissed = localStorage.getItem(DISMISSED_KEY);
-    if (dismissed) return;
-
-    // Slight delay so dashboard renders first
+    // Show on every dashboard load/refresh
     const showTimer = setTimeout(() => setVisible(true), 800);
     return () => clearTimeout(showTimer);
   }, []);
@@ -38,7 +32,6 @@ export default function AnnouncementModal() {
 
   const dismiss = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    localStorage.setItem(DISMISSED_KEY, "true");
     setVisible(false);
   };
 
