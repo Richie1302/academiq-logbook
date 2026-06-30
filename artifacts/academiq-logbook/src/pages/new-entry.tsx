@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, RefreshCcw, AlignLeft, AlignJustify, Lightbulb, X } from "lucide-react";
 import EntryQualityScore from "@/components/EntryQualityScore";
+import WhatsAppSharePrompt from "@/components/WhatsAppSharePrompt";
 
 type RewriteMode = "concise" | "detailed";
 
@@ -51,6 +52,7 @@ export default function NewEntry() {
   const [rewriteMode, setRewriteMode] = useState<RewriteMode>("concise");
   const [showTemplates, setShowTemplates] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
+  const [shareDismissed, setShareDismissed] = useState(false);
 
   const rewriteMutation = useRewriteEntry();
   const createMutation = useCreateEntry();
@@ -104,7 +106,7 @@ export default function NewEntry() {
     rewriteMutation.mutate(
       { data: { rawActivity, date, week: week ? parseInt(week, 10) : null, mode } },
       {
-        onSuccess: (res) => { setRewritten(res.rewrittenEntry); toast.success("Entry rewritten successfully"); },
+        onSuccess: (res) => { setRewritten(res.rewrittenEntry); setShareDismissed(false); toast.success("Entry rewritten successfully"); },
         onError: () => { toast.error("Failed to rewrite. Please try again."); },
       }
     );
@@ -306,6 +308,11 @@ export default function NewEntry() {
       {/* Quality score — shown after AI rewrites */}
       {rewritten && (
         <EntryQualityScore entryText={rewritten} />
+      )}
+
+      {/* WhatsApp share prompt — peak delight moment after AI rewrite */}
+      {rewritten && !shareDismissed && (
+        <WhatsAppSharePrompt onDismiss={() => setShareDismissed(true)} />
       )}
 
       <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 pt-4 border-t">
