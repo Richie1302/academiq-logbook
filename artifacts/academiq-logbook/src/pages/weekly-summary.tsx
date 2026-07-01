@@ -88,7 +88,7 @@ export default function WeeklySummary() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-6 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-3xl mx-auto flex flex-col gap-6 pb-8">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold font-serif tracking-tight">Weekly Summary</h1>
         <p className="text-muted-foreground">Generate a polished summary of any week's entries in one click.</p>
@@ -174,7 +174,7 @@ export default function WeeklySummary() {
 
       {/* Generated summary */}
       {summary && (
-        <Card className="border-primary/20 shadow-md bg-card relative overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+        <Card className="border-primary/20 shadow-md bg-card relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
           <CardHeader className="border-b bg-muted/10">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">

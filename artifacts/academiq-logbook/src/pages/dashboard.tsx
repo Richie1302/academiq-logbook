@@ -34,7 +34,7 @@ export default function Dashboard() {
   const hasStreak3 = (stats?.currentStreak ?? 0) >= 3 || (stats?.longestStreak ?? 0) >= 3;
 
   return (
-    <div className="flex flex-col gap-8 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+    <div className="flex flex-col gap-8 pb-8 relative">
       <AnnouncementModal />
       {/* Mobile FAB */}
       <Link href="/entry/new">

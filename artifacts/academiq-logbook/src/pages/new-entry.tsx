@@ -150,7 +150,7 @@ export default function NewEntry() {
   const charColor = charCount > 800 ? "text-amber-500" : charCount > 500 ? "text-blue-500" : "text-muted-foreground";
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-6 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-3xl mx-auto flex flex-col gap-6 pb-8">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold font-serif tracking-tight">New Logbook Entry</h1>
         <p className="text-muted-foreground">Document your daily SIWES activities.</p>

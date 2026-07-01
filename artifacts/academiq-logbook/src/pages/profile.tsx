@@ -159,7 +159,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col gap-6 pb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-2xl mx-auto flex flex-col gap-6 pb-8">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold font-serif tracking-tight">My Profile</h1>
         <p className="text-muted-foreground">Keep this updated — it appears on your exported PDF logbook.</p>

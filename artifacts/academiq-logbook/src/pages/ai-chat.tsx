@@ -89,7 +89,7 @@ export default function AIChatAssistant() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100dvh-10rem)] md:h-[calc(100dvh-8rem)] gap-0 pb-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100dvh-10rem)] md:h-[calc(100dvh-8rem)] gap-0 pb-2">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 shrink-0">
         <div>
