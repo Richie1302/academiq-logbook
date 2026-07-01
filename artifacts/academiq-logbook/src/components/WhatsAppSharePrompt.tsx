@@ -24,7 +24,7 @@ export default function WhatsAppSharePrompt({ onDismiss }: Props) {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
       <button
         onClick={handleDismiss}
         className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full text-muted-foreground hover:bg-emerald-100 hover:text-foreground transition-colors"

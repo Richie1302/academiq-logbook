@@ -272,7 +272,7 @@ export default function NewEntry() {
 
       {/* AI output */}
       {rewritten !== null && (
-        <Card className="border-primary/20 shadow-md bg-card relative overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+        <Card className="border-primary/20 shadow-md bg-card relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
           <CardHeader className="pb-3 border-b bg-muted/10">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
