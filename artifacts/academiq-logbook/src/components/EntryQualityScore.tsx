@@ -45,8 +45,8 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
   return (
     <div className="flex items-center gap-3">
       <span className="text-xs text-muted-foreground w-28 shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-        <div className={`h-full ${color} rounded-full transition-all duration-700`} style={{ width: `${score * 10}%` }} />
+      <div className="flex-1 h-1.5 bg-muted rounded-full">
+        <div className={`h-full ${color} rounded-full`} style={{ width: `${score * 10}%` }} />
       </div>
       <span className="text-xs font-bold w-6 text-right">{score}</span>
     </div>
@@ -90,7 +90,7 @@ export default function EntryQualityScore({ entryText, compact = false }: Props)
   }
 
   return (
-    <div className="rounded-xl border border-muted/60 bg-card overflow-hidden">
+    <div className="rounded-xl border border-muted/60 bg-card">
       <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/10">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
