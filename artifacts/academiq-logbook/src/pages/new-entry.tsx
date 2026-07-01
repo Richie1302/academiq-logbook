@@ -272,8 +272,8 @@ export default function NewEntry() {
 
       {/* AI output */}
       {rewritten !== null && (
-        <Card className="border-primary/20 shadow-md bg-card relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+        <Card className="border-primary/20 shadow-md bg-card relative">
+          <div className="absolute top-0 left-0 w-1 h-full bg-primary rounded-l-lg" />
           <CardHeader className="pb-3 border-b bg-muted/10">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
@@ -297,7 +297,7 @@ export default function NewEntry() {
           </CardHeader>
           <CardContent className="p-0">
             <Textarea
-              className="min-h-[150px] font-serif text-base leading-loose border-0 focus-visible:ring-0 bg-transparent resize-none w-full p-6"
+              className="h-48 max-h-64 font-serif text-base leading-relaxed border-0 focus-visible:ring-0 bg-transparent resize-none w-full p-6 overflow-y-auto"
               value={rewritten}
               onChange={(e) => setRewritten(e.target.value)}
             />
