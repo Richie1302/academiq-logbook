@@ -272,47 +272,47 @@ export default function NewEntry() {
 
       {/* AI output */}
       {rewritten !== null && (
-        <Card className="border-primary/20 shadow-md bg-card relative">
-          <div className="absolute top-0 left-0 w-1 h-full bg-primary rounded-l-lg" />
-          <CardHeader className="pb-3 border-b bg-muted/10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" /> Professional Entry
-                </CardTitle>
-                <CardDescription>
-                  {rewriteMode === "concise" ? "Concise mode · 2-3 sentences" : "Detailed mode · 4-6 sentences"} · Feel free to edit before saving.
-                </CardDescription>
-              </div>
-              <div className="flex gap-2 self-end sm:self-auto">
-                <Button variant="outline" size="sm" onClick={() => handleRewrite(rewriteMode)} className="gap-2" disabled={rewriteMutation.isPending}>
-                  <RefreshCcw className={`h-4 w-4 ${rewriteMutation.isPending ? "animate-spin" : ""}`} /> Regenerate
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">
-                  {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  {isCopied ? "Copied" : "Copy"}
-                </Button>
-              </div>
+        <div className="border border-primary/20 rounded-xl bg-card relative" style={{ isolation: "isolate" }}>
+          <div className="absolute top-0 left-0 w-1 h-full bg-primary rounded-l-xl" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b bg-muted/10 px-6 pt-4 rounded-t-xl">
+            <div>
+              <p className="text-lg font-semibold flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" /> Professional Entry
+              </p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {rewriteMode === "concise" ? "Concise mode · 2-3 sentences" : "Detailed mode · 4-6 sentences"} · Feel free to edit before saving.
+              </p>
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <Textarea
-              className="h-48 max-h-64 font-serif text-base leading-relaxed border-0 focus-visible:ring-0 bg-transparent resize-none w-full p-6 overflow-y-auto"
-              value={rewritten}
-              onChange={(e) => setRewritten(e.target.value)}
-            />
-          </CardContent>
-        </Card>
+            <div className="flex gap-2 self-end sm:self-auto">
+              <Button variant="outline" size="sm" onClick={() => handleRewrite(rewriteMode)} className="gap-2" disabled={rewriteMutation.isPending}>
+                <RefreshCcw className={`h-4 w-4 ${rewriteMutation.isPending ? "animate-spin" : ""}`} /> Regenerate
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">
+                {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                {isCopied ? "Copied" : "Copy"}
+              </Button>
+            </div>
+          </div>
+          <Textarea
+            className="h-48 max-h-64 font-serif text-base leading-relaxed border-0 focus-visible:ring-0 bg-transparent resize-none w-full p-6 overflow-y-auto rounded-b-xl"
+            value={rewritten}
+            onChange={(e) => setRewritten(e.target.value)}
+          />
+        </div>
       )}
 
       {/* Quality score — shown after AI rewrites */}
       {rewritten && (
-        <EntryQualityScore entryText={rewritten} />
+        <div style={{ isolation: "isolate" }}>
+          <EntryQualityScore entryText={rewritten} />
+        </div>
       )}
 
-      {/* WhatsApp share prompt — peak delight moment after AI rewrite */}
+      {/* WhatsApp share prompt */}
       {rewritten && !shareDismissed && (
-        <WhatsAppSharePrompt onDismiss={() => setShareDismissed(true)} />
+        <div style={{ isolation: "isolate" }}>
+          <WhatsAppSharePrompt onDismiss={() => setShareDismissed(true)} />
+        </div>
       )}
 
       <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 pt-4 border-t">
