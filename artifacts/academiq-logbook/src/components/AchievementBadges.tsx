@@ -172,7 +172,7 @@ export default function AchievementBadges({
         {badges.map((badge) => (
           <div
             key={badge.id}
-            className={`relative flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-all ${
+            className={`relative flex flex-col items-center gap-2 rounded-2xl border p-4 text-center ${
               badge.earned
                 ? "border-border bg-card shadow-sm"
                 : "border-dashed border-muted bg-muted/20 opacity-60"
@@ -193,7 +193,7 @@ export default function AchievementBadges({
             {!badge.earned && badge.progress !== undefined && badge.progress > 0 && (
               <div className="w-full">
                 <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
-                  <div className="h-full bg-primary/40 rounded-full transition-all" style={{ width: `${badge.progress}%` }} />
+                  <div className="h-full bg-primary/40 rounded-full" style={{ width: `${badge.progress}%` }} />
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-1">{badge.progressLabel}</p>
               </div>

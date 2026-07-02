@@ -91,7 +91,7 @@ export default function OnboardingChecklist({ profileComplete, hasFirstEntry, ha
           {/* Progress bar */}
           <div className="mt-3 h-1.5 w-full bg-violet-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-violet-500 rounded-full transition-all duration-700"
+              className="h-full bg-violet-500 rounded-full"
               style={{ width: `${progress}%` }}
             />
           </div>

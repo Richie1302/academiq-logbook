@@ -120,7 +120,7 @@ export default function Onboarding() {
           {/* Progress bar */}
           <div className="mt-4 h-1.5 bg-slate-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary rounded-full transition-all duration-500"
+              className="h-full bg-primary rounded-full"
               style={{ width: `${((step) / STEPS.length) * 100}%` }}
             />
           </div>
