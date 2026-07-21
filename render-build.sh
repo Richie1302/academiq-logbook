@@ -1,17 +1,11 @@
 #!/bin/bash
 set -e
 
-echo "=== Installing pnpm ==="
-npm install -g pnpm
-
-echo "=== Installing dependencies ==="
-pnpm install --no-frozen-lockfile
-
-echo "=== Approving builds ==="
-pnpm approve-builds --yes 2>/dev/null || true
+echo "=== Using npx to run pnpm without global install ==="
+npx --yes pnpm@9 install --no-frozen-lockfile --shamefully-hoist
 
 echo "=== Building api-server ==="
 cd artifacts/api-server
-node build.mjs
+npx --yes pnpm@9 run build
 
 echo "=== Build complete ==="
