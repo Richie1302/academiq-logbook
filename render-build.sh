@@ -24,19 +24,17 @@ cat > artifacts/api-server/package.json << 'PKGJSON'
     "@supabase/supabase-js": "^2.49.0",
     "express-rate-limit": "^7.4.0",
     "helmet": "^8.0.0",
-    "pg": "^8.13.3"
-  },
-  "devDependencies": {
+    "pg": "^8.13.3",
+    "esbuild": "^0.27.3",
+    "esbuild-plugin-pino": "^2.3.3",
+    "pino-pretty": "^13",
+    "thread-stream": "3.1.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.3.3",
     "@types/pg": "^8.11.11",
     "@types/jsonwebtoken": "^9.0.7",
-    "esbuild": "^0.27.3",
-    "esbuild-plugin-pino": "^2.3.3",
-    "pino-pretty": "^13",
-    "thread-stream": "3.1.0",
     "typescript": "^5.9.3"
   }
 }
@@ -53,9 +51,9 @@ cp -r lib/db/src/* artifacts/api-server/node_modules/@workspace/db/src/
 echo '{"name":"@workspace/db","version":"0.0.0","type":"module","exports":{".":"./src/index.ts"}}' \
   > artifacts/api-server/node_modules/@workspace/db/package.json
 
-echo "=== Installing dependencies ==="
+echo "=== Installing dependencies (including dev) ==="
 cd artifacts/api-server
-npm install --legacy-peer-deps
+NODE_ENV=development npm install --legacy-peer-deps
 
 echo "=== Building ==="
 node build.mjs
