@@ -1,12 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== Setting up build directory ==="
-mkdir -p /tmp/render-build
-cp -r . /tmp/render-build/
-cd /tmp/render-build
-
-echo "=== Creating npm-compatible package.json for api-server ==="
+echo "=== Creating npm-compatible package.json ==="
 cat > artifacts/api-server/package.json << 'PKGJSON'
 {
   "name": "@workspace/api-server",
@@ -47,7 +42,7 @@ cat > artifacts/api-server/package.json << 'PKGJSON'
 }
 PKGJSON
 
-echo "=== Copying workspace packages as local deps ==="
+echo "=== Copying workspace packages ==="
 mkdir -p artifacts/api-server/node_modules/@workspace/api-zod/src
 cp -r lib/api-zod/src/* artifacts/api-server/node_modules/@workspace/api-zod/src/
 echo '{"name":"@workspace/api-zod","version":"0.0.0","type":"module","exports":{".":"./src/index.ts"}}' \
@@ -58,14 +53,11 @@ cp -r lib/db/src/* artifacts/api-server/node_modules/@workspace/db/src/
 echo '{"name":"@workspace/db","version":"0.0.0","type":"module","exports":{".":"./src/index.ts"}}' \
   > artifacts/api-server/node_modules/@workspace/db/package.json
 
-echo "=== Installing npm dependencies ==="
+echo "=== Installing dependencies ==="
 cd artifacts/api-server
 npm install --legacy-peer-deps
 
 echo "=== Building ==="
 node build.mjs
-
-echo "=== Copying dist back ==="
-cp -r dist /opt/render/project/src/artifacts/api-server/
 
 echo "=== Build complete ==="
