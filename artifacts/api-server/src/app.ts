@@ -24,6 +24,7 @@ app.use(
 
 const ALLOWED_ORIGINS = [
   'https://academiq-logbook.vercel.app',
+  'https://academiq-api-wfh3.onrender.com',
   'http://localhost:5173',
 ];
 
