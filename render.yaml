@@ -1,8 +1,9 @@
 services:
   - type: web
     name: academiq-api
+    plan: free
     runtime: node
-    buildCommand: npm install -g pnpm@latest --prefix /home/render && export PATH="/home/render/bin:$PATH" && pnpm install --shamefully-hoist --no-frozen-lockfile && pnpm --filter @workspace/api-server build
+    buildCommand: corepack pnpm install --shamefully-hoist --no-frozen-lockfile && corepack pnpm --filter @workspace/api-server build
     startCommand: node --enable-source-maps ./artifacts/api-server/dist/index.mjs
     envVars:
       - key: NODE_ENV
