@@ -414,6 +414,57 @@ You are warm, encouraging, and conversational. You speak plainly — no unnecess
   }
 });
 
+// POST /entries/generic-check — AI detects generic/clichéd phrases in a logbook entry
+router.post("/entries/generic-check", requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const { entryText } = req.body;
+
+  if (!entryText || typeof entryText !== "string" || entryText.trim().length < 10) {
+    res.status(400).json({ error: "entryText is required and must be at least 10 characters" });
+    return;
+  }
+
+  const openai = new OpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
+  });
+
+  const prompt = `You are an expert reviewer of Nigerian university SIWES (Student Industrial Work Experience Scheme) logbook entries. Your job is to detect overly generic, clichéd, or copy-paste-sounding language that lacks personal authenticity.
+
+Analyze the entry below and return ONLY valid JSON with no markdown, no explanation, in exactly this structure:
+{
+  "genericityScore": <0-100, where 0 = completely original/personal, 100 = completely generic/copy-paste>,
+  "verdict": "<one of: 'Original', 'Slightly Generic', 'Very Generic', 'Copy-Paste Risk'>",
+  "flaggedPhrases": ["<exact phrase from the entry that is generic>", ...],
+  "suggestions": ["<specific rewrite suggestion for each flagged phrase>", ...],
+  "summary": "<one sentence overall assessment>"
+}
+
+Common Nigerian SIWES clichés to watch for (but don't limit to these):
+- "I was opportuned to", "I gained exposure to", "I was able to observe", "I was taught how to", 
+- "under the supervision of my supervisor", "I learnt a lot", "it was a great experience",
+- "I was introduced to", "I familiarized myself with", "the experience was enlightening",
+- "I was privileged to", "I got to understand", "I was shown how to"
+
+Entry: "${entryText.substring(0, 800)}"`;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 600,
+      temperature: 0.2,
+    });
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? "{}";
+    const clean = raw.replace(/```json|```/g, "").trim();
+    const result = JSON.parse(clean);
+    res.json(result);
+  } catch (err: any) {
+    console.error("[GENERIC_CHECK_ERROR]", err?.message);
+    res.status(500).json({ error: "Failed to check entry. Please try again." });
+  }
+});
+
 // POST /entries/quality-score — AI quality score for a logbook entry (proxied through backend)
 router.post("/entries/quality-score", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const { entryText } = req.body;
@@ -453,4 +504,131 @@ Entry: "${entryText.substring(0, 800)}"`;
   }
 });
 
+// POST /entries/bulk-generate — AI generates multiple weeks of daily entries and saves to DB
+router.post("/entries/bulk-generate", requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const userId = (req as any).userId as string;
+  const {
+    startWeek,
+    numWeeks,
+    startDate,
+    company,
+    department,
+    supervisor,
+    activities,
+    format = "standard",
+  } = req.body;
+
+  if (!startWeek || !numWeeks || !startDate || !activities) {
+    res.status(400).json({ error: "startWeek, numWeeks, startDate, and activities are required." });
+    return;
+  }
+
+  const totalWeeks = Math.min(Math.max(parseInt(numWeeks, 10), 1), 24);
+  const firstDay = new Date(startDate);
+
+  if (isNaN(firstDay.getTime())) {
+    res.status(400).json({ error: "Invalid startDate. Use YYYY-MM-DD format." });
+    return;
+  }
+
+  const openai = new OpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey: process.env.GROQ_API_KEY,
+  });
+
+  const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const savedEntries: any[] = [];
+
+  for (let w = 0; w < totalWeeks; w++) {
+    const weekNumber = parseInt(startWeek, 10) + w;
+
+    // Build dates for Mon–Fri of this week
+    const weekDates = dayNames.map((_, dayIdx) => {
+      const d = new Date(firstDay);
+      d.setDate(firstDay.getDate() + w * 7 + dayIdx);
+      return d.toISOString().slice(0, 10);
+    });
+
+    const formatInstruction =
+      format === "structured"
+        ? `For each day, write exactly in this format (keep it very short — fits a physical logbook line):
+[Day name], [Date]
+Activities: <1–2 short sentences of what was done>
+Challenges: <1 short sentence>
+Solutions: <1 short sentence>`
+        : `For each day, write a single short paragraph (2–3 sentences max). Professional, past tense, first person. Fits on a logbook page.`;
+
+    const weekContext = w === 0
+      ? "first week (orientation, introductions, understanding the environment)"
+      : w < Math.floor(totalWeeks / 2)
+      ? "early weeks (getting assigned to real tasks, learning workflows)"
+      : w < totalWeeks - 1
+      ? "mid-to-late weeks (taking on more responsibilities, solving problems independently)"
+      : "final week (wrapping up, completing documentation, reviewing work done)";
+
+    const prompt = `You generate SIWES (Student Industrial Work Experience Scheme) logbook entries for Nigerian university students.
+
+Generate 5 daily entries for Week ${weekNumber} of SIWES training (${weekContext}).
+
+Details:
+- Company/Organisation: ${company || "the company"}
+- Department: ${department || "the department"}
+- Supervisor: ${supervisor || "the supervisor"}
+- General activities done during training: ${activities.slice(0, 500)}
+
+${formatInstruction}
+
+Rules:
+- Keep each day entry SHORT — maximum 60 words per day
+- Vary the activities realistically across the 5 days — no copy-paste repetition
+- First person, past tense
+- Sound like a real student, not a corporate document
+- No extra commentary — just the 5 daily entries, one per line block
+
+Output exactly 5 entries labelled Day 1 through Day 5. Nothing else.`;
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 800,
+        temperature: 0.75,
+      });
+
+      const rawOutput = completion.choices[0]?.message?.content?.trim() ?? "";
+
+      // Split by "Day N" markers
+      const dayBlocks = rawOutput.split(/\bDay\s+\d+[:\-]?\s*/i).filter(Boolean);
+
+      for (let dayIdx = 0; dayIdx < 5; dayIdx++) {
+        const entryText = dayBlocks[dayIdx]?.trim() ?? "";
+        if (!entryText) continue;
+
+        const date = weekDates[dayIdx];
+        const dayOfWeek = dayNames[dayIdx];
+
+        const [saved] = await db
+          .insert(entriesTable)
+          .values({
+            userId,
+            date,
+            rawActivity: activities.slice(0, 500),
+            rewrittenEntry: entryText,
+            week: weekNumber,
+            dayOfWeek,
+          })
+          .returning();
+
+        if (saved) savedEntries.push(serializeRow(saved));
+      }
+    } catch (err: any) {
+      console.error(`[BULK_GENERATE_ERROR] Week ${weekNumber}:`, err?.message);
+      // Continue to next week rather than aborting everything
+    }
+  }
+
+  res.status(201).json({ entries: savedEntries, totalGenerated: savedEntries.length });
+});
+
 export default router;
+

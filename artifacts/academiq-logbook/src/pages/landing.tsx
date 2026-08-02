@@ -18,7 +18,6 @@ import {
   Twitter,
   Instagram,
   Linkedin,
-  Plus,
   Box,
 } from "lucide-react";
 
@@ -291,6 +290,42 @@ function Features() {
             <div className="mt-2 flex justify-end">
               <div className="grid h-12 w-12 place-items-center rounded-xl bg-violet-100">
                 <ShieldCheck className="h-7 w-7 text-violet-600" />
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
+            <h3 className="text-lg font-bold">Word Export (.docx)</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Download your entries as a properly formatted Word document — Times New Roman 12pt, A4 margins, weekly page breaks.</p>
+            <div className="mt-4 flex justify-end">
+              <div className="grid h-14 w-14 place-items-center rounded-lg bg-sky-100 text-sky-600 shadow-md">
+                <Download className="h-7 w-7" />
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
+            <h3 className="text-lg font-bold">Bulk Entry Generator</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Describe your placement once and generate weeks of daily log entries in seconds — brief enough to copy into a physical book.</p>
+            <div className="mt-4 flex justify-end">
+              <div className="grid h-14 w-14 place-items-center rounded-lg bg-violet-100 text-violet-600 shadow-md">
+                <Brain className="h-7 w-7" />
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
+            <h3 className="text-lg font-bold">Cover Page Generator</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Generate a complete ITF-standard SIWES cover page with live preview — matric number, school, company, and supervisor included.</p>
+            <div className="mt-4 flex justify-end">
+              <div className="grid h-14 w-14 place-items-center rounded-lg bg-emerald-100 text-emerald-600 shadow-md">
+                <ClipboardList className="h-7 w-7" />
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
+            <h3 className="text-lg font-bold">Authenticity Check</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Catches overused SIWES clichés like 'I was opportuned to' and suggests specific, original rewrites that sound genuinely yours.</p>
+            <div className="mt-4 flex justify-end">
+              <div className="grid h-14 w-14 place-items-center rounded-lg bg-rose-100 text-rose-500 shadow-md">
+                <ShieldCheck className="h-7 w-7" />
               </div>
             </div>
           </div>

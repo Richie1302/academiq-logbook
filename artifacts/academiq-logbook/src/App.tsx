@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
-import { setBaseUrl, setAuthTokenGetter, useGetProfile } from "@workspace/api-client-react";
+import { setBaseUrl, setAuthTokenGetter, useGetProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
 import { supabase } from "@/lib/supabase";
 import { AppLayout } from "@/components/layout";
 import { Loader2 } from "lucide-react";
@@ -39,6 +39,8 @@ import Onboarding from "@/pages/onboarding";
 import WeeklySummary from "@/pages/weekly-summary";
 import AIChatAssistant from "@/pages/ai-chat";
 import SupervisorPortal from "@/pages/supervisor-portal";
+import BulkGenerate from "@/pages/bulk-generate";
+import CoverPage from "@/pages/cover-page";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -91,7 +93,7 @@ function ProtectedRoute({ component: Component, skipOnboarding }: {
   const { user, loading } = useAuth();
   const [timedOut, setTimedOut] = useState(false);
   const { data: profile, isLoading: profileLoading, isError: profileError } = useGetProfile({
-    query: { retry: 1, enabled: !!user, staleTime: 30000 },
+    query: { queryKey: getGetProfileQueryKey(), retry: 1, enabled: !!user, staleTime: 30000 },
   });
 
   // Safety valve — if profile hasn't resolved in 5s, stop waiting and let user through
@@ -168,6 +170,8 @@ function AppRoutes() {
         <Route path="/settings">{() => <ProtectedRoute component={Settings} />}</Route>
         <Route path="/summary">{() => <ProtectedRoute component={WeeklySummary} />}</Route>
         <Route path="/chat">{() => <ProtectedRoute component={AIChatAssistant} />}</Route>
+        <Route path="/bulk-generate">{() => <ProtectedRoute component={BulkGenerate} />}</Route>
+        <Route path="/cover-page">{() => <ProtectedRoute component={CoverPage} />}</Route>
         <Route component={NotFound} />
       </Switch>
     </>

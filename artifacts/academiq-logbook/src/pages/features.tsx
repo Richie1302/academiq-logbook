@@ -89,6 +89,34 @@ const features = [
     desc: "Not loving the first draft? Hit regenerate or edit it yourself. You can revise as many times as you want before saving — no limits.",
     tags: ["Regenerate", "Manual edit", "Version history"],
   },
+  {
+    icon: Zap,
+    color: "bg-violet-100 text-violet-600",
+    title: "Bulk Entry Generator",
+    desc: "Need to fill weeks of entries fast? Describe your placement once, set the number of weeks, and AcademiQ generates all your daily logs in one go — brief enough to copy into a physical book.",
+    tags: ["Multi-week", "Paper-ready", "One-shot"],
+  },
+  {
+    icon: FileText,
+    color: "bg-sky-100 text-sky-600",
+    title: "Word Document Export",
+    desc: "Download your logbook entries as a properly formatted Microsoft Word document — Times New Roman 12pt, A4 margins, weekly page breaks. Exactly what supervisors and institutions expect.",
+    tags: [".docx format", "Formatted", "Print-ready"],
+  },
+  {
+    icon: ClipboardList,
+    color: "bg-emerald-100 text-emerald-600",
+    title: "Cover Page Generator",
+    desc: "Generate a complete, institution-standard SIWES logbook cover page with your name, matric number, school, company, and supervisor details. Live preview. One-click PDF download.",
+    tags: ["Live preview", "PDF export", "ITF-standard"],
+  },
+  {
+    icon: ShieldCheck,
+    color: "bg-rose-100 text-rose-600",
+    title: "Authenticity Check",
+    desc: "AcademiQ scans your entries for overused Nigerian SIWES clichés — phrases like 'I was opportuned to' or 'I gained exposure to' — and suggests specific, authentic rewrites to replace them.",
+    tags: ["Cliché detection", "AI rewrites", "Copy-paste risk"],
+  },
 ];
 
 export default function Features() {

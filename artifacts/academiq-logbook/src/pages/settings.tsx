@@ -14,6 +14,25 @@ import { useListEntries, useGetProfile, getGetProfileQueryKey } from "@workspace
 import { exportEntriesToPDF } from "@/lib/pdf-export";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 
+const timeOptions = [
+  { value: "08:00", label: "8:00 AM" },
+  { value: "09:00", label: "9:00 AM" },
+  { value: "10:00", label: "10:00 AM" },
+  { value: "11:00", label: "11:00 AM" },
+  { value: "12:00", label: "12:00 PM" },
+  { value: "13:00", label: "1:00 PM" },
+  { value: "14:00", label: "2:00 PM" },
+  { value: "15:00", label: "3:00 PM" },
+  { value: "16:00", label: "4:00 PM" },
+  { value: "17:00", label: "5:00 PM" },
+  { value: "18:00", label: "6:00 PM" },
+  { value: "19:00", label: "7:00 PM" },
+  { value: "20:00", label: "8:00 PM" },
+  { value: "21:00", label: "9:00 PM" },
+  { value: "22:00", label: "10:00 PM" },
+  { value: "23:00", label: "11:00 PM" },
+];
+
 export default function Settings() {
   const { user, signOut } = useAuth();
   const [, setLocation] = useLocation();
@@ -219,20 +238,26 @@ export default function Settings() {
                   {isRegistered ? "Disable" : "Enable notifications"}
                 </Button>
               </div>
-              {isRegistered && (
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/10 rounded-lg border gap-4">
-                  <div>
-                    <p className="font-medium">Reminder time</p>
-                    <p className="text-sm text-muted-foreground">What time should we remind you?</p>
-                  </div>
-                  <input
-                    type="time"
-                    value={reminderTime}
-                    onChange={(e) => updateReminderTime(e.target.value)}
-                    className="rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/10 rounded-lg border gap-4">
+                <div>
+                  <p className="font-medium">Reminder time</p>
+                  <p className="text-sm text-muted-foreground">What time should we remind you?</p>
                 </div>
-              )}
+                <select
+                  value={reminderTime}
+                  onChange={(e) => updateReminderTime(e.target.value)}
+                  className="rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
+                >
+                  {timeOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                  {reminderTime && !timeOptions.some((opt) => opt.value === reminderTime) && (
+                    <option value={reminderTime}>{reminderTime} (Custom)</option>
+                  )}
+                </select>
+              </div>
             </CardContent>
           </Card>
         )}

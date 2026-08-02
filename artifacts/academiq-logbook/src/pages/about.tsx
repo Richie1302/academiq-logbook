@@ -40,11 +40,11 @@ const stats = [
 
 const team = [
   {
-    name: "Caleb Ogundiran",
-    role: "Founder & CEO",
-    bio: "Cybersecurity grad, full-stack developer, and the person who got tired of watching classmates stress about logbooks every single year. So he built the fix.",
+    name: "Ogundiran Caleb Ayodeji",
+    role: "Founder & Developer",
+    bio: "Cybersecurity student at Caleb University Lagos. Built AcademiQ after going through SIWES himself and realising the logbook was the hardest part of a programme that was supposed to be about real-world experience.",
     img: "/avatar-femi.jpg",
-    tag: "Builder",
+    tag: "Founder",
   },
   {
     name: "Product Team",
@@ -85,20 +85,23 @@ export default function About() {
         <div className="mx-auto max-w-5xl px-6">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">Our story</p>
-              <h2 className="mt-3 text-3xl font-bold leading-snug">Started by someone who lived through it</h2>
+              <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">The story behind it</p>
+              <h2 className="mt-3 text-3xl font-bold leading-snug">Built by a student who lived through it</h2>
               <div className="mt-5 space-y-4 text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  Caleb Ogundiran founded AcademiQ after going through SIWES himself at Caleb University Lagos. He watched his coursemates — and honestly, himself too — rush to fill in weeks of missing entries the night before submission.
+                  My name is Ogundiran Caleb Ayodeji, a Cybersecurity student at Caleb University Lagos. AcademiQ came out of a problem I dealt with personally during my own SIWES.
                 </p>
                 <p>
-                  The entries were rushed, badly written, and didn't reflect anything close to the actual work done. Supervisors weren't impressed. Students were stressed. And no one was getting any real value from the experience.
+                  Writing logbook entries was genuinely difficult. After a full day at my placement, I would sit down to write and draw a complete blank. How do you turn something like "I helped configure a router today" into a proper, professional entry that actually reads well? I had no idea. That feeling of not knowing how to capture real work in words stuck with me long after my SIWES ended.
                 </p>
                 <p>
-                  Caleb figured that if students had a tool that made daily logging genuinely quick and easy — one that actually understood SIWES — the whole experience would be different. So he built it.
+                  I looked around and realised there was nothing built specifically for this problem. Every student was going through the same thing and struggling alone. So I built AcademiQ. A tool that takes what you did in plain, everyday language and turns it into a well-structured, professional logbook entry.
                 </p>
                 <p>
-                  AcademiQ launched in 2024. Since then, over 10,000 students across Nigeria have used it to write better logbooks, stress less, and actually impress their supervisors.
+                  I am a self-taught full-stack engineer and I built this entirely solo as a student. No funding, no team, just a clear problem and the determination to solve it. It has been challenging but AcademiQ is now being used daily by students across Nigerian universities and it keeps growing.
+                </p>
+                <p>
+                  There is still a lot more on the roadmap — a placement board, Pro features, and bigger things ahead. But every decision I make for this product comes back to the same motivation. I just wanted to build the tool I wish I had when I was the one sitting there with a blank page and a long day behind me.
                 </p>
               </div>
             </div>

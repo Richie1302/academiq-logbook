@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { X, Sparkles, Rocket } from "lucide-react";
+import { X, Sparkles, CheckCircle2 } from "lucide-react";
+
+const ANNOUNCEMENT_KEY = "academiq_announcement_v2_dismissed";
 
 export default function AnnouncementModal() {
   const [visible, setVisible] = useState(false);
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(25);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    // Show on every dashboard load/refresh
     const showTimer = setTimeout(() => setVisible(true), 800);
     return () => clearTimeout(showTimer);
   }, []);
@@ -37,7 +38,7 @@ export default function AnnouncementModal() {
 
   if (!visible) return null;
 
-  const progress = ((30 - countdown) / 30) * 100;
+  const progress = ((25 - countdown) / 25) * 100;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -68,42 +69,52 @@ export default function AnnouncementModal() {
           </button>
 
           {/* Content */}
-          <div className="px-8 pb-8 pt-8">
+          <div className="px-6 pb-6 pt-8">
             {/* Icon */}
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 shadow-lg shadow-violet-500/30">
-              <Rocket className="h-8 w-8 text-white" />
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 shadow-lg shadow-violet-500/30">
+              <Sparkles className="h-7 w-7 text-white animate-pulse" />
             </div>
 
             {/* Badge */}
-            <div className="mb-4 flex justify-center">
+            <div className="mb-3 flex justify-center">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                <Sparkles className="h-3 w-3" /> Coming Soon
+                New Features Live!
               </span>
             </div>
 
             {/* Headline */}
-            <h2 className="text-center text-2xl font-bold tracking-tight text-foreground">
-              Something big is coming to AcademiQ
+            <h2 className="text-center text-xl font-bold tracking-tight text-foreground">
+              What's New in AcademiQ
             </h2>
 
-            {/* Body */}
-            <p className="mt-3 text-center text-sm text-muted-foreground leading-relaxed">
-              We're building something that goes beyond the logbook. A new way for students to connect with real opportunities — verified, accessible, and built for you.
-            </p>
-
-            <p className="mt-3 text-center text-sm font-medium text-violet-600">
-              Stay tuned. You won't want to miss this. 🚀
-            </p>
+            {/* Feature list */}
+            <div className="mt-4 space-y-2.5 text-left bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+              {[
+                { title: "Bulk Logbook Generator", desc: "Generate weeks of logs at once, brief enough for paper books." },
+                { title: "Export to Word (.docx)", desc: "Download clean entries in Times New Roman 12pt format." },
+                { title: "Cover Page Generator", desc: "Instantly create print-ready SIWES cover pages." },
+                { title: "Authenticity Check", desc: "Scan and refine generic clichés or copy-paste risk." },
+                { title: "Custom Streak Reminders", desc: "Set your reminder hour with a time picker dropdown." },
+              ].map((f, i) => (
+                <div key={i} className="flex gap-2.5 items-start text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-violet-600 mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-semibold text-foreground">{f.title}:</span>{" "}
+                    <span className="text-muted-foreground">{f.desc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
 
             {/* Dismiss CTA */}
-            <div className="mt-7 flex flex-col items-center gap-2">
+            <div className="mt-5 flex flex-col items-center gap-2">
               <button
                 onClick={dismiss}
-                className="w-full rounded-xl bg-gradient-to-b from-violet-500 to-violet-700 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:opacity-95 transition"
+                className="w-full rounded-xl bg-gradient-to-b from-violet-500 to-violet-700 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:opacity-95 transition"
               >
-                Got it, I'm excited!
+                Let's explore!
               </button>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground">
                 Closes automatically in {countdown}s
               </p>
             </div>

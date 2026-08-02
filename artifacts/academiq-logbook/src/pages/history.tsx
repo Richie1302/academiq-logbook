@@ -8,12 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Trash2, Copy, Search, Calendar, ChevronDown, Check, Loader2, Hash, Edit, Download, FileDown } from "lucide-react";
+import { Trash2, Copy, Search, Calendar, ChevronDown, Check, Loader2, Hash, Edit, Download, FileDown, FileText } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { exportEntriesToPDF, exportSingleEntry, exportWeekEntries } from "@/lib/pdf-export";
+import { exportEntriesToDocx, exportSingleEntryToDocx, exportWeekEntriesToDocx } from "@/lib/docx-export";
 import EntryQualityScore from "@/components/EntryQualityScore";
+import GenericityCheck from "@/components/GenericityCheck";
 
 interface Entry {
   id: number;
@@ -115,10 +117,23 @@ export default function History() {
     toast.success("PDF exported");
   };
 
+  const handleExportAllDocx = () => {
+    if (!filteredEntries?.length) return;
+    exportEntriesToDocx(filteredEntries, profile, "siwes-logbook-full.docx");
+    localStorage.setItem("academiq_has_exported", "true");
+    toast.success("Word document exported");
+  };
+
   const handleExportWeek = () => {
     if (!filteredEntries?.length || !weekFilter) return;
     exportWeekEntries(filteredEntries, parseInt(weekFilter, 10), profile);
     toast.success(`Week ${weekFilter} exported`);
+  };
+
+  const handleExportWeekDocx = () => {
+    if (!filteredEntries?.length || !weekFilter) return;
+    exportWeekEntriesToDocx(filteredEntries, parseInt(weekFilter, 10), profile);
+    toast.success(`Week ${weekFilter} Word exported`);
   };
 
   return (
@@ -171,15 +186,27 @@ export default function History() {
       {filteredEntries && filteredEntries.length > 0 && (
         <div className="flex items-center gap-2 flex-wrap">
           {weekFilter ? (
-            <Button variant="outline" size="sm" onClick={handleExportWeek} className="gap-2">
-              <FileDown className="h-4 w-4" />
-              Export Week {weekFilter} PDF
-            </Button>
+            <>
+              <Button variant="outline" size="sm" onClick={handleExportWeek} className="gap-2">
+                <FileDown className="h-4 w-4" />
+                Export Week {weekFilter} PDF
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleExportWeekDocx} className="gap-2">
+                <FileText className="h-4 w-4" />
+                Export Week {weekFilter} Word
+              </Button>
+            </>
           ) : (
-            <Button variant="outline" size="sm" onClick={handleExportAll} className="gap-2">
-              <FileDown className="h-4 w-4" />
-              Export All as PDF
-            </Button>
+            <>
+              <Button variant="outline" size="sm" onClick={handleExportAll} className="gap-2">
+                <FileDown className="h-4 w-4" />
+                Export All as PDF
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleExportAllDocx} className="gap-2">
+                <FileText className="h-4 w-4" />
+                Export All as Word
+              </Button>
+            </>
           )}
           <p className="text-xs text-muted-foreground ml-1">
             {filteredEntries.length} {filteredEntries.length === 1 ? "entry" : "entries"}
@@ -243,6 +270,16 @@ export default function History() {
                         className="text-muted-foreground hover:text-foreground"
                       >
                         <Download className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Download as Word (.docx)"
+                        onClick={() => exportSingleEntryToDocx(entry, profile)}
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        <FileText className="h-4 w-4" />
                       </Button>
 
                       <Button
@@ -326,9 +363,10 @@ export default function History() {
                         </div>
                       </div>
                     </div>
-                    {/* Quality score */}
-                    <div className="px-5 pb-5">
+                    {/* Quality score + Authenticity check */}
+                    <div className="px-5 pb-5 space-y-3">
                       <EntryQualityScore entryText={entry.rewrittenEntry || entry.rawActivity} />
+                      <GenericityCheck entryText={entry.rewrittenEntry || entry.rawActivity} />
                     </div>
                   </CollapsibleContent>
                 </div>

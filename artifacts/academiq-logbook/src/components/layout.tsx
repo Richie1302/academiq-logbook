@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, PlusCircle, History, BookOpen, User, MessageCircle, FileText, Settings, Sparkles } from "lucide-react";
+import { LogOut, Home, PlusCircle, History, BookOpen, User, MessageCircle, FileText, Settings, Sparkles, Layers, BookMarked } from "lucide-react";
 
 // NavItem must be defined OUTSIDE AppLayout to avoid hook rule violations
 function NavItem({ href, label, icon: Icon, location }: {
@@ -32,6 +32,8 @@ const mainNav = [
 const aiNav = [
   { href: "/chat", label: "Ask AcademiQ", icon: MessageCircle },
   { href: "/summary", label: "Weekly Summary", icon: FileText },
+  { href: "/bulk-generate", label: "Bulk Generate", icon: Layers },
+  { href: "/cover-page", label: "Cover Page", icon: BookMarked },
 ];
 
 const accountNav = [
@@ -42,8 +44,8 @@ const accountNav = [
 const mobileNav = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/entry/new", label: "New Entry", icon: PlusCircle },
+  { href: "/bulk-generate", label: "Bulk Gen", icon: Layers },
   { href: "/history", label: "History", icon: History },
-  { href: "/chat", label: "Ask AI", icon: MessageCircle },
   { href: "/profile", label: "Profile", icon: User },
 ];
 

@@ -9,6 +9,10 @@ export default defineConfig({
     react(),
     tailwindcss({ optimize: false }),
   ],
+  define: {
+    global: "window",
+    "process.env": {},
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),

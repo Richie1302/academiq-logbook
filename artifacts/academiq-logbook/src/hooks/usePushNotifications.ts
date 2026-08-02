@@ -45,8 +45,19 @@ export function usePushNotifications() {
         localStorage.setItem("academiq_last_notif", todayKey);
         if (navigator.serviceWorker.controller) {
           navigator.serviceWorker.ready.then((reg) => {
-            reg.showNotification("AcademiQ — Daily Reminder", {
-              body: "Don't forget to write your logbook entry for today! It only takes 2 minutes.",
+            const streak = parseInt(localStorage.getItem("academiq_current_streak") || "0", 10);
+            const todayDone = localStorage.getItem("academiq_today_completed") === "true";
+
+            let title = "AcademiQ — Daily Reminder";
+            let body = "Don't forget to write your logbook entry for today! It only takes 2 minutes.";
+
+            if (streak > 0 && !todayDone) {
+              title = "Keep your streak alive!";
+              body = `Log today's entry to protect your ${streak}-day streak!`;
+            }
+
+            reg.showNotification(title, {
+              body,
               icon: "/logo.svg",
               badge: "/favicon.svg",
               tag: "daily-reminder",
@@ -71,7 +82,7 @@ export function usePushNotifications() {
         localStorage.setItem(NOTIF_ENABLED_KEY, "true");
         // Send a welcome notification immediately
         const reg = await navigator.serviceWorker.ready;
-        reg.showNotification("AcademiQ notifications enabled! 🎉", {
+        reg.showNotification("AcademiQ notifications enabled!", {
           body: "You'll get a daily reminder to write your logbook entry.",
           icon: "/logo.svg",
           tag: "welcome",

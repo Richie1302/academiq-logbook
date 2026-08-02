@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useGetEntryStats, useGetRecentEntries, useGetProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -33,6 +34,17 @@ export default function Dashboard() {
   const hasExported = localStorage.getItem("academiq_has_exported") === "true";
   const hasStreak3 = (stats?.currentStreak ?? 0) >= 3 || (stats?.longestStreak ?? 0) >= 3;
 
+  // Sync streak values for background notifications
+  useEffect(() => {
+    if (stats) {
+      localStorage.setItem("academiq_current_streak", String(stats.currentStreak ?? 0));
+    }
+  }, [stats]);
+
+  useEffect(() => {
+    localStorage.setItem("academiq_today_completed", String(!!todayEntry));
+  }, [todayEntry]);
+
   return (
     <div className="flex flex-col gap-8 pb-8 relative">
       <AnnouncementModal />
@@ -46,12 +58,32 @@ export default function Dashboard() {
       {/* Greeting */}
       <section className="flex flex-col gap-2">
         <h1 className="text-3xl md:text-4xl font-bold font-serif tracking-tight">
-          Hello, {displayName} 👋
+          Hello, {displayName}
         </h1>
         <p className="text-muted-foreground text-lg">
           Today is {formattedDate}. Let's make it count.
         </p>
       </section>
+
+      {/* Streak alert banner */}
+      {stats && stats.currentStreak > 0 && !todayEntry && (
+        <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-pulse">
+          <div className="flex items-center gap-3">
+            <Flame className="h-8 w-8 text-orange-500 animate-bounce shrink-0" />
+            <div>
+              <p className="font-semibold text-orange-950 dark:text-orange-200">Streak at Risk!</p>
+              <p className="text-sm text-orange-800/80 dark:text-orange-300/80">
+                Log today's activity to keep your <span className="font-bold">{stats.currentStreak}-day streak</span> going.
+              </p>
+            </div>
+          </div>
+          <Link href="/entry/new">
+            <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white border-none shadow-sm w-full sm:w-auto">
+              Log Today
+            </Button>
+          </Link>
+        </div>
+      )}
 
       {/* Onboarding checklist — shows until all done and dismissed */}
       <OnboardingChecklist
@@ -145,6 +177,8 @@ export default function Dashboard() {
           })}
         </div>
       </section>
+
+
 
       {/* Today's Action */}
       <section>

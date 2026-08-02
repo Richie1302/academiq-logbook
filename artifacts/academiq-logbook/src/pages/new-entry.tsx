@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, RefreshCcw, AlignLeft, AlignJustify, Lightbulb, X } from "lucide-react";
 import EntryQualityScore from "@/components/EntryQualityScore";
+import GenericityCheck from "@/components/GenericityCheck";
 import WhatsAppSharePrompt from "@/components/WhatsAppSharePrompt";
 
 type RewriteMode = "concise" | "detailed";
@@ -301,10 +302,11 @@ export default function NewEntry() {
         </div>
       )}
 
-      {/* Quality score — shown after AI rewrites */}
+      {/* Quality score + Authenticity check — shown after AI rewrites */}
       {rewritten && (
-        <div style={{ isolation: "isolate" }}>
+        <div style={{ isolation: "isolate" }} className="space-y-3">
           <EntryQualityScore entryText={rewritten} />
+          <GenericityCheck entryText={rewritten} />
         </div>
       )}
 
