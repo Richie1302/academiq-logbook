@@ -3,7 +3,7 @@ services:
     name: academiq-api
     plan: free
     runtime: node
-    buildCommand: corepack pnpm install --shamefully-hoist --no-frozen-lockfile && corepack pnpm --filter @workspace/api-server build
+    buildCommand: corepack pnpm install --shamefully-hoist --no-frozen-lockfile --production=false && corepack pnpm --filter @workspace/api-server build
     startCommand: node --enable-source-maps ./artifacts/api-server/dist/index.mjs
     envVars:
       - key: NODE_ENV
