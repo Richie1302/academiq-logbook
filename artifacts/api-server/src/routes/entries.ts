@@ -34,16 +34,15 @@ function serializeRow<T extends Record<string, unknown>>(row: T): T {
 }
 
 const TEXT_MODELS = [
-  "openai/gpt-oss-120b",
-  "openai/gpt-oss-20b",
-  "qwen/qwen3.8-27b",
-  "groq/compound",
-  "groq/compound-mini",
+  "llama-3.3-70b-versatile",
+  "llama3-70b-8192",
+  "mixtral-8x7b-32768",
+  "llama3-8b-8192",
 ];
 
 const VISION_MODELS = [
-  "qwen/qwen3.8-27b",
-  "openai/gpt-oss-120b",
+  "llama-3.2-90b-vision-preview",
+  "llama-3.2-11b-vision-preview",
 ];
 
 async function createGroqCompletion(openai: OpenAI, payload: any, isVision = false) {
