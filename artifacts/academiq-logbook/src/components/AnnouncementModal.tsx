@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Sparkles, CheckCircle2 } from "lucide-react";
 
-const ANNOUNCEMENT_KEY = "academiq_announcement_v2_dismissed";
+const ANNOUNCEMENT_KEY = "academiq_announcement_v3_dismissed";
 
 export default function AnnouncementModal() {
   const [visible, setVisible] = useState(false);
@@ -90,11 +90,11 @@ export default function AnnouncementModal() {
             {/* Feature list */}
             <div className="mt-4 space-y-2.5 text-left bg-slate-50/50 p-4 rounded-xl border border-slate-100">
               {[
-                { title: "Bulk Logbook Generator", desc: "Generate weeks of logs at once, brief enough for paper books." },
-                { title: "Export to Word (.docx)", desc: "Download clean entries in Times New Roman 12pt format." },
-                { title: "Cover Page Generator", desc: "Instantly create print-ready SIWES cover pages." },
-                { title: "Authenticity Check", desc: "Scan and refine generic clichés or copy-paste risk." },
-                { title: "Custom Streak Reminders", desc: "Set your reminder hour with a time picker dropdown." },
+                { title: "SIWES Technical Report Generator", desc: "Auto-compile logbook entries into complete 12-page institutional reports." },
+                { title: "Smart Figure & Workplace Photos", desc: "Attach site photos with auto-numbered figure captions (Fig 3.1)." },
+                { title: "Industry & Institutional Supervisors", desc: "Customize supervisor names and signature blocks for defense." },
+                { title: "PDF & Word (.doc) Export", desc: "Export formatted reports in Times New Roman 12pt bold headings." },
+                { title: "Bulk Logbook Generator", desc: "Generate weeks of daily logbook entries at once." },
               ].map((f, i) => (
                 <div key={i} className="flex gap-2.5 items-start text-xs">
                   <CheckCircle2 className="h-4 w-4 text-violet-600 mt-0.5 shrink-0" />

@@ -17,6 +17,10 @@ import { exportEntriesToDocx, exportSingleEntryToDocx, exportWeekEntriesToDocx }
 import EntryQualityScore from "@/components/EntryQualityScore";
 import GenericityCheck from "@/components/GenericityCheck";
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/lib/supabase";
+import { getApiUrl } from "@/lib/api-config";
+
 interface Entry {
   id: number;
   userId: string;
@@ -45,6 +49,10 @@ export default function History() {
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [editEntry, setEditEntry] = useState<Entry | null>(null);
   const [editForm, setEditForm] = useState({ date: "", rawActivity: "", rewrittenEntry: "", week: "", dayOfWeek: "" });
+
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const handleCopy = (id: number, text: string) => {
     navigator.clipboard.writeText(text);
@@ -109,6 +117,59 @@ export default function History() {
       entry.rawActivity.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (entry.rewrittenEntry && entry.rewrittenEntry.toLowerCase().includes(searchTerm.toLowerCase()))
   ) as Entry[] | undefined;
+
+  // Bulk selection handlers
+  const allSelected = filteredEntries?.length ? filteredEntries.every(e => selectedIds.has(e.id)) : false;
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else if (filteredEntries) {
+      setSelectedIds(new Set(filteredEntries.map(e => e.id)));
+    }
+  };
+
+  const toggleSelectOne = (id: number) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    setIsBulkDeleting(true);
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+
+      const res = await fetch(getApiUrl("/api/entries/bulk-delete"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ ids: Array.from(selectedIds) }),
+      });
+
+      if (!res.ok) throw new Error("Bulk delete failed");
+      const data = await res.json();
+
+      toast.success(`Successfully deleted ${data.deletedCount} entries.`);
+      setSelectedIds(new Set());
+
+      await queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getGetRecentEntriesQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getGetEntryStatsQueryKey() });
+      await queryClient.refetchQueries();
+    } catch {
+      toast.error("Failed to delete selected entries.");
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
 
   const handleExportAll = () => {
     if (!filteredEntries?.length) return;
@@ -182,35 +243,90 @@ export default function History() {
         </div>
       </div>
 
-      {/* Export buttons */}
+      {/* Select All & Export toolbar */}
       {filteredEntries && filteredEntries.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {weekFilter ? (
-            <>
-              <Button variant="outline" size="sm" onClick={handleExportWeek} className="gap-2">
-                <FileDown className="h-4 w-4" />
-                Export Week {weekFilter} PDF
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleExportWeekDocx} className="gap-2">
-                <FileText className="h-4 w-4" />
-                Export Week {weekFilter} Word
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button variant="outline" size="sm" onClick={handleExportAll} className="gap-2">
-                <FileDown className="h-4 w-4" />
-                Export All as PDF
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleExportAllDocx} className="gap-2">
-                <FileText className="h-4 w-4" />
-                Export All as Word
-              </Button>
-            </>
-          )}
-          <p className="text-xs text-muted-foreground ml-1">
-            {filteredEntries.length} {filteredEntries.length === 1 ? "entry" : "entries"}
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border bg-muted/20 shadow-sm">
+          <div className="flex items-center gap-3">
+            <Checkbox
+              id="select-all"
+              checked={allSelected}
+              onCheckedChange={toggleSelectAll}
+              className="h-5 w-5 rounded border-muted-foreground/40 data-[state=checked]:bg-primary"
+            />
+            <label htmlFor="select-all" className="text-sm font-medium cursor-pointer select-none">
+              Select All ({filteredEntries.length})
+            </label>
+            {selectedIds.size > 0 && (
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                {selectedIds.size} selected
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            {weekFilter ? (
+              <>
+                <Button variant="outline" size="sm" onClick={handleExportWeek} className="gap-2">
+                  <FileDown className="h-4 w-4" />
+                  Export Week {weekFilter} PDF
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleExportWeekDocx} className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Export Week {weekFilter} Word
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" onClick={handleExportAll} className="gap-2">
+                  <FileDown className="h-4 w-4" />
+                  Export All PDF
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleExportAllDocx} className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Export All Word
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Floating Bulk Action Bar */}
+      {selectedIds.size > 0 && (
+        <div className="sticky top-4 z-20 flex items-center justify-between gap-4 p-4 rounded-xl bg-destructive/10 border-2 border-destructive/30 backdrop-blur-md shadow-lg animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2">
+            <Trash2 className="h-5 w-5 text-destructive shrink-0" />
+            <span className="text-sm font-semibold text-destructive">
+              {selectedIds.size} {selectedIds.size === 1 ? "entry" : "entries"} selected for deletion
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
+              Clear selection
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" disabled={isBulkDeleting} className="gap-2">
+                  {isBulkDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                  Delete Selected ({selectedIds.size})
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete {selectedIds.size} entries?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. All {selectedIds.size} selected logbook entries will be permanently deleted from your account.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Delete All Selected
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       )}
 
@@ -223,11 +339,21 @@ export default function History() {
           </div>
         ) : filteredEntries && filteredEntries.length > 0 ? (
           filteredEntries.map((entry) => (
-            <Card key={entry.id} className="overflow-hidden border-muted/60 shadow-sm hover:shadow-md">
+            <Card
+              key={entry.id}
+              className={`overflow-hidden border-muted/60 shadow-sm hover:shadow-md transition-all ${
+                selectedIds.has(entry.id) ? "border-primary/50 bg-primary/[0.02] ring-1 ring-primary/20" : ""
+              }`}
+            >
               <Collapsible>
                 <div className="bg-card">
                   <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border-b border-muted/30">
                     <div className="flex items-center gap-4 w-full sm:w-auto">
+                      <Checkbox
+                        checked={selectedIds.has(entry.id)}
+                        onCheckedChange={() => toggleSelectOne(entry.id)}
+                        className="h-5 w-5 rounded border-muted-foreground/40 data-[state=checked]:bg-primary shrink-0 cursor-pointer"
+                      />
                       <div className="shrink-0 flex flex-col items-center justify-center bg-primary/5 rounded-lg p-2 min-w-[70px] border border-primary/10">
                         <span className="text-xs font-medium text-muted-foreground uppercase">{format(parseISO(entry.date), "MMM")}</span>
                         <span className="text-xl font-bold text-primary font-serif">{format(parseISO(entry.date), "dd")}</span>

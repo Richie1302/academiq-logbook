@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Sparkles, Loader2, Copy, Check, Download, Hash, FileText, Calendar } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { exportSingleEntry } from "@/lib/pdf-export";
+import { getApiUrl } from "@/lib/api-config";
 
 export default function WeeklySummary() {
   const [week, setWeek] = useState("");
@@ -37,8 +38,7 @@ export default function WeeklySummary() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) { toast.error("Session expired"); return; }
 
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const res = await fetch(`${apiUrl}/api/entries/weekly-summary`, {
+      const res = await fetch(getApiUrl("/api/entries/weekly-summary"), {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}` },
         body: JSON.stringify({ week: parseInt(week, 10) }),

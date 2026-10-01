@@ -11,8 +11,8 @@ import { Loader2, Sparkles, CheckCircle2, ChevronRight, CalendarDays, Building2,
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { getListEntriesQueryKey, getGetEntryStatsQueryKey, getGetRecentEntriesQueryKey } from "@workspace/api-client-react";
-
-const API_BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+import { getApiUrl, parseProfileDepartment } from "@/lib/api-config";
+import { useEffect } from "react";
 
 async function getAuthToken(): Promise<string | null> {
   const { data } = await supabase.auth.getSession();
@@ -33,14 +33,24 @@ export default function BulkGenerate() {
   const { data: profile } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false } });
   const queryClient = useQueryClient();
 
+  const parsedDept = parseProfileDepartment(profile?.department);
   const [startWeek, setStartWeek] = useState("1");
   const [numWeeks, setNumWeeks] = useState("1");
   const [startDate, setStartDate] = useState("");
   const [company, setCompany] = useState(profile?.siwesCompany ?? "");
-  const [department, setDepartment] = useState(profile?.department ?? "");
-  const [supervisor, setSupervisor] = useState("");
+  const [department, setDepartment] = useState(parsedDept.department);
+  const [supervisor, setSupervisor] = useState(parsedDept.supervisorName);
   const [activities, setActivities] = useState("");
   const [format, setFormat] = useState<"standard" | "structured">("standard");
+
+  useEffect(() => {
+    if (profile) {
+      const parsed = parseProfileDepartment(profile.department);
+      if (!company && profile.siwesCompany) setCompany(profile.siwesCompany);
+      if (!department && parsed.department) setDepartment(parsed.department);
+      if (!supervisor && parsed.supervisorName) setSupervisor(parsed.supervisorName);
+    }
+  }, [profile]);
 
   const [loading, setLoading] = useState(false);
   const [progressMsg, setProgressMsg] = useState("");
@@ -61,7 +71,7 @@ export default function BulkGenerate() {
 
     try {
       const token = await getAuthToken();
-      const res = await fetch(`${API_BASE}/api/entries/bulk-generate`, {
+      const res = await fetch(getApiUrl("/api/entries/bulk-generate"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -192,7 +202,7 @@ export default function BulkGenerate() {
                 id="department"
                 value={department}
                 onChange={e => setDepartment(e.target.value)}
-                placeholder={profile?.department || "e.g. IT Department"}
+                placeholder={parseProfileDepartment(profile?.department).department || "e.g. IT Department"}
               />
             </div>
           </div>

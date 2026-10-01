@@ -1,4 +1,5 @@
 import jsPDF from "jspdf";
+import { parseProfileDepartment } from "./api-config";
 
 export interface PdfProfile {
   fullName?: string | null;
@@ -70,7 +71,7 @@ export function exportEntriesToPDF(
       ["Institution", profile.school],
       ["Course", profile.course],
       ["Establishment", profile.siwesCompany],
-      ["Department", profile.department],
+      ["Department", parseProfileDepartment(profile.department).department],
       ["Duration", profile.siwesDuration],
     ];
     for (const [label, value] of fields) {

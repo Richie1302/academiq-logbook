@@ -22,19 +22,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    // Safety fallback: never keep user stuck on loading spinner for more than 2s
+    const timer = setTimeout(() => {
       setLoading(false);
-    });
+    }, 2000);
+
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+        clearTimeout(timer);
+      })
+      .catch((err) => {
+        console.warn("[AUTH_SESSION_ERROR]", err);
+        setLoading(false);
+        clearTimeout(timer);
+      });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      clearTimeout(timer);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {

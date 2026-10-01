@@ -5,6 +5,8 @@ import { Loader2, Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
+import { getApiUrl } from "@/lib/api-config";
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -23,8 +25,7 @@ async function chat(messages: Message[]): Promise<string> {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) throw new Error("Session expired. Please sign in again.");
 
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const response = await fetch(`${apiUrl}/api/entries/chat`, {
+  const response = await fetch(getApiUrl("/api/entries/chat"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -40,6 +41,17 @@ async function chat(messages: Message[]): Promise<string> {
 
   const data = await response.json();
   return data.reply ?? "Sorry, I couldn't generate a response. Please try again.";
+}
+
+function cleanText(text: string): string {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "$1")   // remove **bold**
+    .replace(/\*(.*?)\*/g, "$1")        // remove *italic*
+    .replace(/—/g, "-")                 // em dash
+    .replace(/–/g, "-")                 // en dash
+    .replace(/^[-*] /gm, "")            // strip leading bullet chars
+    .replace(/\n{3,}/g, "\n\n")         // collapse extra blank lines
+    .trim();
 }
 
 export default function AIChatAssistant() {
@@ -142,8 +154,8 @@ export default function AIChatAssistant() {
                     ? "bg-muted/40 text-foreground rounded-tl-sm"
                     : "bg-primary text-primary-foreground rounded-tr-sm"
                 }`}>
-                  {msg.content.split("\n").map((line, j) => (
-                    <span key={j}>{line}{j < msg.content.split("\n").length - 1 && <br />}</span>
+                  {cleanText(msg.content).split("\n").map((line, j, arr) => (
+                    <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
                   ))}
                 </div>
               </div>

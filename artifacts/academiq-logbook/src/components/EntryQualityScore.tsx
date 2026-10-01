@@ -13,6 +13,8 @@ interface QualityScore {
   suggestions: string[];
 }
 
+import { getApiUrl } from "@/lib/api-config";
+
 interface Props {
   entryText: string;
   compact?: boolean;
@@ -22,8 +24,7 @@ async function scoreEntry(text: string): Promise<QualityScore> {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) throw new Error("Session expired");
 
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const response = await fetch(`${apiUrl}/api/entries/quality-score`, {
+  const response = await fetch(getApiUrl("/api/entries/quality-score"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

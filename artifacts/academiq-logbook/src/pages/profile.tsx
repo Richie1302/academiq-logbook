@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Loader2, Save, User as UserIcon, GraduationCap, Building2, CheckCircle2, Share2, Copy, Check, RefreshCw } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { getApiUrl } from "@/lib/api-config";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -83,8 +84,7 @@ export default function Profile() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) { toast.error("Session expired."); return; }
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const res = await fetch(`${apiUrl}/api/profile/supervisor-token`, {
+      const res = await fetch(getApiUrl("/api/profile/supervisor-token"), {
         method: "POST",
         headers: { "Authorization": `Bearer ${session.access_token}` },
       });
@@ -122,8 +122,7 @@ export default function Profile() {
         ? `supervisor::${formData.supervisorName}||${formData.department}`
         : formData.department;
 
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${apiUrl}/api/profile`, {
+      const response = await fetch(getApiUrl("/api/profile"), {
         method: "PUT",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}` },
         body: JSON.stringify({

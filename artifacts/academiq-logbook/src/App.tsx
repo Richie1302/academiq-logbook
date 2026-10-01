@@ -11,7 +11,7 @@ import { AppLayout } from "@/components/layout";
 import { Loader2 } from "lucide-react";
 
 // Configure API client — must be done before any component renders
-setBaseUrl(import.meta.env.VITE_API_URL ?? "");
+setBaseUrl((import.meta.env.VITE_API_URL ?? "").trim().replace(/\/$/, ""));
 setAuthTokenGetter(async () => {
   const { data } = await supabase.auth.getSession();
   return data.session?.access_token ?? null;
@@ -41,6 +41,9 @@ import AIChatAssistant from "@/pages/ai-chat";
 import SupervisorPortal from "@/pages/supervisor-portal";
 import BulkGenerate from "@/pages/bulk-generate";
 import CoverPage from "@/pages/cover-page";
+import DefenseCoach from "@/pages/defense-coach";
+import ReportGenerator from "@/pages/report-generator";
+import ImportLogbook from "@/pages/import-logbook";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -96,10 +99,10 @@ function ProtectedRoute({ component: Component, skipOnboarding }: {
     query: { queryKey: getGetProfileQueryKey(), retry: 1, enabled: !!user, staleTime: 30000 },
   });
 
-  // Safety valve — if profile hasn't resolved in 5s, stop waiting and let user through
+  // Safety valve — if profile hasn't resolved in 2s, stop waiting and let user through
   useEffect(() => {
     if (!profileLoading) return;
-    const t = setTimeout(() => setTimedOut(true), 5000);
+    const t = setTimeout(() => setTimedOut(true), 2000);
     return () => clearTimeout(t);
   }, [profileLoading]);
 
@@ -172,6 +175,9 @@ function AppRoutes() {
         <Route path="/chat">{() => <ProtectedRoute component={AIChatAssistant} />}</Route>
         <Route path="/bulk-generate">{() => <ProtectedRoute component={BulkGenerate} />}</Route>
         <Route path="/cover-page">{() => <ProtectedRoute component={CoverPage} />}</Route>
+        <Route path="/defense-coach">{() => <ProtectedRoute component={DefenseCoach} />}</Route>
+        <Route path="/report-generator">{() => <ProtectedRoute component={ReportGenerator} />}</Route>
+        <Route path="/import">{() => <ProtectedRoute component={ImportLogbook} />}</Route>
         <Route component={NotFound} />
       </Switch>
     </>

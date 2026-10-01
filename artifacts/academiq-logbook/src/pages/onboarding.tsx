@@ -3,6 +3,7 @@ import { useAuth } from "@/lib/auth-context";
 import { getGetProfileQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { getApiUrl } from "@/lib/api-config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,8 +75,7 @@ export default function Onboarding() {
         ? `supervisor::${form.supervisorName}||${form.department}`
         : form.department;
 
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${apiUrl}/api/profile`, {
+      const response = await fetch(getApiUrl("/api/profile"), {
         method: "PUT",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}` },
         body: JSON.stringify({

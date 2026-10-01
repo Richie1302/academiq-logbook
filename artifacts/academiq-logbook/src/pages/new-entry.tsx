@@ -9,10 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, RefreshCcw, AlignLeft, AlignJustify, Lightbulb, X } from "lucide-react";
+import { Sparkles, Save, Loader2, Copy, Check, Calendar, Hash, RefreshCcw, AlignLeft, AlignJustify, Lightbulb, X, Camera, Image as ImageIcon } from "lucide-react";
 import EntryQualityScore from "@/components/EntryQualityScore";
 import GenericityCheck from "@/components/GenericityCheck";
 import WhatsAppSharePrompt from "@/components/WhatsAppSharePrompt";
+import { getApiUrl } from "@/lib/api-config";
+import { supabase } from "@/lib/supabase";
 
 type RewriteMode = "concise" | "detailed";
 
@@ -41,6 +43,35 @@ const TEMPLATES = [
 
 const DRAFT_KEY = "academiq_entry_draft";
 
+function compressImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const MAX = 1024;
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > MAX) { height = Math.round((height * MAX) / width); width = MAX; }
+        } else {
+          if (height > MAX) { width = Math.round((width * MAX) / height); height = MAX; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.8));
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+}
+
 export default function NewEntry() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
@@ -54,9 +85,48 @@ export default function NewEntry() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
   const [shareDismissed, setShareDismissed] = useState(false);
+  const [isAnalyzingPhoto, setIsAnalyzingPhoto] = useState(false);
 
   const rewriteMutation = useRewriteEntry();
   const createMutation = useCreateEntry();
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("Please upload an image smaller than 20MB");
+      return;
+    }
+
+    setIsAnalyzingPhoto(true);
+    toast.info("Compressing & analyzing workplace image...");
+
+    try {
+      const base64 = await compressImage(file);
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(getApiUrl("/api/entries/photo-vision"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ imageBase64: base64, userNotes: rawActivity }),
+      });
+
+      if (!res.ok) throw new Error("Failed to process image");
+
+      const data = await res.json();
+      if (data.rawActivity) setRawActivity(data.rawActivity);
+      if (data.rewrittenEntry) setRewritten(data.rewrittenEntry);
+      toast.success("Photo analyzed! Activity draft generated.");
+    } catch (err: any) {
+      console.error("[PHOTO_UPLOAD_ERROR]", err);
+      toast.error("Failed to analyze image. Please try again or type manually.");
+    } finally {
+      setIsAnalyzingPhoto(false);
+    }
+  };
 
   // Load draft on mount
   useEffect(() => {
@@ -193,15 +263,29 @@ export default function NewEntry() {
               <CardTitle className="text-lg">What did you do today?</CardTitle>
               <CardDescription>Write naturally — don't worry about grammar or sounding professional.</CardDescription>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowTemplates(!showTemplates)}
-              className="shrink-0 gap-1.5"
-            >
-              <Lightbulb className="h-3.5 w-3.5" />
-              Templates
-            </Button>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 bg-background hover:bg-slate-50 text-xs font-medium text-slate-700 shadow-sm transition-colors">
+                <Camera className="h-3.5 w-3.5 text-primary" />
+                {isAnalyzingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Photo to Entry"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoUpload}
+                  disabled={isAnalyzingPhoto}
+                />
+              </label>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTemplates(!showTemplates)}
+                className="shrink-0 gap-1.5"
+              >
+                <Lightbulb className="h-3.5 w-3.5" />
+                Templates
+              </Button>
+            </div>
           </div>
 
           {/* Template picker */}

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, PlusCircle, History, BookOpen, User, MessageCircle, FileText, Settings, Sparkles, Layers, BookMarked } from "lucide-react";
+import { LogOut, Home, PlusCircle, History, BookOpen, User, MessageCircle, FileText, Settings, Sparkles, Layers, BookMarked, GraduationCap, FileCheck, Upload } from "lucide-react";
 
 // NavItem must be defined OUTSIDE AppLayout to avoid hook rule violations
 function NavItem({ href, label, icon: Icon, location }: {
@@ -27,12 +27,15 @@ const mainNav = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/entry/new", label: "New Entry", icon: PlusCircle },
   { href: "/history", label: "History", icon: History },
+  { href: "/import", label: "Import Logbook", icon: Upload },
 ];
 
 const aiNav = [
   { href: "/chat", label: "Ask AcademiQ", icon: MessageCircle },
   { href: "/summary", label: "Weekly Summary", icon: FileText },
   { href: "/bulk-generate", label: "Bulk Generate", icon: Layers },
+  { href: "/defense-coach", label: "Defense Coach", icon: GraduationCap },
+  { href: "/report-generator", label: "Technical Report", icon: FileCheck },
   { href: "/cover-page", label: "Cover Page", icon: BookMarked },
 ];
 
@@ -44,7 +47,7 @@ const accountNav = [
 const mobileNav = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/entry/new", label: "New Entry", icon: PlusCircle },
-  { href: "/bulk-generate", label: "Bulk Gen", icon: Layers },
+  { href: "/import", label: "Import", icon: Upload },
   { href: "/history", label: "History", icon: History },
   { href: "/profile", label: "Profile", icon: User },
 ];

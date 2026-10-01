@@ -3,6 +3,8 @@ import { AlertTriangle, CheckCircle2, Loader2, ShieldAlert, Info } from "lucide-
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 
+import { getApiUrl } from "@/lib/api-config";
+
 interface GenericCheckResult {
   genericityScore: number;
   verdict: "Original" | "Slightly Generic" | "Very Generic" | "Copy-Paste Risk";
@@ -19,8 +21,7 @@ async function checkGeneric(text: string): Promise<GenericCheckResult> {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) throw new Error("Session expired");
 
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const response = await fetch(`${apiUrl}/api/entries/generic-check`, {
+  const response = await fetch(getApiUrl("/api/entries/generic-check"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

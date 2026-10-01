@@ -12,6 +12,7 @@ import {
   WidthType,
   BorderStyle,
 } from "docx";
+import { parseProfileDepartment } from "./api-config";
 
 export interface DocxProfile {
   fullName?: string | null;
@@ -109,7 +110,7 @@ export function exportEntriesToDocx(
       ["Institution/School:", profile.school],
       ["Course of Study:", profile.course],
       ["Establishment/Company:", profile.siwesCompany],
-      ["Department/Unit:", profile.department],
+      ["Department/Unit:", parseProfileDepartment(profile.department).department],
       ["Duration:", profile.siwesDuration],
     ];
 

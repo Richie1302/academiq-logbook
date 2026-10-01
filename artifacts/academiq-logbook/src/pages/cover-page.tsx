@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { FileDown, BookOpen, Printer } from "lucide-react";
 import jsPDF from "jspdf";
+import { parseProfileDepartment } from "@/lib/api-config";
 
 const COVER_STORAGE_KEY = "academiq_cover_data";
 
@@ -90,7 +91,7 @@ function exportCoverPagePDF(
     ["Course of Study", profile?.course || ""],
     ["Faculty / College", data.faculty || ""],
     ["Level", data.level || ""],
-    ["Department", profile?.department || ""],
+    ["Department", parseProfileDepartment(profile?.department).department || ""],
   ];
 
   doc.setFontSize(10);
@@ -114,7 +115,7 @@ function exportCoverPagePDF(
   const attachFields: [string, string][] = [
     ["Name of Establishment", profile?.siwesCompany || ""],
     ["Address", data.companyAddress || ""],
-    ["Department / Unit", profile?.department || ""],
+    ["Department / Unit", parseProfileDepartment(profile?.department).department || ""],
     ["Industry Supervisor", data.supervisorName || ""],
     ["ITF Supervisor / Coordinator", data.itfCoordinator || ""],
   ];
@@ -171,6 +172,7 @@ function exportCoverPagePDF(
   doc.save(filename);
 }
 
+
 export default function CoverPage() {
   const { data: profile } = useGetProfile({ query: { queryKey: getGetProfileQueryKey(), retry: false } });
 
@@ -206,7 +208,7 @@ export default function CoverPage() {
   const school = profile?.school || "—";
   const course = profile?.course || "—";
   const company = profile?.siwesCompany || "—";
-  const department = profile?.department || "—";
+  const department = parseProfileDepartment(profile?.department).department || "—";
   const duration = profile?.siwesDuration || (data.startDate && data.endDate ? `${data.startDate} – ${data.endDate}` : "—");
 
   return (

@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import { BookOpen, Loader2, AlertTriangle, GraduationCap, Building2, Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getApiUrl, parseProfileDepartment } from "@/lib/api-config";
 
 interface Profile {
   fullName: string;
@@ -34,8 +35,7 @@ export default function SupervisorPortal() {
 
   useEffect(() => {
     if (!token) return;
-    const apiUrl = import.meta.env.VITE_API_URL;
-    fetch(`${apiUrl}/api/supervisor/${token}`)
+    fetch(getApiUrl(`/api/supervisor/${token}`))
       .then(async (res) => {
         if (!res.ok) {
           const err = await res.json();
@@ -120,7 +120,7 @@ export default function SupervisorPortal() {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Placement</p>
                 <p className="font-semibold">{profile?.siwesCompany || "—"}</p>
-                <p className="text-sm text-muted-foreground">{profile?.department || "—"}</p>
+                <p className="text-sm text-muted-foreground">{parseProfileDepartment(profile?.department).department || "—"}</p>
               </div>
             </div>
             {profile?.siwesDuration && (
